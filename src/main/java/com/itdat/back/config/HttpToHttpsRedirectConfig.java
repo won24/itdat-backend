@@ -22,7 +22,6 @@ public class HttpToHttpsRedirectConfig {
         connector.setPort(8081);  // HTTP 포트
         connector.setSecure(false);
         connector.setRedirectPort(8082);  // HTTPS 포트
-        return connector;   //test
-        // docker test
+        return connector;
     }
 }
