@@ -8,11 +8,22 @@ server:
     key-alias: tomcat
 
 spring:
+  config:
+    import: "classpath:application-db.yml"
+  profiles:
+    active: dev
+
   jpa:
     show-sql: true
     database: mysql
+    hibernate:
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-  config:
-    import: "classpath:application-db.yml"
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
