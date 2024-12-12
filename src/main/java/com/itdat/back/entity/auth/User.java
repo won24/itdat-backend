@@ -6,6 +6,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -30,6 +31,9 @@ import java.time.LocalDateTime;
 
         @Column(nullable = false, unique = true)
         private String userEmail;
+
+        @Column(name = "user_birth")
+        private LocalDate userBirth;
 
         private String companyRank;
         private String companyDept;
@@ -56,7 +60,7 @@ import java.time.LocalDateTime;
         public User() {
         }
 
-        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, String companyRank, String companyDept, String companyFax, String companyAddr, String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
             this.id = id;
             this.userId = userId;
             this.password = password;
@@ -64,6 +68,7 @@ import java.time.LocalDateTime;
             this.company = company;
             this.userPhone = userPhone;
             this.userEmail = userEmail;
+            this.userBirth = userBirth;
             this.companyRank = companyRank;
             this.companyDept = companyDept;
             this.companyFax = companyFax;
@@ -130,6 +135,14 @@ import java.time.LocalDateTime;
 
         public void setUserEmail(String userEmail) {
             this.userEmail = userEmail;
+        }
+
+        public LocalDate getUserBirth() {
+            return userBirth;
+        }
+
+        public void setUserBirth(LocalDate userBirth) {
+            this.userBirth = userBirth;
         }
 
         public String getCompanyRank() {
@@ -222,6 +235,7 @@ import java.time.LocalDateTime;
                     ", company='" + company + '\'' +
                     ", userPhone='" + userPhone + '\'' +
                     ", userEmail='" + userEmail + '\'' +
+                    ", userBirth=" + userBirth +
                     ", companyRank='" + companyRank + '\'' +
                     ", companyDept='" + companyDept + '\'' +
                     ", companyFax='" + companyFax + '\'' +
