@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update  # 개발 환경에서는 스키마 업데이트 허용
+    properties:
+      hibernate:
+        format_sql: true  # SQL 포맷 활성화
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
+
+cors:
+  allowed-origins: http://localhost:3000
