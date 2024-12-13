@@ -7,6 +7,20 @@ spring:
   profiles:
     active: dev  # 기본 프로파일을 개발 환경(dev)으로 설정
 
+  mail:
+    host: smtp.worksmail.com
+    port: 587
+    username: noreply@www.itdat.store
+    password: ${MAIL_PASSWORD}
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    default-encoding: UTF-8
+
 logging:
   level:
     root: INFO

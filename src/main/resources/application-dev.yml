@@ -7,6 +7,18 @@ spring:
       hibernate:
         format_sql: true  # SQL 포맷 활성화
 
+  mail:
+    host: smtp.worksmail.com
+    port: 587
+    username: noreply@www.itdat.store
+    password: ${MAIL_PASSWORD}  # 시스템 환경 변수로 관리
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

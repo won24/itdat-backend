@@ -17,6 +17,18 @@ spring:
       hibernate:
         format_sql: false  # SQL 포맷 비활성화
 
+  mail:
+    host: smtp.worksmail.com
+    port: 587
+    username: noreply@www.itdat.store
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 logging:
   level:
     root: WARN
