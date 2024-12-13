@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "https://www.namewallet.store")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -36,4 +36,24 @@ public class UserController {
 
         return ResponseEntity.ok(Collections.singletonMap("available", isAvailable));
     }
+
+    @PostMapping("/send-verification-code")
+    public ResponseEntity<Map<String, String>> sendVerificationCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        boolean isSent = userService.sendVerificationCode(email);
+        if (isSent) {
+            return ResponseEntity.ok(Collections.singletonMap("message", "Verification code sent successfully."));
+        } else {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("message", "Failed to send verification code."));
+        }
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<Map<String, Boolean>> verifyCode(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String code = request.get("code");
+        boolean isValid = userService.verifyCode(email, code);
+        return ResponseEntity.ok(Collections.singletonMap("success", isValid));
+    }
+
 }
