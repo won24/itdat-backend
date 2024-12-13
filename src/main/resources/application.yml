@@ -7,6 +7,15 @@ spring:
   profiles:
     active: dev  # 기본 프로파일을 개발 환경(dev)으로 설정
 
+  naver:
+    works:
+      client-id: RFqdC7PF7PVsvVnoN1Yy
+      client-secret: uOtFkIpZS6
+      domain-id: 300183791
+      base-url: https://apis.worksmobile.com
+      redirect-url: https://your.redirect.url
+
+
   mail:
     host: smtp.worksmail.com
     port: 587

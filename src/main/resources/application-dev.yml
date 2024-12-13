@@ -7,6 +7,14 @@ spring:
       hibernate:
         format_sql: true  # SQL 포맷 활성화
 
+  naver:
+    works:
+      client-id: RFqdC7PF7PVsvVnoN1Yy
+      client-secret: uOtFkIpZS6
+      domain-id: 300183791
+      base-url: https://apis.worksmobile.com
+      redirect-url: https://your.redirect.url
+
   mail:
     host: smtp.worksmail.com
     port: 587
