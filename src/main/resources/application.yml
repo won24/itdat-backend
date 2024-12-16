@@ -13,22 +13,19 @@ spring:
       client-secret: uOtFkIpZS6
       domain-id: 300183791
       base-url: https://apis.worksmobile.com
-      redirect-url: https://your.redirect.url
+      redirect-url: http://localhost:3000/callback
+
 
 
   mail:
-    host: smtp.worksmail.com
+    host: smtp.worksmobile.com
     port: 587
-    username: noreply@www.itdat.store
-    password: ${MAIL_PASSWORD}
+    username: ww.24575@www.itdat.store
+    password: NZVvL9wTvC9A
     protocol: smtp
     properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-    default-encoding: UTF-8
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 logging:
   level:

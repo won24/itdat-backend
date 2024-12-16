@@ -1,6 +1,6 @@
 package com.itdat.back.service.auth;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.itdat.back.entity.auth.NaverWorksConfig;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -11,39 +11,72 @@ import java.util.Map;
 
 @Service
 public class NaverWorksAuthService {
-    @Value("${naver.works.client-id}")
-    private String clientId;
 
-    @Value("${naver.works.client-secret}")
-    private String clientSecret;
+    private final NaverWorksConfig naverWorksConfig;
 
-    @Value("${naver.works.domain-id}")
-    private String domainId;
+    private static final String TOKEN_URL = "https://apis.worksmobile.com/oauth2/v2.0/token";
+    private static final String CLIENT_ID = "RFqdC7PF7PVsvVnoN1Yy"; // 네이버 웍스 클라이언트 ID
+    private static final String CLIENT_SECRET = "uOtFkIpZS6";       // 네이버 웍스 클라이언트 Secret
+    private static final String REDIRECT_URI = "http://localhost:3000/callback"; // 리다이렉트 URI
 
-    @Value("${naver.works.base-url}")
-    private String baseUrl;
-
-    public String getAccessToken() {
-        String url = baseUrl + "/oauth2/v2.0/token";
+    public String fetchAccessToken(String authorizationCode) {
         RestTemplate restTemplate = new RestTemplate();
 
+        // 요청 헤더 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
+        // 요청 바디 설정
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "client_credentials");
-        params.add("client_id", clientId);
-        params.add("client_secret", clientSecret);
-        params.add("scope", "mail.send");
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", CLIENT_ID);
+        params.add("client_secret", CLIENT_SECRET);
+        params.add("code", authorizationCode);
+        params.add("redirect_uri", REDIRECT_URI);
 
+        // 요청 객체 생성
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
+
+        // API 호출
+        ResponseEntity<Map> response = restTemplate.postForEntity(TOKEN_URL, request, Map.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
-            Map<String, Object> responseBody = response.getBody();
-            return responseBody.get("access_token").toString();
+            Map<String, Object> body = response.getBody();
+            if (body != null && body.containsKey("access_token")) {
+                return body.get("access_token").toString(); // 액세스 토큰 반환
+            } else {
+                throw new RuntimeException("Invalid response: access_token not found");
+            }
         } else {
-            throw new RuntimeException("Failed to get access token");
+            throw new RuntimeException("Failed to fetch access token: " + response.getStatusCode());
         }
     }
+
+
+    public NaverWorksAuthService(NaverWorksConfig naverWorksConfig) {
+        this.naverWorksConfig = naverWorksConfig;
+    }
+
+    public String getAccessToken() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = naverWorksConfig.getBaseUrl() + "/oauth2/v2.0/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/x-www-form-urlencoded");
+
+        String body = "grant_type=client_credentials"
+                + "&client_id=" + naverWorksConfig.getClientId()
+                + "&client_secret=" + naverWorksConfig.getClientSecret()
+                + "&scope=mail.create";
+
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.POST, request, Map.class);
+
+        Map<String, Object> responseBody = response.getBody();
+        return responseBody.get("access_token").toString();
+    }
+
+
 }
+

@@ -1,0 +1,16 @@
+#environment:
+#  - MAIL_PASSWORD=112jmksT
+
+services:
+  app:
+    image: nicdkim/itdat-namewallet
+    container_name: itdat-namewallet
+    environment:
+      - MAIL_PASSWORD=112jmksT
+    ports:
+      - "8082:8082"
+    networks:
+      - default
+networks:
+  default:
+    driver: bridge

@@ -39,6 +39,7 @@ import java.time.LocalDateTime;
         private String companyDept;
         private String companyFax;
         private String companyAddr;
+        private String companyAddrDetail;
         private String companyPhone;
 
         @Enumerated(EnumType.STRING)
@@ -60,7 +61,7 @@ import java.time.LocalDateTime;
         public User() {
         }
 
-        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail,String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
             this.id = id;
             this.userId = userId;
             this.password = password;
@@ -73,6 +74,7 @@ import java.time.LocalDateTime;
             this.companyDept = companyDept;
             this.companyFax = companyFax;
             this.companyAddr = companyAddr;
+            this.companyAddrDetail = companyAddrDetail;
             this.companyPhone = companyPhone;
             this.userState = userState;
             this.userType = userType;
@@ -177,6 +179,14 @@ import java.time.LocalDateTime;
             this.companyAddr = companyAddr;
         }
 
+        public String getCompanyAddrDetail() {
+            return companyAddrDetail;
+        }
+
+        public void setCompanyAddrDetail(String companyAddrDetail) {
+            this.companyAddrDetail = companyAddrDetail;
+        }
+
         public String getCompanyPhone() {
             return companyPhone;
         }
@@ -240,6 +250,7 @@ import java.time.LocalDateTime;
                     ", companyDept='" + companyDept + '\'' +
                     ", companyFax='" + companyFax + '\'' +
                     ", companyAddr='" + companyAddr + '\'' +
+                    ", companyAddrDetail='" + companyAddrDetail + '\'' +
                     ", companyPhone='" + companyPhone + '\'' +
                     ", userState=" + userState +
                     ", userType=" + userType +
