@@ -21,8 +21,22 @@ public class UserController {
     @Autowired
     private NaverWorksAuthService naverWorksAuthService;
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+
+        try {
+            String token = userService.login(email, password);
+            return ResponseEntity.ok(Map.of("token", token));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
+        }
+    }
+
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
+        System.out.println("받은 유저 데이터: " + user.toString());
         User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok(registeredUser);
     }

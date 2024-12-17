@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
         private String userName;
 
         private String company;
+
         private String userPhone;
 
         @Column(nullable = false, unique = true)

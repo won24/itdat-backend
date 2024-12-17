@@ -2,6 +2,8 @@ package com.itdat.back.service.auth;
 
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.repository.auth.UserRepository;
+import com.itdat.back.utils.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +19,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final NaverWorksEmailService emailService;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     private final Map<String, VerificationCode> verificationCodes = new HashMap<>(); // 인증 코드와 만료 시간 관리
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, NaverWorksEmailService emailService) {
@@ -24,6 +29,24 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
+
+    public String login(String email, String password) {
+        // 이메일로 사용자 찾기
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
+        // 비밀번호 검증
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            System.out.println("비밀번호 검증 실패: 입력된 비밀번호 = " + password + ", 저장된 비밀번호(해시) = " + user.getPassword());
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 토큰 생성 및 반환
+        String token = jwtTokenUtil.generateToken(user.getUserEmail());
+        System.out.println("로그인 성공: " + user.getUserEmail());
+        return token;
+    }
+
 
     public User registerUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
