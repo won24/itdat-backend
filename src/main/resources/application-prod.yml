@@ -56,3 +56,7 @@ logging:
 
 cors:
   allowed-origins: https://www.itdat.store
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  expiration: 86400000

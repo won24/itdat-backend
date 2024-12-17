@@ -45,3 +45,7 @@ logging:
 
 cors:
   allowed-origins: http://localhost:3000
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  expiration: 86400000
