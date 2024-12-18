@@ -32,5 +32,5 @@ logging:
     root: INFO
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY}
+  secret-key: ${JWT_SECRET_KEY} # 환경변수 등록 필요
   expiration: 86400000
