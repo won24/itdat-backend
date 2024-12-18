@@ -40,7 +40,10 @@ import java.time.LocalDateTime;
         private String companyDept;
         private String companyFax;
         private String companyAddr;
+
+        @Column(name = "company_addr_detail")
         private String companyAddrDetail;
+
         private String companyPhone;
 
         @Enumerated(EnumType.STRING)
