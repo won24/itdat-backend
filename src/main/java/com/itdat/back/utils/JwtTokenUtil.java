@@ -14,7 +14,7 @@ public class JwtTokenUtil {
     private String secretKey;
 
     @Value("${jwt.expiration}")
-    private long expiration; // 밀리초 단위
+    private long expiration;
 
     // 토큰 생성
     public String generateToken(String email) {
