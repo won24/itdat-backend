@@ -36,6 +36,9 @@ public class SocialLogin {
         this.createdAt = createdAt;
     }
 
+    public SocialLogin(User user, String provider, String providerId) {
+    }
+
     public int getId() {
         return id;
     }
