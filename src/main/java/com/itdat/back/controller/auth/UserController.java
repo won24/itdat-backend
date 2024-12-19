@@ -4,7 +4,6 @@ import com.itdat.back.entity.auth.User;
 import com.itdat.back.service.auth.NaverWorksAuthService;
 import com.itdat.back.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +34,59 @@ public class UserController {
         }
     }
 
+    /**
+     * 소셜 로그인 연동
+     *
+     * @param provider    소셜 로그인 제공자 (google, kakao, naver)
+     * @param requestBody 소셜 로그인 데이터 (providerId, email, name)
+     * @return JWT 토큰 또는 에러 메시지
+     */
+    @PostMapping("/oauth/{provider}")
+    public ResponseEntity<?> handleSocialLogin(
+            @PathVariable("provider") String provider,
+            @RequestBody Map<String, String> requestBody) {
+        String providerId = requestBody.get("providerId");
+        String email = requestBody.get("email");
+        String name = requestBody.get("name");
+
+        try {
+            // 소셜 로그인 처리
+            String token = userService.socialLogin(provider, providerId, email, name);
+            return ResponseEntity.ok(Map.of("token", token));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "소셜 로그인 연동 실패: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 소셜 로그인 연동 해제
+     *
+     * @param provider    소셜 로그인 제공자 (google, kakao, naver)
+     * @param requestBody 연동 해제 요청 데이터 (providerId, email)
+     * @return 성공 메시지 또는 에러 메시지
+     */
+    @DeleteMapping("/oauth/{provider}")
+    public ResponseEntity<?> unlinkSocialLogin(
+            @PathVariable("provider") String provider,
+            @RequestBody Map<String, String> requestBody) {
+        String providerId = requestBody.get("providerId");
+        String email = requestBody.get("email");
+
+        try {
+            userService.unlinkSocialLogin(provider, providerId, email);
+            return ResponseEntity.ok(Map.of("message", "소셜 로그인 연동 해제 성공"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "소셜 로그인 연동 해제 실패: " + e.getMessage()));
+        }
+    }
+
+
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         System.out.println("받은 유저 데이터: " + user.toString());
@@ -60,7 +112,6 @@ public class UserController {
     @PostMapping("/send-verification-code")
     public ResponseEntity<Map<String, String>> sendVerificationCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        System.out.println("================================ Docker Test ================================");
         try {
             userService.sendVerificationCode(email);
             return ResponseEntity.ok(Collections.singletonMap("message", "인증 코드가 성공적으로 발송 되었습니다."));
