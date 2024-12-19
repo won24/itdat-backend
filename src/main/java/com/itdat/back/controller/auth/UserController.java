@@ -60,6 +60,7 @@ public class UserController {
     @PostMapping("/send-verification-code")
     public ResponseEntity<Map<String, String>> sendVerificationCode(@RequestBody Map<String, String> request) {
         String email = request.get("email");
+        System.out.println("================================ Docker Test ================================");
         try {
             userService.sendVerificationCode(email);
             return ResponseEntity.ok(Collections.singletonMap("message", "인증 코드가 성공적으로 발송 되었습니다."));
