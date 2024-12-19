@@ -44,7 +44,10 @@ logging:
     org.hibernate.type.descriptor.sql: TRACE
 
 cors:
-  allowed-origins: http://localhost:3000
+  allowed-origins:
+    - http://localhost:3000
+    - http://host.docker.internal
+
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
