@@ -4,6 +4,7 @@ import com.itdat.back.entity.auth.User;
 import com.itdat.back.service.auth.NaverWorksAuthService;
 import com.itdat.back.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
