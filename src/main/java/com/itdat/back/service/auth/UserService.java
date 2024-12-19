@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -32,20 +33,24 @@ public class UserService {
 
     public String login(String email, String password) {
         // 이메일로 사용자 찾기
-        User user = userRepository.findByUserEmail(email)
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(email));
+
+        if (!optionalUser.isPresent()) {
+            throw new RuntimeException("존재하지 않는 사용자입니다.");
+        }
+
+        User user = optionalUser.get();
 
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            System.out.println("비밀번호 검증 실패: 입력된 비밀번호 = " + password + ", 저장된 비밀번호(해시) = " + user.getPassword());
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
         // 토큰 생성 및 반환
         String token = jwtTokenUtil.generateToken(user.getUserEmail());
-        System.out.println("로그인 성공: " + user.getUserEmail());
         return token;
     }
+
 
 
     public User registerUser(User user) {
