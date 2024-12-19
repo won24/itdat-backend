@@ -8,8 +8,7 @@ services:
     environment:
       - MAIL_PASSWORD=112jmksT
       - JWT_SECRET_KEY=57c3aff4146e0ef2d7e742613adfc85cef9a4d258213d749dcb1b4a5435b8a22
-      - CORS_ALLOWED_ORIGINS=http://localhost:3000
-      - CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
+      - SPRING_PROFILES_ACTIVE=dev
     ports:
       - "8082:8082"
     networks:
