@@ -57,6 +57,11 @@ import java.time.LocalDateTime;
         @Enumerated(EnumType.STRING)
         private UserStatus status = UserStatus.ACTIVE;
 
+        @Enumerated(EnumType.STRING)
+        @Column(name = "provider_type", nullable = false)
+        private ProviderType providerType = ProviderType.MANUAL;
+
+
         @Column(updatable = false)
         private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 
@@ -65,7 +70,7 @@ import java.time.LocalDateTime;
         public User() {
         }
 
-        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail,String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail, String companyPhone, UserState userState, UserType userType, UserStatus status, ProviderType providerType, LocalDateTime createdAt, LocalDateTime updatedAt) {
             this.id = id;
             this.userId = userId;
             this.password = password;
@@ -83,6 +88,7 @@ import java.time.LocalDateTime;
             this.userState = userState;
             this.userType = userType;
             this.status = status;
+            this.providerType = providerType;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
         }
@@ -215,6 +221,14 @@ import java.time.LocalDateTime;
             this.userType = userType;
         }
 
+        public ProviderType getProviderType() {
+            return providerType;
+        }
+
+        public void setProviderType(ProviderType providerType) {
+            this.providerType = providerType;
+        }
+
         public UserStatus getStatus() {
             return status;
         }
@@ -259,13 +273,12 @@ import java.time.LocalDateTime;
                     ", userState=" + userState +
                     ", userType=" + userType +
                     ", status=" + status +
+                    ", providerType=" + providerType +
                     ", createdAt=" + createdAt +
                     ", updatedAt=" + updatedAt +
                     '}';
         }
     }
 
-    enum UserState { ACTIVE, AWAY, BUSY }
-    enum UserType { BUSINESS, PERSONAL }
-    enum UserStatus { ACTIVE, BANNED, REPORTED }
+
 
