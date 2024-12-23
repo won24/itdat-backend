@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
     public class User {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int id;
+        private Integer id;
 
         @Column(nullable = false, unique = true)
         private String userId;
@@ -65,7 +65,7 @@ import java.time.LocalDateTime;
         public User() {
         }
 
-        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail,String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public User(Integer id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail,String companyPhone, UserState userState, UserType userType, UserStatus status, LocalDateTime createdAt, LocalDateTime updatedAt) {
             this.id = id;
             this.userId = userId;
             this.password = password;
@@ -87,7 +87,7 @@ import java.time.LocalDateTime;
             this.updatedAt = updatedAt;
         }
 
-        public int getId() {
+        public Integer getId() {
             return id;
         }
 
