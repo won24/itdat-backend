@@ -73,18 +73,66 @@ public class SocialOAuthService {
     // Kakao 사용자 정보 API 호출
     private Map<String, Object> fetchKakaoUserInfo(String accessToken) {
         String kakaoApiUrl = "https://kapi.kakao.com/v2/user/me";
+        System.out.println("Kakao API URL: " + kakaoApiUrl);
+        System.out.println("Authorization: Bearer " + accessToken);
         return sendGetRequest(kakaoApiUrl, accessToken);
     }
+
 
     // HTTP GET 요청 공통 메서드
     private Map<String, Object> sendGetRequest(String url, String accessToken) {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken);
+        headers.set("Authorization", "Bearer " + accessToken.trim()); // Bearer 중복 제거
 
         HttpEntity<Void> entity = new HttpEntity<>(headers);
         ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
 
+        System.out.println("Kakao API 응답: " + response.getBody());
+
         return response.getBody();
     }
+
+    // Google ID Token 검증 메서드
+    public Map<String, Object> verifyGoogleIdToken(String idToken) {
+        RestTemplate restTemplate = new RestTemplate();
+        String googleTokenInfoUrl = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
+
+        try {
+            ResponseEntity<Map> response = restTemplate.getForEntity(googleTokenInfoUrl, Map.class);
+            return response.getBody();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid Google ID Token: " + e.getMessage());
+        }
+    }
+
+
+    // 다른 소셜 제공자에서 사용자 정보 가져오기
+    public Map<String, Object> getUserInfoFromOAuth(String provider, String accessToken) {
+        String apiUrl;
+
+        switch (provider.toLowerCase()) {
+            case "kakao":
+                apiUrl = "https://kapi.kakao.com/v2/user/me";
+                break;
+            case "naver":
+                apiUrl = "https://openapi.naver.com/v1/nid/me";
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported provider: " + provider);
+        }
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken.trim());
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(apiUrl, HttpMethod.GET, entity, Map.class);
+            return response.getBody();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to fetch user info from " + provider + ": " + e.getMessage());
+        }
+    }
+
+
 }
 

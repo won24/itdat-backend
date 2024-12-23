@@ -1,17 +1,15 @@
 package com.itdat.back.controller.auth;
 
-import com.itdat.back.entity.auth.ProviderType;
 import com.itdat.back.entity.auth.User;
-import com.itdat.back.entity.auth.UserType;
 import com.itdat.back.repository.auth.UserRepository;
+import com.itdat.back.service.auth.SocialOAuthService;
 import com.itdat.back.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
@@ -23,6 +21,9 @@ public class SocialAuthController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SocialOAuthService socialOAuthService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -45,58 +46,71 @@ public class SocialAuthController {
      * @throws HttpStatus.INTERNAL_SERVER_ERROR: 시스템 오류
      */
     @PostMapping("/{provider}")
-    public ResponseEntity<?> registerSocialUser(@PathVariable String provider, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> socialLogin(@PathVariable String provider, @RequestHeader("Authorization") String accessToken) {
+        System.out.println("socialLogin 호출됨");
+        System.out.println("Provider: " + provider);
+        System.out.println("AccessToken: " + accessToken);
+
         try {
-            // 요청에서 필수 데이터 추출
-            String userId = requestBody.get("userId");
-            String userName = requestBody.get("userName");
-            String password = requestBody.get("password");
-            String userPhone = requestBody.get("userPhone");
-            String userEmail = requestBody.get("userEmail");
-            String userBirthStr = requestBody.get("userBirth");
+            // Bearer 제거
+            String token = accessToken.startsWith("Bearer ") ? accessToken.substring(7) : accessToken;
 
-            // ProviderType 검증
-            ProviderType providerType;
-            try {
-                providerType = ProviderType.valueOf(provider.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("유효하지 않은 provider 값입니다: " + provider);
+            // 소셜 제공자별 사용자 정보 가져오기
+            Map<String, Object> userInfo;
+            if (provider.equalsIgnoreCase("google")) {
+                userInfo = socialOAuthService.verifyGoogleIdToken(token); // Google ID Token 검증
+            } else {
+                userInfo = socialOAuthService.getUserInfoFromOAuth(provider, token); // Kakao/Naver
             }
 
-            // 날짜 파싱
-            LocalDate userBirth = LocalDate.parse(userBirthStr);
+            String email;
+            String providerId;
 
-            // 이메일 중복 체크
-            if (userRepository.findByUserEmail(userEmail) != null) {
-                throw new IllegalStateException("이미 가입된 이메일입니다.");
+            // 소셜 제공자별로 응답 데이터 처리
+            switch (provider.toLowerCase()) {
+                case "google":
+                    email = userInfo.get("email").toString();
+                    providerId = userInfo.get("sub").toString();
+                    break;
+                case "kakao":
+                    Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
+                    email = kakaoAccount.get("email").toString();
+                    providerId = userInfo.get("id").toString();
+                    break;
+                case "naver":
+                    Map<String, Object> naverResponse = (Map<String, Object>) userInfo.get("response");
+                    email = naverResponse.get("email").toString();
+                    providerId = naverResponse.get("id").toString();
+                    break;
+                default:
+                    throw new IllegalArgumentException("지원되지 않는 소셜 제공자입니다: " + provider);
             }
 
-            // 신규 사용자 생성
-            User newUser = new User();
-            newUser.setUserId(userId);
-            newUser.setUserName(userName);
-            newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setUserPhone(userPhone);
-            newUser.setUserEmail(userEmail);
-            newUser.setUserBirth(userBirth);
-            newUser.setProviderType(providerType);
-            newUser.setUserType(UserType.PERSONAL);
+            // 기존 사용자 확인
+            User existingUser = userRepository.findByUserEmail(email);
 
-            userRepository.save(newUser);
-
-            // JWT 생성
-            String token = jwtTokenUtil.generateToken(userEmail);
-
-            return ResponseEntity.ok(Map.of("token", token));
+            if (existingUser != null) {
+                // 이미 등록된 사용자
+                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                return ResponseEntity.ok(Map.of("token", jwtToken, "requiresRegistration", false));
+            } else {
+                // 추가 정보 필요
+                return ResponseEntity.ok(Map.of(
+                        "providerId", providerId,
+                        "email", email,
+                        "requiresRegistration", true
+                ));
+            }
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "입력 데이터 오류: " + e.getMessage()));
-        } catch (IllegalStateException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("message", "논리적 오류: " + e.getMessage()));
+            return ResponseEntity.badRequest()
+                    .body(Map.of("message", "잘못된 요청: " + e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "회원가입 실패: " + e.getMessage()));
+                    .body(Map.of("message", "소셜 로그인 실패: " + e.getMessage()));
         }
     }
+
+
+
+
 }

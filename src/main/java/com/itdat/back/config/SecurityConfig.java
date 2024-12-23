@@ -2,6 +2,10 @@ package com.itdat.back.config;
 
 import com.itdat.back.filter.JwtAuthenticationFilter;
 import com.itdat.back.utils.JwtTokenUtil;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -15,7 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.io.IOException;
 import java.util.List;
 
 @Configuration
@@ -34,14 +40,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login",
-                                        "/api/auth/register",
-                                        "/api/auth/check-availability").permitAll()
+                                "/api/auth/register",
+                                "/api/auth/check-availability").permitAll()
                         .requestMatchers("/api/oauth/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(cspFilter(), JwtAuthenticationFilter.class); // Content-Security-Policy 필터 추가
 
         return http.build();
     }
@@ -53,10 +60,28 @@ public class SecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
         configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Cross-Origin-Opener-Policy");
+        configuration.addExposedHeader("Cross-Origin-Embedder-Policy");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public OncePerRequestFilter cspFilter() {
+        return new OncePerRequestFilter() {
+            @Override
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+                    throws ServletException, IOException {
+                response.setHeader("Content-Security-Policy",
+                        "script-src 'self' https://apis.google.com https://accounts.google.com https://developers.kakao.com 'unsafe-inline'; " +
+                                "frame-src 'self' https://accounts.google.com https://apis.google.com https://developers.kakao.com https://nid.naver.com;");
+                response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+                response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+                filterChain.doFilter(request, response);
+            }
+        };
     }
 
     @Bean
