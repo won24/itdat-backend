@@ -1,6 +1,8 @@
 package com.itdat.back.service.auth;
 
+import com.itdat.back.entity.auth.SocialLogin;
 import com.itdat.back.entity.auth.User;
+import com.itdat.back.repository.auth.SocialLoginRepository;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.Random;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final SocialLoginRepository socialLoginRepository;
     private final PasswordEncoder passwordEncoder;
     private final NaverWorksEmailService emailService;
 
@@ -25,8 +28,9 @@ public class UserService {
 
     private final Map<String, VerificationCode> verificationCodes = new HashMap<>(); // 인증 코드와 만료 시간 관리
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, NaverWorksEmailService emailService) {
+    public UserService(UserRepository userRepository, SocialLoginRepository socialLoginRepository, PasswordEncoder passwordEncoder, NaverWorksEmailService emailService) {
         this.userRepository = userRepository;
+        this.socialLoginRepository = socialLoginRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
     }
@@ -51,6 +55,40 @@ public class UserService {
         return token;
     }
 
+    public String socialLogin(String provider, String providerId, String email, String name) {
+        // 1. 소셜 로그인 기록 확인
+        SocialLogin socialLogin = socialLoginRepository.findByProviderAndProviderId(provider, providerId);
+
+        if (socialLogin != null) {
+            // 소셜 로그인 기록이 있으면 JWT 생성 후 반환
+            return jwtTokenUtil.generateToken(socialLogin.getUser().getUserEmail());
+        }
+
+        // 2. 이메일로 기존 사용자 조회
+        User user = userRepository.findByUserEmail(email);
+
+        if (user == null) {
+            // 3. 기존 사용자가 없으면 회원가입 필요
+            throw new RuntimeException("소셜 로그인을 위해 회원가입이 필요합니다.");
+        }
+
+        // 4. 기존 사용자가 있으면 소셜 로그인 기록 생성 및 연동
+        SocialLogin newSocialLogin = new SocialLogin(user, provider, providerId);
+        socialLoginRepository.save(newSocialLogin);
+
+        // 5. JWT 반환
+        return jwtTokenUtil.generateToken(user.getUserEmail());
+    }
+
+    public void unlinkSocialLogin(String provider, String providerId, String email) {
+        SocialLogin socialLogin = socialLoginRepository.findByProviderAndProviderId(provider, providerId);
+
+        if (socialLogin == null || !socialLogin.getUser().getUserEmail().equals(email)) {
+            throw new IllegalArgumentException("소셜 로그인 연동 정보가 존재하지 않습니다.");
+        }
+
+        socialLoginRepository.delete(socialLogin);
+    }
 
 
     public User registerUser(User user) {
