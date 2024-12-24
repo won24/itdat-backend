@@ -11,12 +11,16 @@ import com.itdat.back.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -68,6 +72,27 @@ public class UserController {
         }
     }
 
+    /**
+     * 로그아웃 엔드포인트
+     *
+     * @param token Authorization 헤더에 포함된 JWT 토큰
+     * @return 로그아웃 결과
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰이 제공되지 않았습니다.");
+        }
+
+        // JWT는 상태를 저장하지 않으므로 클라이언트에서만 토큰을 삭제
+        // 추가적으로 토큰을 블랙리스트에 저장하려면 여기에서 처리하면 될 듯 ?
+
+//        System.out.println("로그아웃 요청 처리됨. 토큰: " + token);
+
+        // 응답 반환
+        return ResponseEntity.ok("로그아웃 성공");
+    }
+
 
     /**
      * 사용자 회원가입
@@ -80,6 +105,25 @@ public class UserController {
 //        System.out.println("받은 유저 데이터: " + user.toString());
         User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok(registeredUser);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String email) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+        }
+
+        Optional<User> user = Optional.ofNullable(userRepository.findByUserEmail(email));
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("email", user.get().getUserEmail());
+        response.put("name", user.get().getUserName());
+        response.put("isSocialUser", user.get().getProviderType() != null); // 소셜 로그인 여부 확인
+
+        return ResponseEntity.ok(response);
     }
 
     /**
