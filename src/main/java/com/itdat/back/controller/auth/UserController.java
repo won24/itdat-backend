@@ -82,45 +82,6 @@ public class UserController {
         return ResponseEntity.ok(registeredUser);
     }
 
-
-    @PostMapping("/social/register")
-    public ResponseEntity<?> registerSocialUser(@RequestBody Map<String, String> requestBody) {
-        try {
-            String userId = requestBody.get("userId");
-            String userName = requestBody.get("userName");
-            String password = requestBody.get("password");
-            String userPhone = requestBody.get("userPhone");
-            String userEmail = requestBody.get("userEmail");
-            LocalDate userBirth = LocalDate.parse(requestBody.get("userBirth"));
-            ProviderType providerType = ProviderType.valueOf(requestBody.get("providerType"));
-
-            if (userRepository.findByUserEmail(userEmail) != null) {
-                throw new IllegalStateException("이미 가입된 이메일입니다.");
-            }
-
-            // 신규 사용자 생성
-            User newUser = new User();
-            newUser.setUserId(userId);
-            newUser.setUserName(userName);
-            newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setUserPhone(userPhone);
-            newUser.setUserEmail(userEmail);
-            newUser.setUserBirth(userBirth);
-            newUser.setProviderType(providerType);
-            newUser.setUserType(UserType.PERSONAL);
-
-            userRepository.save(newUser);
-
-            String token = jwtTokenUtil.generateToken(userEmail);
-            return ResponseEntity.ok(Map.of("token", token));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "회원가입 실패: " + e.getMessage()));
-        }
-    }
-
-
-
     /**
      * 사용자 ID 또는 이메일 가용성 확인
      *

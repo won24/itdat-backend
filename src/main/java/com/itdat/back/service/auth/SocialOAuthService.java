@@ -1,12 +1,18 @@
 package com.itdat.back.service.auth;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -18,13 +24,7 @@ public class SocialOAuthService {
         this.restTemplate = restTemplate;
     }
 
-    /**
-     * 소셜 로그인에서 사용자 ID 가져오기
-     *
-     * @param provider 소셜 로그인 제공자(GOOGLE, NAVER, KAKAO)
-     * @param accessToken 소셜 로그인 Access Token
-     * @return 사용자 고유 ID
-     */
+    // 사용자 ID 가져오기
     public String getProviderIdFromOAuth(String provider, String accessToken) {
         switch (provider.toLowerCase()) {
             case "google":
@@ -38,13 +38,7 @@ public class SocialOAuthService {
         }
     }
 
-    /**
-     * 소셜 로그인에서 이메일 가져오기
-     *
-     * @param provider 소셜 로그인 제공자(GOOGLE, NAVER, KAKAO)
-     * @param accessToken 소셜 로그인 Access Token
-     * @return 사용자 이메일
-     */
+    // 이메일 가져오기
     public String getEmailFromOAuth(String provider, String accessToken) {
         switch (provider.toLowerCase()) {
             case "google":
@@ -58,52 +52,92 @@ public class SocialOAuthService {
         }
     }
 
-    // Google 사용자 정보 API 호출
+    // Kakao 사용자 이메일 가져오기
+    public String getKakaoEmail(Map<String, Object> userInfo) {
+        if (userInfo.containsKey("kakao_account")) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) userInfo.get("kakao_account");
+            if (kakaoAccount.containsKey("email")) {
+                return kakaoAccount.get("email").toString();
+            }
+        }
+        throw new IllegalArgumentException("Kakao email is missing or not provided.");
+    }
+
+    // Kakao 사용자 ID 가져오기
+    public String getKakaoProviderId(Map<String, Object> userInfo) {
+        if (userInfo.containsKey("id")) {
+            return userInfo.get("id").toString();
+        }
+        throw new IllegalArgumentException("Kakao provider ID is missing.");
+    }
+
+    // Google 사용자 정보 가져오기
     private Map<String, Object> fetchGoogleUserInfo(String accessToken) {
         String googleApiUrl = "https://www.googleapis.com/oauth2/v3/userinfo";
         return sendGetRequest(googleApiUrl, accessToken);
     }
 
-    // Naver 사용자 정보 API 호출
+    // Naver 사용자 정보 가져오기
     private Map<String, Object> fetchNaverUserInfo(String accessToken) {
         String naverApiUrl = "https://openapi.naver.com/v1/nid/me";
         return sendGetRequest(naverApiUrl, accessToken);
     }
 
-    // Kakao 사용자 정보 API 호출
+    // Kakao 사용자 정보 가져오기
     private Map<String, Object> fetchKakaoUserInfo(String accessToken) {
         String kakaoApiUrl = "https://kapi.kakao.com/v2/user/me";
-        System.out.println("Kakao API URL: " + kakaoApiUrl);
-        System.out.println("Authorization: Bearer " + accessToken);
         return sendGetRequest(kakaoApiUrl, accessToken);
     }
 
-
     // HTTP GET 요청 공통 메서드
     private Map<String, Object> sendGetRequest(String url, String accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + accessToken.trim()); // Bearer 중복 제거
-
-        HttpEntity<Void> entity = new HttpEntity<>(headers);
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
-
-        System.out.println("Kakao API 응답: " + response.getBody());
-
-        return response.getBody();
-    }
-
-    // Google ID Token 검증 메서드
-    public Map<String, Object> verifyGoogleIdToken(String idToken) {
-        RestTemplate restTemplate = new RestTemplate();
-        String googleTokenInfoUrl = "https://oauth2.googleapis.com/tokeninfo?id_token=" + idToken;
-
         try {
-            ResponseEntity<Map> response = restTemplate.getForEntity(googleTokenInfoUrl, Map.class);
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken.trim());
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
             return response.getBody();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid Google ID Token: " + e.getMessage());
+            throw new IllegalArgumentException("Failed to fetch user info from Kakao: " + e.getMessage());
         }
     }
+
+    // Google ID Token 검증
+    public Map<String, Object> verifyGoogleIdToken(String idToken) {
+        try {
+            // Google 공개 키를 사용하여 ID Token 검증
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(),
+                    JacksonFactory.getDefaultInstance()
+            )
+                    .setAudience(Collections.singletonList("975498336283-bkjiua72fbhkdi0phtugk08sqqhaakff.apps.googleusercontent.com"))
+                    .setIssuer("https://accounts.google.com")
+                    .build();
+
+            // ID Token 검증 및 파싱
+            GoogleIdToken googleIdToken = verifier.verify(idToken);
+            if (googleIdToken != null) {
+                GoogleIdToken.Payload payload = googleIdToken.getPayload();
+
+                // 사용자 정보 추출
+                return Map.of(
+                        "email", payload.getEmail(),
+                        "email_verified", payload.getEmailVerified(),
+                        "sub", payload.getSubject(),
+                        "name", payload.get("name"),
+                        "picture", payload.get("picture"),
+                        "given_name", payload.get("given_name"),
+                        "family_name", payload.get("family_name")
+                );
+            } else {
+                throw new IllegalArgumentException("Invalid Google ID Token");
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error verifying Google ID Token: " + e.getMessage(), e);
+        }
+    }
+
 
 
     // 다른 소셜 제공자에서 사용자 정보 가져오기
@@ -133,6 +167,26 @@ public class SocialOAuthService {
         }
     }
 
+    public Map<String, Object> getNaverUserInfo(String accessToken) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String userInfoUrl = "https://openapi.naver.com/v1/nid/me";
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + accessToken);
+
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<Map> response = restTemplate.exchange(userInfoUrl, HttpMethod.GET, entity, Map.class);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return response.getBody();
+            } else {
+                throw new IllegalArgumentException("네이버 사용자 정보를 가져올 수 없습니다: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("네이버 사용자 정보 요청 실패: " + e.getMessage(), e);
+        }
+    }
 
 }
-
