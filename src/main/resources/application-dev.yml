@@ -52,3 +52,4 @@ cors:
 jwt:
   secret-key: ${JWT_SECRET_KEY}
   expiration: 86400000
+
