@@ -43,10 +43,20 @@ public class JwtTokenUtil {
                     .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                     .build()
                     .parseClaimsJws(token);
+//            System.out.println("토큰 유효성 검사 성공");
             return true;
-        } catch (JwtException e) {
-            // 로그 또는 예외 처리
-            return false;
+        } catch (ExpiredJwtException e) {
+            System.out.println("토큰 만료됨");
+        } catch (UnsupportedJwtException e) {
+            System.out.println("지원되지 않는 토큰 형식");
+        } catch (MalformedJwtException e) {
+            System.out.println("잘못된 토큰 형식");
+        } catch (SignatureException e) {
+            System.out.println("서명이 잘못됨");
+        } catch (IllegalArgumentException e) {
+            System.out.println("토큰이 비어 있거나 잘못된 값");
         }
+        return false;
     }
+
 }
