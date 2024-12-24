@@ -1,9 +1,9 @@
 package com.itdat.back.controller.card;
 
 import com.itdat.back.entity.auth.User;
-import com.itdat.back.entity.card.Card;
+import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.entity.card.Template;
-import com.itdat.back.service.card.CardService;
+import com.itdat.back.service.card.BusinessCardService;
 import com.itdat.back.service.card.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -23,7 +25,7 @@ import java.util.List;
 public class CardController {
 
     @Autowired
-    private CardService cardService;
+    private BusinessCardService businessCardService;
 
     @Autowired
     private TemplateService templateService;
@@ -32,11 +34,11 @@ public class CardController {
     private String uploadDir;
 
     // 유저 정보 가져오기
-    @GetMapping("/userinfo/{id}")
-    public ResponseEntity<?> userInfo(@PathVariable("id") int id) {
+    @GetMapping("/userinfo/{userId}")
+    public ResponseEntity<?> userInfo(@PathVariable("userId") String userId) {
 
         try {
-            User user = cardService.findByUserId(id);
+            User user = businessCardService.findByUserId(userId);
             if (user != null) {
                 return ResponseEntity.ok(user);
             }else {
@@ -62,59 +64,41 @@ public class CardController {
     }
 
 
-//    // 명함 저장
-//    @PostMapping("/save")
-//    public ResponseEntity<Card> createBusinessCard(
-//            @RequestPart("info") Card card,
-//            @RequestPart("logo") MultipartFile logoFile,
-//            @RequestParam("templateId") int templateId) throws IOException {
-//
-//        // 템플릿 가져오기
-//        Template template = templateService.getTemplateById(templateId);
-//
-//        // 로고 파일 저장
-//        String logoPath = "./uploads/" + logoFile.getOriginalFilename();
-//        logoFile.transferTo(Paths.get(logoPath));
-//
-//        // 명함 생성
-//        Card savedCard = cardService.createBusinessCard(card, template, logoPath);
-//
-//        return ResponseEntity.ok(savedCard);
-//    }
-//
-//
-//    // 명함 가져오기
-//    @GetMapping("/{id}")
-//    public ResponseEntity<?> getBusinessCard(@PathVariable int id) {
-//        try {
-//            Card card = cardService.findById(id);
-//            if (card != null) {
-//                return ResponseEntity.ok(card);
-//            }else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("존재하지 않는 명함");
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버에서 오류가 발생");
-//        }
-//    }
-
-    // 사용자 명함 저장
+    // 명함 저장
     @PostMapping("/save")
-    public ResponseEntity<Card> createBusinessCard(@RequestBody Card card) {
-        Card savedCard = cardService.createBusinessCard(card);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedCard);
+    public ResponseEntity<Map<String, Object>> saveBusinessCard(
+            @RequestPart("info") Map<String, String> userInfo,
+            @RequestPart("templateId") int templateId,
+            @RequestPart("logo") MultipartFile logo,
+            @RequestPart("userId") String userId) {
+
+        try {
+            // 로고 파일 저장
+            String logoUrl = businessCardService.saveLogoFile(logo);
+
+            // 명함 데이터 저장
+            BusinessCard businessCard = businessCardService.saveBusinessCard(userInfo, templateId, logoUrl, userId);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("cardId", businessCard.getCardId());
+            response.put("svgUrl", businessCard.getTemplate().getSvgUrl());
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("명함 저장 error", e.getMessage()));
+        }
     }
 
 
-    // 사용자 명함 불러오기
+
+    // 사용자 명함 가져오기
     @GetMapping("/{userId}")
-        public ResponseEntity<List<Card>> getBusinessCardsByUserId(@PathVariable String userId) {
-            List<Card> cards = cardService.getCardsByUserId(userId);
-            return ResponseEntity.ok(cards);
-        }
+    public List<BusinessCard> getBusinessCardsByUserId(@PathVariable String userId) {
+        return businessCardService.getBusinessCardsByUserId(userId);
+    }
 
 
-    // 템플릿 저장
+    // 새 템플릿 저장
     @PostMapping("/upload")
     public String uploadTemplate(@RequestParam("svgFile") MultipartFile file) throws IOException {
         // 파일 이름 생성

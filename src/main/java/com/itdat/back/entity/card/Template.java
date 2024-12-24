@@ -4,6 +4,13 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.Date;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Entity
 public class Template {
 
@@ -15,38 +22,8 @@ public class Template {
     @Column(name = "svg_url")
     private String svgUrl;
 
-
-    public int getTemplateId() {
-        return templateId;
-    }
-
-    public String getSvgUrl() {
-        return svgUrl;
-    }
-
-    public void setTemplateId(int templateId) {
-        this.templateId = templateId;
-    }
-
-    public Template() {
-    }
-
-    public void setSvgUrl(String svgUrl) {
-        this.svgUrl = svgUrl;
-    }
-
-    public Template(int templateId, String svgUrl) {
-        this.templateId = templateId;
-        this.svgUrl = svgUrl;
-    }
-
-    @Override
-    public String toString() {
-        return "Template{" +
-                "templateId=" + templateId +
-                ", svgUrl='" + svgUrl + '\'' +
-                '}';
-    }
-
+    @Column(nullable = false, updatable = false, name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt = new Date();
 
 }

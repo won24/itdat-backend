@@ -1,8 +1,11 @@
 package com.itdat.back.entity.card;
 
 
+import com.itdat.back.entity.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "business_card")
@@ -11,18 +14,19 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Card {
+public class BusinessCard {
 
     @Id
     @Column(name = "card_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int cardId;
 
-    @Column(nullable = false, name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private String userId;
 
-    @Column(nullable = false, name = "template_id")
-    private String templateId;
+    @ManyToOne
+    @JoinColumn(name = "template_id", nullable = false)
+    private Template template;
 
     @Column(nullable = false, name = "user_name")
     private String userName;
@@ -54,7 +58,8 @@ public class Card {
     @Column(name = "logo_url")
     private String logoUrl;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false, name = "created_at")
+    private Date createdAt = new Date();
 
-    public Card(Card cardDTO, Template template) {
-    }
 }
