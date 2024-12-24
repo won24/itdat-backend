@@ -56,15 +56,15 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));
+        configuration.setExposedHeaders(List.of("Authorization", "Cross-Origin-Opener-Policy", "Cross-Origin-Embedder-Policy"));
         configuration.setAllowCredentials(true);
-        configuration.addExposedHeader("Cross-Origin-Opener-Policy");
-        configuration.addExposedHeader("Cross-Origin-Embedder-Policy");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 
     @Bean
     public OncePerRequestFilter cspFilter() {
@@ -74,7 +74,8 @@ public class SecurityConfig {
                     throws ServletException, IOException {
                 response.setHeader("Content-Security-Policy",
                         "script-src 'self' https://apis.google.com https://accounts.google.com https://developers.kakao.com 'unsafe-inline'; " +
-                                "frame-src 'self' https://accounts.google.com https://apis.google.com https://developers.kakao.com https://nid.naver.com;");
+                                "frame-src 'self' https://accounts.google.com https://apis.google.com https://developers.kakao.com https://nid.naver.com;" +
+                                "connect-src 'self' https://oauth2.googleapis.com");
                 response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
                 response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
                 filterChain.doFilter(request, response);

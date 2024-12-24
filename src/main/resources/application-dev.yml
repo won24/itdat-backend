@@ -9,11 +9,11 @@ spring:
 
   naver:
     works:
-      client-id: RFqdC7PF7PVsvVnoN1Yy
-      client-secret: uOtFkIpZS6
-      domain-id: 300183791
-      base-url: https://apis.worksmobile.com
-      redirect-url: http://localhost:3000/callback
+      client-id: ${NAVER_WORKS_CLIENT_ID}
+      client-secret: ${NAVER_WORKS_CLIENT_SECRET}
+      domain-id: ${NAVER_WORKS_DOMAIN_ID}
+      base-url: ${NAVER_WORKS_BASE_URL}
+      redirect-url: ${NAVER_WORKS_REDIRECT_URL}
 
 
 #  mail:
@@ -29,10 +29,10 @@ spring:
 #            enable: true
 
   mail:
-    host: smtp.worksmobile.com
-    port: 587
-    username: ww.24575@www.itdat.store
-    password: NZVvL9wTvC9A
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     protocol: smtp
     properties:
       mail.smtp.auth: true
