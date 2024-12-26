@@ -49,9 +49,6 @@ public class BusinessCard {
     @Column(name = "logo_url")
     private String logoUrl;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
     @ManyToOne
     @JoinColumn(name = "template_id", insertable = false, updatable = false)
     private Template template;
@@ -60,7 +57,6 @@ public class BusinessCard {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    // Getters and Setters
 
     public Integer getCardId() {
         return cardId;
@@ -164,14 +160,6 @@ public class BusinessCard {
 
     public void setLogoUrl(String logoUrl) {
         this.logoUrl = logoUrl;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Template getTemplate() {
