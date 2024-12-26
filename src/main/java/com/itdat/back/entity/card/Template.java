@@ -2,15 +2,9 @@ package com.itdat.back.entity.card;
 
 import jakarta.persistence.*;
 
-import lombok.*;
-
 import java.util.Date;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
+@Table(name = "template")
 @Entity
 public class Template {
 
@@ -19,11 +13,31 @@ public class Template {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int templateId;
 
-    @Column(name = "svg_url")
+    @Column(name = "svg_url",  nullable = false)
     private String svgUrl;
 
-    @Column(nullable = false, updatable = false, name = "created_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date();
 
+    public Template() {
+    }
+
+    public Template(int templateId, String svgUrl) {
+        this.templateId = templateId;
+        this.svgUrl = svgUrl;
+    }
+
+    public int getTemplateId() {
+        return templateId;
+    }
+
+    public String getSvgUrl() {
+        return svgUrl;
+    }
+
+    public void setTemplateId(int templateId) {
+        this.templateId = templateId;
+    }
+
+    public void setSvgUrl(String svgUrl) {
+        this.svgUrl = svgUrl;
+    }
 }

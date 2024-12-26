@@ -25,7 +25,7 @@ public class TemplateService {
 
     public Template getTemplateById(int Id){
 
-        Template template = templateRepository.findById(Id);
+        Template template = templateRepository.findByTemplateId(Id);
         if(Objects.isNull(template)){
             return null;
         }

@@ -22,6 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/card")
+@CrossOrigin
 public class CardController {
 
     @Autowired
@@ -79,9 +80,9 @@ public class CardController {
             // 명함 데이터 저장
             BusinessCard businessCard = businessCardService.saveBusinessCard(userInfo, templateId, logoUrl, userId);
 
+            String svgUrl = businessCard.getTemplate() != null ? businessCard.getTemplate().getSvgUrl() : "템플릿 없음";
             Map<String, Object> response = new HashMap<>();
-            response.put("cardId", businessCard.getCardId());
-            response.put("svgUrl", businessCard.getTemplate().getSvgUrl());
+            response.put("svgUrl", svgUrl);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
