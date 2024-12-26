@@ -11,7 +11,6 @@ public class BusinessCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "card_id")
     private Integer cardId;
 
     @Column(name = "user_id", nullable = false)
