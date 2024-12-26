@@ -239,6 +239,7 @@ public class SocialAuthController {
             if (existingUser != null) {
                 // 로그인 성공: JWT 생성 후 메인 페이지로 리다이렉트
                 String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+//                System.out.println("jwtToken : " + jwtToken);
                 response.sendRedirect("http://localhost:3000?token=" + jwtToken);
             } else {
                 // 회원가입이 필요한 사용자: Register 페이지로 리다이렉트
