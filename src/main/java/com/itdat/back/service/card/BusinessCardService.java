@@ -61,12 +61,14 @@ public class BusinessCardService {
     public BusinessCard saveBusinessCard(Map<String, String> userInfo, int templateId, String logoUrl, String userId) {
 
         // 템플릿 ID로 템플릿 조회
-        Template template = templateRepository.findById(templateId);
+        Template template = templateRepository.findByTemplateId(templateId);
 
+        // 유저 조회
+        User user = userRepository.findByUserId(userId);
 
         // 명함 엔티티 생성
         BusinessCard businessCard = new BusinessCard();
-        businessCard.setUserId(userId);
+        businessCard.setUser(user);
         businessCard.setTemplate(template);
         businessCard.setUserName(userInfo.get("name"));
         businessCard.setPhone(userInfo.get("phone"));
