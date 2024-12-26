@@ -87,12 +87,8 @@ logging:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY} # 환경변수 등록 필요
-<<<<<<< HEAD
   expiration: 86400000
 
 file:
   upload-dir: "C:\\uploads"  # Windows 경로에서 백슬래시 두 개 사용
-
-=======
   expiration: 86400000
->>>>>>> 244d94a02667ff56d4dd655ebf0d4e9af9b47ac3
