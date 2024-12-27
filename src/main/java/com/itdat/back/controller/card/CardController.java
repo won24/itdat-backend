@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -65,31 +66,54 @@ public class CardController {
     }
 
 
-    // 명함 저장
-    @PostMapping("/save")
-    public ResponseEntity<Map<String, Object>> saveBusinessCard(
-            @RequestPart("info") Map<String, String> userInfo,
-            @RequestPart("templateId") int templateId,
-            @RequestPart("logo") MultipartFile logo,
-            @RequestPart("userId") String userId) {
+//    // 명함 저장
+//    @PostMapping("/save")
+//    public ResponseEntity<Map<String, Object>> saveBusinessCard(
+//            @RequestPart("info") Map<String, String> userInfo,
+//            @RequestPart("templateId") int templateId,
+//            @RequestPart("logo") MultipartFile logo,
+//            @RequestPart("userId") String userId) {
+//
+//        try {
+//            // 로고 파일 저장
+//            String logoUrl = businessCardService.saveLogoFile(logo);
+//
+//            // 명함 데이터 저장
+//            BusinessCard businessCard = businessCardService.saveBusinessCard(userInfo, templateId, logoUrl, userId);
+//
+//            String svgUrl = businessCard.getTemplate() != null ? businessCard.getTemplate().getSvgUrl() : "템플릿 없음";
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("svgUrl", svgUrl);
+//            return ResponseEntity.ok(response);
+//
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("명함 저장 error", e.getMessage()));
+//        }
+//    }
 
-        try {
-            // 로고 파일 저장
-            String logoUrl = businessCardService.saveLogoFile(logo);
+    @GetMapping("/save")
+    public ResponseEntity<Map<String, String>> saveBusinessCard(
+                @RequestPart("info") Map<String, String> userInfo,
+                @RequestPart("templateId") int templateId,
+                @RequestPart("logo") MultipartFile logo,
+                @RequestPart("userId") String userId
+    ) throws IOException {
 
-            // 명함 데이터 저장
-            BusinessCard businessCard = businessCardService.saveBusinessCard(userInfo, templateId, logoUrl, userId);
+        // 1. 템플릿 파일 읽기
+        String svgTemplatePath = "src/main/resources/templates/business_card_template.svg";
+        String svgTemplate = new String(Files.readAllBytes(Paths.get(svgTemplatePath)));
 
-            String svgUrl = businessCard.getTemplate() != null ? businessCard.getTemplate().getSvgUrl() : "템플릿 없음";
-            Map<String, Object> response = new HashMap<>();
-            response.put("svgUrl", svgUrl);
-            return ResponseEntity.ok(response);
+        // 2. 플레이스홀더 대체
+        String svgContent = svgTemplate
+                .replace("{name}", userInfo.get("name"))
+                .replace("{phone}", userInfo.get("phone"))
+                .replace("{email}", userInfo.get("email"));
 
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("명함 저장 error", e.getMessage()));
-        }
+        // 3. SVG 문자열 JSON으로 반환
+        Map<String, String> response = new HashMap<>();
+        response.put("svg", svgContent);
+        return ResponseEntity.ok(response);
     }
-
 
 
     // 사용자 명함 가져오기
