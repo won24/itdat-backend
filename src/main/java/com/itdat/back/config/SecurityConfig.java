@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/check-availability", "/card/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/check-availability", "/card/**", "/templates/**").permitAll()
                         .requestMatchers("/api/oauth/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
@@ -57,7 +57,8 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedOrigins(List.of("http://192.168.0.31:3000"));
+        configuration.setAllowedOrigins(List.of("http://192.168.0.31:3000")); // 정원
+        configuration.setAllowedOrigins(List.of("http://192.168.0.37:3000")); // 원
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));
         configuration.setExposedHeaders(List.of("Authorization", "Cross-Origin-Opener-Policy", "Cross-Origin-Embedder-Policy"));

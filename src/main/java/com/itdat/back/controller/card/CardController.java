@@ -35,6 +35,7 @@ public class CardController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+
     // 유저 정보 가져오기
     @GetMapping("/userinfo/{userId}")
     public ResponseEntity<?> userInfo(@PathVariable("userId") String userId) {
@@ -54,15 +55,10 @@ public class CardController {
 
     // 템플릿 가져오기
     @GetMapping("/templates")
-    public ResponseEntity<?> getAllTemplates() {
-
+    public ResponseEntity<List<Template>> getTemplates() {
         List<Template> templates = templateService.getAllTemplates();
-
-        if (!templates.isEmpty()) {
-            System.out.println("템플릿" + templates);
-            return ResponseEntity.ok(templates);
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
+        System.out.println("모든 템플릿 가져오기 api 호출");
+        return ResponseEntity.ok(templates);
     }
 
 
@@ -100,7 +96,7 @@ public class CardController {
     ) throws IOException {
 
         // 1. 템플릿 파일 읽기
-        String svgTemplatePath = "src/main/resources/templates/business_card_template.svg";
+        String svgTemplatePath = "src/main/resources/templates/"+templateId;
         String svgTemplate = new String(Files.readAllBytes(Paths.get(svgTemplatePath)));
 
         // 2. 플레이스홀더 대체
