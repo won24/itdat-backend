@@ -12,12 +12,15 @@ spring:
     import: "classpath:application-db.yml"
   profiles:
     active: dev  # 기본 프로파일을 개발 환경(dev)으로 설정
-
+  web:
+    resources:
+      static-locations: classpath:/templates/
   jpa:
     hibernate:
       ddl-auto: update
 
   security:
+    ignored: /templates/** # Spring Security가 이 경로를 무시하도록 설정
     oauth2:
       client:
         registration:
