@@ -1,8 +1,11 @@
 package com.itdat.back.service.admin;
 
+import com.itdat.back.entity.admin.ReportUser;
 import com.itdat.back.entity.admin.UnderManagement;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserStatus;
+import com.itdat.back.model.dto.ReportUserDTO;
+import com.itdat.back.repository.admin.ReportUserRepository;
 import com.itdat.back.repository.admin.UnderManagementRepository;
 import com.itdat.back.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class UnderManagementService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ReportUserRepository reportUserRepository;
+
     public List<User> reportedUserListDetail() {
         System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
         List<User> reportedUserList = new ArrayList<>();
@@ -38,18 +44,40 @@ public class UnderManagementService {
 
     }
 
-//    public List<Object> reportedUserListBrief() {
-//    }
+    public List<Object> getReportedUsers() {
+        System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
 
+        List<UnderManagement> underManagements = underManagementRepository.findAllByUserStatusNotActive();
+        return new ArrayList<>(underManagements); // Object 형태로 변환
+    }
 
-//    public UnderManagement reportedUserListBrief(String userId) {
-//        System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
-//
-//        UnderManagement reportedUser= underManagementRepository.findByuserId(userId);
-//        if (reportedUser == null) {
-//            System.out.println("신고된 유저가 없습니다.");
-//            return reportedUser;
-//        }
-//        return reportedUser;
+    public boolean reportUser(ReportUserDTO reportUserDTO) {
+        System.out.println("-------------------------------- 사용자가 특정 유저를 신고하는 서비스 --------------------------------");
+
+        ReportUser reportUser = new ReportUser();
+
+        reportUser.setReportedUserId(reportUserDTO.getReportedUserId());
+        reportUser.setDescription(reportUserDTO.getDescription());
+        reportUser.setUserId(reportUserDTO.getUserId());
+        reportUser.setReportDateAt(reportUserDTO.getReportDateAt());
+
+        ReportUser insertedReportUser = reportUserRepository.save(reportUser);
+
+        if (insertedReportUser == null) {
+            return false;
+        }
+        return true;
+
+    }
+
+    public List<ReportUser> bringReportUserList() {
+        System.out.println("-------------------------------- 사용자들의 신고 기록을 가져오는 서비스 --------------------------------");
+        List<ReportUser> reportUserList = reportUserRepository.findAll();
+        return reportUserList;
+
+    }
+
+//    public List<User> getAdminUsers() {
+//        return userRepository.findByRole(Role.ADMIN);
 //    }
 }
