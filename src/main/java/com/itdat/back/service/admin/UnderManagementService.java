@@ -34,7 +34,7 @@ public class UnderManagementService {
         List<User> reportedUserList = new ArrayList<>();
 
         // reportedUserList = userRepository.findByStatusIn(List.of(REPORTED, BANNED)); 두 개 이상을 찾을 땐 findBy~In
-        reportedUserList = userRepository.findByStatusNot(ACTIVE); // 해당하는 매개 변수를 제외하고 찾을 땐 findBy~not
+        reportedUserList = userRepository.findByStatusNot(BANNED); // 해당하는 매개 변수를 제외하고 찾을 땐 findBy~not // 추후 BANNED 수정 예정
         if (reportedUserList.isEmpty()) {
             System.out.println("신고된 유저 List가 비어있습니다.");
             return reportedUserList;
@@ -47,7 +47,7 @@ public class UnderManagementService {
     public List<Object> getReportedUsers() {
         System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
 
-        List<UnderManagement> underManagements = underManagementRepository.findAllByUserStatusNotActive();
+        List<Object> underManagements = underManagementRepository.findAllByUserStatusNotBanned();
         return new ArrayList<>(underManagements); // Object 형태로 변환
     }
 

@@ -39,7 +39,7 @@ public class UnderManagementController {
             return ResponseEntity.ok(reportedUserList);
     }
 
-    @GetMapping("/bring-reported-user-list-brief")
+    @GetMapping("/bring-reported-user-list")
     public ResponseEntity<Object> getReportedUserListBrief() {
         System.out.println("-------------------------------- 신고된 유저의 간략한 정보 리스트를 가져오는 컨트롤러 --------------------------------");
 
