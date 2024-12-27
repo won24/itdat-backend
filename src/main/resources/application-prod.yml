@@ -1,5 +1,5 @@
 server:
-  port: 8001
+  port: 8082
   ssl:
     enabled: true
     key-store: classpath:keystore.p12

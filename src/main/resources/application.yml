@@ -1,11 +1,11 @@
 server:
   ssl:
     enabled: false
-  port: 8001
+  port: 8082
   address: 0.0.0.0
 
 app:
-  base-url: http://112.221.66.174:8001
+  base-url: http://10.0.2.2:8082
 
 spring:
   config:
