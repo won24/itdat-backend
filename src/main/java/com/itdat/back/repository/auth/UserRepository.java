@@ -1,5 +1,6 @@
 package com.itdat.back.repository.auth;
 
+import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
