@@ -1,5 +1,6 @@
 package com.itdat.back.service.auth;
 
+import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.SocialLogin;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.repository.auth.SocialLoginRepository;
@@ -10,10 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -141,4 +139,5 @@ public class UserService {
             return expiryTime;
         }
     }
+
 }
