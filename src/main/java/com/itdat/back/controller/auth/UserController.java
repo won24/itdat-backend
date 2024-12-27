@@ -32,7 +32,8 @@ import java.util.Optional;
  * */
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin
 public class UserController {
     @Autowired
     private UserService userService;
