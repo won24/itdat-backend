@@ -21,6 +21,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/oauth")
+@CrossOrigin
 public class SocialAuthController {
 
     @Autowired
