@@ -65,9 +65,11 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-
+        System.out.println("email: " + email);
+        System.out.println("password: " + password);
         try {
             String token = userService.login(email, password);
+            System.out.println(token);
             return ResponseEntity.ok(Map.of("token", token));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));

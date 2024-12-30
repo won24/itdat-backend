@@ -1,9 +1,7 @@
 package com.itdat.back.entity.card;
 
-import com.itdat.back.entity.auth.User;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "business_card")
@@ -15,9 +13,6 @@ public class BusinessCard {
 
     @Column(name = "user_id", nullable = false)
     private String userId;
-
-    @Column(name = "template_id", nullable = false)
-    private Integer templateId;
 
     @Column(name = "user_name", nullable = false)
     private String userName;
@@ -46,17 +41,30 @@ public class BusinessCard {
     @Column(name = "position")
     private String position;
 
-    @Column(name = "logo_url")
-    private String logoUrl;
+    @Column(name = "app_template")
+    private String appTemplate;
 
-    @ManyToOne
-    @JoinColumn(name = "template_id", insertable = false, updatable = false)
-    private Template template;
+    @Column(name = "web_template")
+    private String webTemplate;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
+    public BusinessCard() {
+    }
 
+    public BusinessCard(Integer cardId, String userId, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate) {
+        this.cardId = cardId;
+        this.userId = userId;
+        this.userName = userName;
+        this.phone = phone;
+        this.email = email;
+        this.companyName = companyName;
+        this.companyNumber = companyNumber;
+        this.companyAddress = companyAddress;
+        this.companyFax = companyFax;
+        this.department = department;
+        this.position = position;
+        this.appTemplate = appTemplate;
+        this.webTemplate = webTemplate;
+    }
 
     public Integer getCardId() {
         return cardId;
@@ -72,14 +80,6 @@ public class BusinessCard {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public Integer getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(Integer templateId) {
-        this.templateId = templateId;
     }
 
     public String getUserName() {
@@ -154,27 +154,19 @@ public class BusinessCard {
         this.position = position;
     }
 
-    public String getLogoUrl() {
-        return logoUrl;
+    public String getAppTemplate() {
+        return appTemplate;
     }
 
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
+    public void setAppTemplate(String appTemplate) {
+        this.appTemplate = appTemplate;
     }
 
-    public Template getTemplate() {
-        return template;
+    public String getWebTemplate() {
+        return webTemplate;
     }
 
-    public void setTemplate(Template template) {
-        this.template = template;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setWebTemplate(String webTemplate) {
+        this.webTemplate = webTemplate;
     }
 }
