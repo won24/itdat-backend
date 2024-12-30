@@ -13,19 +13,11 @@ public class Template {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int templateId;
 
-    @Column(name = "svg_url",  nullable = false)
-    private String svgUrl;
-
-    @Column(name = "thumbnail_url")
-    private String thumbnailUrl;
-
     public Template() {
     }
 
-    public Template(int templateId, String svgUrl, String thumbnailUrl) {
+    public Template(int templateId) {
         this.templateId = templateId;
-        this.svgUrl = svgUrl;
-        this.thumbnailUrl = thumbnailUrl;
     }
 
     public int getTemplateId() {
@@ -36,28 +28,12 @@ public class Template {
         this.templateId = templateId;
     }
 
-    public String getSvgUrl() {
-        return svgUrl;
-    }
 
-    public void setSvgUrl(String svgUrl) {
-        this.svgUrl = svgUrl;
-    }
-
-    public String getThumbnailUrl() {
-        return thumbnailUrl;
-    }
-
-    public void setThumbnailUrl(String thumbnailUrl) {
-        this.thumbnailUrl = thumbnailUrl;
-    }
 
     @Override
     public String toString() {
         return "Template{" +
                 "templateId=" + templateId +
-                ", svgUrl='" + svgUrl + '\'' +
-                ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 '}';
     }
 }

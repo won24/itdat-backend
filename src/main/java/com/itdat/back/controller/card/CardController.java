@@ -60,9 +60,9 @@ public class CardController {
 
 
     // 앱 - 명함 생성
-    @PostMapping("/save/{userId}")
-    public ResponseEntity<BusinessCard> saveBusinessCard(@PathVariable String userId, @RequestBody BusinessCard card){
-        return ResponseEntity.ok(businessCardService.saveBusinessCard(userId, card));
+    @PostMapping("/save")
+    public ResponseEntity<BusinessCard> saveBusinessCard(@RequestBody BusinessCard card){
+        return ResponseEntity.ok(businessCardService.saveBusinessCard(card));
     }
 
 
@@ -73,9 +73,6 @@ public class CardController {
         System.out.println("모든 템플릿 가져오기 api 호출");
         return ResponseEntity.ok(templates);
     }
-
-
-
 
 
     // 새 템플릿 저장
