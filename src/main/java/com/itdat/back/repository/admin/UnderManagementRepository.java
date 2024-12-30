@@ -15,8 +15,9 @@ public interface UnderManagementRepository extends JpaRepository<UnderManagement
 
     @Query("SELECT um FROM UnderManagement um " +
             "JOIN um.user u " +
-            "WHERE u.status <> 'BANNED'") // 후에 'ACTIVE' 로 변경해야 함. 지금은 테스트를 위해 BANNED를 제외한 값들을 출력.. (DB에 값이 없어서링..)
-    List<Object> findAllByUserStatusNotBanned();
+            "WHERE u.status <> 'ACTIVE'")
+    List<Object> findAllByUserStatusNotACTIVE();
 
 
+    UnderManagement findByUserId(User user);
 }

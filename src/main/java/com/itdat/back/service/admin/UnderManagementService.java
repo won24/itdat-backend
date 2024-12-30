@@ -2,6 +2,7 @@ package com.itdat.back.service.admin;
 
 import com.itdat.back.entity.admin.ReportUser;
 import com.itdat.back.entity.admin.UnderManagement;
+import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserStatus;
 import com.itdat.back.model.dto.ReportUserDTO;
@@ -29,31 +30,30 @@ public class UnderManagementService {
     @Autowired
     private ReportUserRepository reportUserRepository;
 
-    public List<User> reportedUserListDetail() {
-        System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
-        List<User> reportedUserList = new ArrayList<>();
+//    public List<User> reportedUserListDetail() {
+//        System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
+//        List<User> reportedUserList = new ArrayList<>();
+//
+//        // reportedUserList = userRepository.findByStatusIn(List.of(REPORTED, BANNED)); 두 개 이상을 찾을 땐 findBy~In
+//        reportedUserList = userRepository.findByStatusNot(ACTIVE); // 해당하는 매개 변수를 제외하고 찾을 땐 findBy~not
+//        if (reportedUserList.isEmpty()) {
+//            System.out.println("신고된 유저 List가 비어있습니다.");
+//            return reportedUserList;
+//        }
+//        return reportedUserList;
+//
+//
+//    }
 
-        // reportedUserList = userRepository.findByStatusIn(List.of(REPORTED, BANNED)); 두 개 이상을 찾을 땐 findBy~In
-        reportedUserList = userRepository.findByStatusNot(BANNED); // 해당하는 매개 변수를 제외하고 찾을 땐 findBy~not // 추후 BANNED 수정 예정
-        if (reportedUserList.isEmpty()) {
-            System.out.println("신고된 유저 List가 비어있습니다.");
-            return reportedUserList;
-        }
-        return reportedUserList;
-
-
-    }
-
+    /** 신고된 유저의 정보를 가져오는 서비스 */
     public List<Object> getReportedUsers() {
-        System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 서비스 --------------------------------");
-
-        List<Object> underManagements = underManagementRepository.findAllByUserStatusNotBanned();
-        return new ArrayList<>(underManagements); // Object 형태로 변환
+        List<Object> underManagements = underManagementRepository.findAllByUserStatusNotACTIVE();
+        return underManagements; // Object 형태로 변환
+        // return new ArrayList<>(underManagements); // underManagements를 새로 하나 더 만드는 행위.. 그럴 필요가 없다..
     }
 
+    /** 사용자가 특정 유저를 신고하는 서비스 */
     public boolean reportUser(ReportUserDTO reportUserDTO) {
-        System.out.println("-------------------------------- 사용자가 특정 유저를 신고하는 서비스 --------------------------------");
-
         ReportUser reportUser = new ReportUser();
 
         reportUser.setReportedUserId(reportUserDTO.getReportedUserId());
@@ -67,17 +67,33 @@ public class UnderManagementService {
             return false;
         }
         return true;
-
     }
 
+    /** 사용자들의 신고 기록을 가져오는 서비스 */
     public List<ReportUser> bringReportUserList() {
-        System.out.println("-------------------------------- 사용자들의 신고 기록을 가져오는 서비스 --------------------------------");
         List<ReportUser> reportUserList = reportUserRepository.findAll();
         return reportUserList;
 
     }
 
-//    public List<User> getAdminUsers() {
-//        return userRepository.findByRole(Role.ADMIN);
+    public List<User> getAdminUsers() {
+        return userRepository.findByRole(Role.ADMIN);
+    }
+
+    public UnderManagement findByUserId(String userId) {
+      /*  UnderManagement detailInfo = underManagementRepository.findByUserId(userId);
+        System.out.println("detailInfo = " + detailInfo);
+        return detailInfo;*/
+        System.out.println("userId = " + userId);
+        User user = userRepository.findByUserId(userId);
+
+
+        return null;
+    }
+
+//    public Object findByUserId(String userId) {
+//
+//        UnderManagement detailInfo = underManagementRepository.findByUserId(userId);
+//        return DetailInfo;
 //    }
 }
