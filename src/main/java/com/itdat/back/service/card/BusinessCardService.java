@@ -41,6 +41,13 @@ public class BusinessCardService {
         return user;
     }
 
+    // 앱 - 명함 생성 후 저장
+    public BusinessCard saveBusinessCard(String userId, BusinessCard card) {
+        card.setUserId(userId);
+        return businessCardRepository.save(card);
+    }
+
+
     // 로고 저장
     public String saveLogoFile(MultipartFile logo) throws IOException {
         // 파일 저장 경로 생성
@@ -57,33 +64,6 @@ public class BusinessCardService {
     }
 
 
-    // 명함 생성 후 저장
-    public BusinessCard saveBusinessCard(Map<String, String> userInfo, int templateId, String logoUrl, String userId) {
-
-        // 템플릿 ID로 템플릿 조회
-        Template template = templateRepository.findByTemplateId(templateId);
-
-        // 유저 조회
-        User user = userRepository.findByUserId(userId);
-
-        // 명함 엔티티 생성
-        BusinessCard businessCard = new BusinessCard();
-        businessCard.setUser(user);
-        businessCard.setTemplate(template);
-        businessCard.setUserName(userInfo.get("name"));
-        businessCard.setPhone(userInfo.get("phone"));
-        businessCard.setEmail(userInfo.get("email"));
-        businessCard.setCompanyName(userInfo.get("companyName"));
-        businessCard.setCompanyNumber(userInfo.get("companyNumber"));
-        businessCard.setCompanyAddress(userInfo.get("companyAddress"));
-        businessCard.setCompanyFax(userInfo.get("companyFax"));
-        businessCard.setDepartment(userInfo.get("department"));
-        businessCard.setPosition(userInfo.get("position"));
-        businessCard.setLogoUrl(logoUrl);
-
-        // 데이터베이스에 저장
-        return businessCardRepository.save(businessCard);
-    }
 
 
     public List<BusinessCard> getBusinessCardsByUserId(String userId) {
