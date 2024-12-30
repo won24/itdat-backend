@@ -16,10 +16,7 @@ public class TemplateService {
 
 
     public List<Template> getAllTemplates() {
-        List<Template> templates = templateRepository.findAll();
-        return templates.stream()
-                .map(template -> new Template(template.getTemplateId(), template.getSvgUrl()))
-                .collect(Collectors.toList());
+        return templateRepository.findAll();
     }
 
 

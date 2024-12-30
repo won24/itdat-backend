@@ -35,6 +35,7 @@ public class CardController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+
     // 유저 정보 가져오기
     @GetMapping("/userinfo/{userId}")
     public ResponseEntity<?> userInfo(@PathVariable("userId") String userId) {
@@ -51,76 +52,30 @@ public class CardController {
         }
     }
 
-
-    // 템플릿 가져오기
-    @GetMapping("/templates")
-    public ResponseEntity<?> getAllTemplates() {
-
-        List<Template> templates = templateService.getAllTemplates();
-
-        if (!templates.isEmpty()) {
-            System.out.println("템플릿" + templates);
-            return ResponseEntity.ok(templates);
-        }
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류 발생");
-    }
-
-
-//    // 명함 저장
-//    @PostMapping("/save")
-//    public ResponseEntity<Map<String, Object>> saveBusinessCard(
-//            @RequestPart("info") Map<String, String> userInfo,
-//            @RequestPart("templateId") int templateId,
-//            @RequestPart("logo") MultipartFile logo,
-//            @RequestPart("userId") String userId) {
-//
-//        try {
-//            // 로고 파일 저장
-//            String logoUrl = businessCardService.saveLogoFile(logo);
-//
-//            // 명함 데이터 저장
-//            BusinessCard businessCard = businessCardService.saveBusinessCard(userInfo, templateId, logoUrl, userId);
-//
-//            String svgUrl = businessCard.getTemplate() != null ? businessCard.getTemplate().getSvgUrl() : "템플릿 없음";
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("svgUrl", svgUrl);
-//            return ResponseEntity.ok(response);
-//
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("명함 저장 error", e.getMessage()));
-//        }
-//    }
-
-    @GetMapping("/save")
-    public ResponseEntity<Map<String, String>> saveBusinessCard(
-                @RequestPart("info") Map<String, String> userInfo,
-                @RequestPart("templateId") int templateId,
-                @RequestPart("logo") MultipartFile logo,
-                @RequestPart("userId") String userId
-    ) throws IOException {
-
-        // 1. 템플릿 파일 읽기
-        String svgTemplatePath = "src/main/resources/templates/business_card_template.svg";
-        String svgTemplate = new String(Files.readAllBytes(Paths.get(svgTemplatePath)));
-
-        // 2. 플레이스홀더 대체
-        String svgContent = svgTemplate
-                .replace("{name}", userInfo.get("name"))
-                .replace("{phone}", userInfo.get("phone"))
-                .replace("{email}", userInfo.get("email"));
-
-        // 3. SVG 문자열 JSON으로 반환
-        Map<String, String> response = new HashMap<>();
-        response.put("svg", svgContent);
-        return ResponseEntity.ok(response);
-    }
-
-
     // 사용자 명함 가져오기
     @GetMapping("/{userId}")
     public List<BusinessCard> getBusinessCardsByUserId(@PathVariable String userId) {
         return businessCardService.getBusinessCardsByUserId(userId);
     }
+
+
+    // 앱 - 명함 생성
+    @PostMapping("/save/{userId}")
+    public ResponseEntity<BusinessCard> saveBusinessCard(@PathVariable String userId, @RequestBody BusinessCard card){
+        return ResponseEntity.ok(businessCardService.saveBusinessCard(userId, card));
+    }
+
+
+    // 템플릿 가져오기
+    @GetMapping("/templates")
+    public ResponseEntity<List<Template>> getTemplates() {
+        List<Template> templates = templateService.getAllTemplates();
+        System.out.println("모든 템플릿 가져오기 api 호출");
+        return ResponseEntity.ok(templates);
+    }
+
+
+
 
 
     // 새 템플릿 저장

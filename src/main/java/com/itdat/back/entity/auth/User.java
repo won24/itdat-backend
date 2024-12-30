@@ -55,6 +55,10 @@ import java.time.LocalDateTime;
         private UserType userType;
 
         @Enumerated(EnumType.STRING)
+        @Column(nullable = false)
+        private Role role = Role.USER;
+
+        @Enumerated(EnumType.STRING)
         private UserStatus status = UserStatus.ACTIVE;
 
         @Enumerated(EnumType.STRING)
@@ -70,7 +74,7 @@ import java.time.LocalDateTime;
         public User() {
         }
 
-        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail, String companyPhone, UserState userState, UserType userType, UserStatus status, ProviderType providerType, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        public User(int id, String userId, String password, String userName, String company, String userPhone, String userEmail, LocalDate userBirth, String companyRank, String companyDept, String companyFax, String companyAddr, String companyAddrDetail, String companyPhone, UserState userState, UserType userType, Role role, UserStatus status, ProviderType providerType, LocalDateTime createdAt, LocalDateTime updatedAt) {
             this.id = id;
             this.userId = userId;
             this.password = password;
@@ -87,6 +91,7 @@ import java.time.LocalDateTime;
             this.companyPhone = companyPhone;
             this.userState = userState;
             this.userType = userType;
+            this.role = role;
             this.status = status;
             this.providerType = providerType;
             this.createdAt = createdAt;
@@ -221,6 +226,14 @@ import java.time.LocalDateTime;
             this.userType = userType;
         }
 
+        public Role getRole() {
+            return role;
+        }
+
+        public void setRole(Role role) {
+            this.role = role;
+        }
+
         public ProviderType getProviderType() {
             return providerType;
         }
@@ -272,6 +285,7 @@ import java.time.LocalDateTime;
                     ", companyPhone='" + companyPhone + '\'' +
                     ", userState=" + userState +
                     ", userType=" + userType +
+                    ", role=" + role +
                     ", status=" + status +
                     ", providerType=" + providerType +
                     ", createdAt=" + createdAt +

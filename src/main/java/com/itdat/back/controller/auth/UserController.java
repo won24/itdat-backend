@@ -1,6 +1,7 @@
 package com.itdat.back.controller.auth;
 
 import com.itdat.back.entity.auth.ProviderType;
+import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
 
 import com.itdat.back.entity.auth.UserType;
@@ -103,7 +104,10 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
-//        System.out.println("받은 유저 데이터: " + user.toString());
+        System.out.println("받은 유저 데이터: " + user.toString());
+        if (user.getRole() == null) {
+            user.setRole(Role.USER);
+        }
         User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok(registeredUser);
     }
@@ -139,6 +143,10 @@ public class UserController {
     public ResponseEntity<Map<String, Boolean>> checkAvailability(
             @RequestParam("type") String type,
             @RequestParam("value") String value) {
+
+        System.out.println("받은 유저 type: " + type);
+        System.out.println("받은 유저 value: " + value);
+
         boolean isAvailable = false;
 
         if ("userId".equals(type)) {
