@@ -18,6 +18,11 @@ public interface UnderManagementRepository extends JpaRepository<UnderManagement
             "WHERE u.status <> 'ACTIVE'")
     List<Object> findAllByUserStatusNotACTIVE();
 
+    UnderManagement findByUserId(int reportedUserId);
 
-    UnderManagement findByUserId(User user);
+    // UnderManagement findByReportedUserId(String reportedUserId);
+
+    // UnderManagement findByUserId(User user);
+
+    // UnderManagement findByReportedUserId(String reportedUserId);
 }

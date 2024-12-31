@@ -80,20 +80,12 @@ public class UnderManagementService {
         return userRepository.findByRole(Role.ADMIN);
     }
 
-    public UnderManagement findByUserId(String userId) {
-      /*  UnderManagement detailInfo = underManagementRepository.findByUserId(userId);
-        System.out.println("detailInfo = " + detailInfo);
-        return detailInfo;*/
-        System.out.println("userId = " + userId);
-        User user = userRepository.findByUserId(userId);
+    public UnderManagement findByUserId(int reportedUserId) {
+        System.out.println("reportedUserId service = " + reportedUserId);
+        UnderManagement selectedUserInfo = underManagementRepository.findByUserId(reportedUserId);
+        System.out.println("selectedUserInfo = " + selectedUserInfo);
 
 
-        return null;
+        return selectedUserInfo;
     }
-
-//    public Object findByUserId(String userId) {
-//
-//        UnderManagement detailInfo = underManagementRepository.findByUserId(userId);
-//        return DetailInfo;
-//    }
 }
