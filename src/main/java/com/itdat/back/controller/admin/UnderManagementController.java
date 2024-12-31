@@ -107,15 +107,21 @@ public class UnderManagementController {
         }
     }
 
+    /** 사용자로부터 String 형식의 아이디를 받아 해당 유저의 int 형식의 id 값을 받아내 조인 컬럼을 불러오는 컨트롤러 */
     @GetMapping("/detail-info")
-    public ResponseEntity<Object> detailInfo(@RequestParam String userId) {
-        System.out.println("userId = " + userId);
+    public ResponseEntity<Object> detailInfo(@RequestParam String reportedUserId) {
+        System.out.println("reportedUserId: " + reportedUserId);
 
 
 
-        UnderManagement detailInfo = underManagementService.findByUserId(userId);
-
-       return ResponseEntity.ok("test");
+        User selectedUser = userRepository.findByUserId(reportedUserId);
+        System.out.println("selectedUser.getId(): "+selectedUser.getId());
+        UnderManagement detailInfo = underManagementService.findByUserId(selectedUser.getId());
+        System.out.println("detailInfo = " + detailInfo);
+        if(detailInfo == null) {
+            return ResponseEntity.status(500).body("해당 유저의 정보를 가져오지 못 했습니다.");
+        }else {
+            return ResponseEntity.ok(detailInfo);
+        }
     }
-
 }
