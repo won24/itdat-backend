@@ -16,6 +16,7 @@ public class JwtTokenUtil {
     @Value("${jwt.expiration}")
     private long expiration;
 
+
     // 토큰 생성
     public String generateToken(String email) {
         return Jwts.builder()
