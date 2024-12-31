@@ -1,5 +1,6 @@
 package com.itdat.back.service.auth;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -14,8 +15,8 @@ public class SocialOAuthService {
 
     private final RestTemplate restTemplate;
 
-    public SocialOAuthService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public SocialOAuthService() {
+        this.restTemplate = new RestTemplate();
     }
 
     /**

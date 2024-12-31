@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8000
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
@@ -55,7 +55,9 @@ logging:
     org.hibernate.type.descriptor.sql: WARN
 
 cors:
-  allowed-origins: https://www.itdat.store
+  allowed-origins:
+  - https://www.itdat.store
+  - http://192.168.0.82:3000
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
