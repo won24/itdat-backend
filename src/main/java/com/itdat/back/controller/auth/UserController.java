@@ -1,6 +1,7 @@
 package com.itdat.back.controller.auth;
 
 import com.itdat.back.entity.auth.ProviderType;
+import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
 
 import com.itdat.back.entity.auth.UserType;
@@ -11,12 +12,16 @@ import com.itdat.back.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -57,10 +62,9 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        System.out.println("test");
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-        System.out.println(email+password);
+
         try {
             String token = userService.login(email, password);
             System.out.println("토큰발급" + token);
@@ -68,6 +72,27 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
         }
+    }
+
+    /**
+     * 로그아웃 엔드포인트
+     *
+     * @param token Authorization 헤더에 포함된 JWT 토큰
+     * @return 로그아웃 결과
+     */
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String token) {
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰이 제공되지 않았습니다.");
+        }
+
+        // JWT는 상태를 저장하지 않으므로 클라이언트에서만 토큰을 삭제
+        // 추가적으로 토큰을 블랙리스트에 저장하려면 여기에서 처리하면 될 듯 ?
+
+//        System.out.println("로그아웃 요청 처리됨. 토큰: " + token);
+
+        // 응답 반환
+        return ResponseEntity.ok("로그아웃 성공");
     }
 
 
@@ -79,49 +104,32 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
-//        System.out.println("받은 유저 데이터: " + user.toString());
+        System.out.println("받은 유저 데이터: " + user.toString());
+        if (user.getRole() == null) {
+            user.setRole(Role.USER);
+        }
         User registeredUser = userService.registerUser(user);
         return ResponseEntity.ok(registeredUser);
     }
 
-
-    @PostMapping("/social/register")
-    public ResponseEntity<?> registerSocialUser(@RequestBody Map<String, String> requestBody) {
-        try {
-            String userId = requestBody.get("userId");
-            String userName = requestBody.get("userName");
-            String password = requestBody.get("password");
-            String userPhone = requestBody.get("userPhone");
-            String userEmail = requestBody.get("userEmail");
-            LocalDate userBirth = LocalDate.parse(requestBody.get("userBirth"));
-            ProviderType providerType = ProviderType.valueOf(requestBody.get("providerType"));
-
-            if (userRepository.findByUserEmail(userEmail) != null) {
-                throw new IllegalStateException("이미 가입된 이메일입니다.");
-            }
-
-            // 신규 사용자 생성
-            User newUser = new User();
-            newUser.setUserId(userId);
-            newUser.setUserName(userName);
-            newUser.setPassword(passwordEncoder.encode(password));
-            newUser.setUserPhone(userPhone);
-            newUser.setUserEmail(userEmail);
-            newUser.setUserBirth(userBirth);
-            newUser.setProviderType(providerType);
-            newUser.setUserType(UserType.PERSONAL);
-
-            userRepository.save(newUser);
-
-            String token = jwtTokenUtil.generateToken(userEmail);
-            return ResponseEntity.ok(Map.of("token", token));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("message", "회원가입 실패: " + e.getMessage()));
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String email) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
+
+        Optional<User> user = Optional.ofNullable(userRepository.findByUserEmail(email));
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("email", user.get().getUserEmail());
+        response.put("name", user.get().getUserName());
+        response.put("isSocialUser", user.get().getProviderType() != null); // 소셜 로그인 여부 확인
+
+        return ResponseEntity.ok(response);
     }
-
-
 
     /**
      * 사용자 ID 또는 이메일 가용성 확인
@@ -135,6 +143,10 @@ public class UserController {
     public ResponseEntity<Map<String, Boolean>> checkAvailability(
             @RequestParam("type") String type,
             @RequestParam("value") String value) {
+
+        System.out.println("받은 유저 type: " + type);
+        System.out.println("받은 유저 value: " + value);
+
         boolean isAvailable = false;
 
         if ("userId".equals(type)) {
