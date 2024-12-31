@@ -6,6 +6,7 @@ import com.itdat.back.entity.auth.UserType;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.service.auth.SocialOAuthService;
 import com.itdat.back.utils.JwtTokenUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -194,8 +195,14 @@ public class SocialAuthController {
     public void handleNaverCallback(
             @RequestParam(value = "code", required = false) String code,
             @RequestParam(value = "state", required = false) String state,
+            HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
+        System.out.println("===== Request Parameters =====");
+        System.out.println("code : " + code);
+        System.out.println("state : " + state);
+        System.out.println("==============================");
+
         if (code == null || state == null) {
             response.sendRedirect("http://localhost:3000/login?error=missing_code_or_state");
             return;
@@ -213,6 +220,8 @@ public class SocialAuthController {
                     .queryParam("code", code)
                     .queryParam("state", state);
 
+            System.out.println("uriBuilder : " + uriBuilder);
+
             ResponseEntity<Map> responseEntity = restTemplate.exchange(
                     uriBuilder.toUriString(),
                     HttpMethod.GET,
@@ -222,6 +231,10 @@ public class SocialAuthController {
 
             Map<String, Object> tokenResponse = responseEntity.getBody();
             String accessToken = (String) tokenResponse.get("access_token");
+
+            if (accessToken == null) {
+                throw new IllegalArgumentException("Access Token을 가져오지 못했습니다.");
+            }
 
             // 사용자 정보 가져오기
             Map<String, Object> userInfo = socialOAuthService.getNaverUserInfo(accessToken);
@@ -238,10 +251,23 @@ public class SocialAuthController {
             User existingUser = userRepository.findByUserEmail(email);
 
             if (existingUser != null) {
-                // 로그인 성공: JWT 생성 후 메인 페이지로 리다이렉트
+                // 로그인 성공: JWT 생성 후 리다이렉트 처리
                 String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
-//                System.out.println("jwtToken : " + jwtToken);
-                response.sendRedirect("http://localhost:3000?token=" + jwtToken);
+                System.out.println("JWT Token: " + jwtToken);
+
+                // User-Agent를 확인하여 모바일 또는 웹 환경 구분
+                String userAgent = request.getHeader("User-Agent");
+                if (userAgent != null && userAgent.toLowerCase().contains("mobile")) {
+                    // 모바일 환경: Custom Scheme으로 리다이렉트
+                    String mobileRedirectUrl = String.format(
+                            "myapp://naver-login-success?token=%s",
+                            URLEncoder.encode(jwtToken, "UTF-8")
+                    );
+                    response.sendRedirect(mobileRedirectUrl);
+                } else {
+                    // 웹 환경: 기존 URL로 리다이렉트
+                    response.sendRedirect("http://localhost:3000?token=" + jwtToken);
+                }
             } else {
                 // 회원가입이 필요한 사용자: Register 페이지로 리다이렉트
                 String redirectUrl = String.format(
@@ -249,7 +275,22 @@ public class SocialAuthController {
                         URLEncoder.encode(naverId, "UTF-8"),
                         URLEncoder.encode(email, "UTF-8")
                 );
-                response.sendRedirect(redirectUrl);
+
+                // 모바일 또는 웹 환경에 따라 리다이렉트 처리
+                String userAgent = request.getHeader("User-Agent");
+                if (userAgent != null && userAgent.toLowerCase().contains("mobile")) {
+                    // 모바일 환경: Custom Scheme으로 리다이렉트
+                    String mobileRedirectUrl = String.format(
+                            "myapp://naver-register?providerId=%s&email=%s&providerType=NAVER",
+                            URLEncoder.encode(naverId, "UTF-8"),
+                            URLEncoder.encode(email, "UTF-8")
+                    );
+                    System.out.println("===== RedirectUrl 모바일에 전달22 =====");
+                    response.sendRedirect(mobileRedirectUrl);
+                } else {
+                    // 웹 환경: 기존 URL로 리다이렉트
+                    response.sendRedirect(redirectUrl);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

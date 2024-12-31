@@ -33,8 +33,8 @@ public class BusinessCardService {
     private TemplateRepository templateRepository;
 
     // 유저 정보 가져오기
-    public User findByUserId(String userId) {
-        User user = userRepository.findByUserId(userId);
+    public User findByUserEmail(String userEmail) {
+        User user = userRepository.findByUserEmail(userEmail);
         if(Objects.isNull(user)){
             return null;
         }
@@ -42,8 +42,7 @@ public class BusinessCardService {
     }
 
     // 앱 - 명함 생성 후 저장
-    public BusinessCard saveBusinessCard(String userId, BusinessCard card) {
-        card.setUserId(userId);
+    public BusinessCard saveBusinessCard(BusinessCard card) {
         return businessCardRepository.save(card);
     }
 
@@ -64,10 +63,9 @@ public class BusinessCardService {
     }
 
 
-
-
-    public List<BusinessCard> getBusinessCardsByUserId(String userId) {
-        return businessCardRepository.findByUserId(userId);
+    // 명함 가져오기
+    public List<BusinessCard> getBusinessCardsByUserEmail(String userEmail) {
+        return businessCardRepository.findByUserEmail(userEmail);
     }
 
 }

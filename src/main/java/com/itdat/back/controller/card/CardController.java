@@ -37,11 +37,11 @@ public class CardController {
 
 
     // 유저 정보 가져오기
-    @GetMapping("/userinfo/{userId}")
-    public ResponseEntity<?> userInfo(@PathVariable("userId") String userId) {
+    @GetMapping("/userinfo/{userEmail}")
+    public ResponseEntity<?> userInfo(@PathVariable("userEmail") String userEmail) {
 
         try {
-            User user = businessCardService.findByUserId(userId);
+            User user = businessCardService.findByUserEmail(userEmail);
             if (user != null) {
                 return ResponseEntity.ok(user);
             }else {
@@ -53,16 +53,16 @@ public class CardController {
     }
 
     // 사용자 명함 가져오기
-    @GetMapping("/{userId}")
-    public List<BusinessCard> getBusinessCardsByUserId(@PathVariable String userId) {
-        return businessCardService.getBusinessCardsByUserId(userId);
+    @GetMapping("/{userEmail}")
+    public List<BusinessCard> getBusinessCardsByUserId(@PathVariable String userEmail) {
+        return businessCardService.getBusinessCardsByUserEmail(userEmail);
     }
 
 
     // 앱 - 명함 생성
-    @PostMapping("/save/{userId}")
-    public ResponseEntity<BusinessCard> saveBusinessCard(@PathVariable String userId, @RequestBody BusinessCard card){
-        return ResponseEntity.ok(businessCardService.saveBusinessCard(userId, card));
+    @PostMapping("/save")
+    public ResponseEntity<BusinessCard> saveBusinessCard(@RequestBody BusinessCard card){
+        return ResponseEntity.ok(businessCardService.saveBusinessCard(card));
     }
 
 
@@ -73,9 +73,6 @@ public class CardController {
         System.out.println("모든 템플릿 가져오기 api 호출");
         return ResponseEntity.ok(templates);
     }
-
-
-
 
 
     // 새 템플릿 저장
