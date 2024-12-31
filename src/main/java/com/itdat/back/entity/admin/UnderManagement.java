@@ -16,7 +16,7 @@ public class UnderManagement {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User uerId;
+    private User user;
 
     @Column(name = "cumulative_count")
     private int cumulativeCount;
@@ -33,9 +33,9 @@ public class UnderManagement {
     public UnderManagement() {
     }
 
-    public UnderManagement(int id, User uerId, int cumulativeCount, Date startDateAt, Date endDateAt, Date updateAt, UserStatus status) {
+    public UnderManagement(int id, User user, int cumulativeCount, Date startDateAt, Date endDateAt, Date updateAt) {
         this.id = id;
-        this.uerId = uerId;
+        this.user = user;
         this.cumulativeCount = cumulativeCount;
         this.startDateAt = startDateAt;
         this.endDateAt = endDateAt;
@@ -50,12 +50,12 @@ public class UnderManagement {
         this.id = id;
     }
 
-    public User getUerId() {
-        return uerId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUerId(User uerId) {
-        this.uerId = uerId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getCumulativeCount() {
@@ -90,13 +90,11 @@ public class UnderManagement {
         this.updateAt = updateAt;
     }
 
-
-
     @Override
     public String toString() {
         return "UnderManagement{" +
                 "id=" + id +
-                ", uerId=" + uerId +
+                ", user=" + user +
                 ", cumulativeCount=" + cumulativeCount +
                 ", startDateAt=" + startDateAt +
                 ", endDateAt=" + endDateAt +
