@@ -11,8 +11,8 @@ public class BusinessCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cardId;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @Column(name = "user_email", nullable = false)
+    private String userEmail;
 
     @Column(name = "user_name", nullable = false)
     private String userName;
@@ -50,9 +50,9 @@ public class BusinessCard {
     public BusinessCard() {
     }
 
-    public BusinessCard(Integer cardId, String userId, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate) {
+    public BusinessCard(Integer cardId, String userEmail, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate) {
         this.cardId = cardId;
-        this.userId = userId;
+        this.userEmail = userEmail;
         this.userName = userName;
         this.phone = phone;
         this.email = email;
@@ -74,12 +74,12 @@ public class BusinessCard {
         this.cardId = cardId;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public String getUserName() {
