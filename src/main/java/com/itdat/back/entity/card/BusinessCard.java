@@ -1,6 +1,11 @@
 package com.itdat.back.entity.card;
 
+import com.itdat.back.entity.auth.User;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -11,8 +16,12 @@ public class BusinessCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer cardId;
 
-    @Column(name = "user_email", nullable = false)
-    private String userEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_email", referencedColumnName = "userEmail", nullable = false)
+    private User user;
+
+    @Column(name = "card_no", nullable = false)
+    private int cardNo;
 
     @Column(name = "user_name", nullable = false)
     private String userName;
@@ -47,24 +56,20 @@ public class BusinessCard {
     @Column(name = "web_template")
     private String webTemplate;
 
-    public BusinessCard() {
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "card_side")
+    private CardSide cardSide;
 
-    public BusinessCard(Integer cardId, String userEmail, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate) {
-        this.cardId = cardId;
-        this.userEmail = userEmail;
-        this.userName = userName;
-        this.phone = phone;
-        this.email = email;
-        this.companyName = companyName;
-        this.companyNumber = companyNumber;
-        this.companyAddress = companyAddress;
-        this.companyFax = companyFax;
-        this.department = department;
-        this.position = position;
-        this.appTemplate = appTemplate;
-        this.webTemplate = webTemplate;
-    }
+    @Column(name = "logo_url")
+    private String logoUrl;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public Integer getCardId() {
         return cardId;
@@ -74,12 +79,20 @@ public class BusinessCard {
         this.cardId = cardId;
     }
 
-    public String getUserEmail() {
-        return userEmail;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getCardNo() {
+        return cardNo;
+    }
+
+    public void setCardNo(int cardNo) {
+        this.cardNo = cardNo;
     }
 
     public String getUserName() {
@@ -168,5 +181,37 @@ public class BusinessCard {
 
     public void setWebTemplate(String webTemplate) {
         this.webTemplate = webTemplate;
+    }
+
+    public CardSide getCardSide() {
+        return cardSide;
+    }
+
+    public void setCardSide(CardSide cardSide) {
+        this.cardSide = cardSide;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
