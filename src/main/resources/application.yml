@@ -1,12 +1,12 @@
 server:
   ssl:
     enabled: false
-  port: 8082
+
+#  port: 8082
 #  port: 8001
   address: 0.0.0.0
+  port: 8000
 
-app:
-  base-url: http://10.0.2.2:8082
 
 spring:
   config:
@@ -36,14 +36,14 @@ spring:
           naver:
             client-id: ${NAVER_CLIENT_ID}
             client-secret: ${NAVER_CLIENT_SECRET}
-            redirect-uri: "${app.base-url}/api/oauth/callback/naver"
+            redirect-uri: "${app.base-url}/oauth/callback/naver"
             scope:
               - name
               - email
             authorization-grant-type: authorization_code
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
-            redirect-uri: "${app.base-url}/api/oauth/callback/kakao"
+            redirect-uri: "${app.base-url}/oauth/callback/kakao"
             scope:
               - profile_nickname
               - profile_image
@@ -90,7 +90,8 @@ logging:
     org.springframework: INFO
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY} # 환경변수 등록 필요
+  secret-key: ${JWT_SECRET_KEY}
+  # 환경변수 등록 필요
   expiration: 86400000
 
 file:

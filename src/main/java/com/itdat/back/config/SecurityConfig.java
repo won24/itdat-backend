@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/check-availability", "/card/**", "/templates/**").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/check-availability", "/nfc/**","/card/**", "/templates/**").permitAll()
                         .requestMatchers("/api/oauth/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
@@ -58,14 +58,17 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//         configuration.setAllowedOrigins(List.of("http://192.168.0.31:3000")); // 정원
+       // configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+       // configuration.setAllowedOrigins(List.of("http://192.168.0.82:3000"));
+       // configuration.setAllowedOrigins(List.of("http://192.168.0.19:3000")); // 정원
 //         configuration.setAllowedOrigins(List.of("http://192.168.0.37:3000")); // 원
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://192.168.0.31:3000",
                 "http://10.0.2.2:8082",
                 "http://192.168.0.37:3000",
-                "http://localhost:8082"
+                "http://localhost:8082",
+                "http://192.168.0.19:3000"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));

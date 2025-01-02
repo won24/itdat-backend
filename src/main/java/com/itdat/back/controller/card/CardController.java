@@ -39,7 +39,7 @@ public class CardController {
     // 유저 정보 가져오기
     @GetMapping("/userinfo/{userEmail}")
     public ResponseEntity<?> userInfo(@PathVariable("userEmail") String userEmail) {
-
+        System.out.println("유저정보가져오기");
         try {
             User user = businessCardService.findByUserEmail(userEmail);
             if (user != null) {
@@ -55,6 +55,7 @@ public class CardController {
     // 사용자 명함 가져오기
     @GetMapping("/{userEmail}")
     public ResponseEntity<List<BusinessCard>> getBusinessCardsByUserEmail(@PathVariable String userEmail) {
+        System.out.println("사용자 명함 가져오기");
         try {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
             return ResponseEntity.ok(cards);
@@ -69,13 +70,12 @@ public class CardController {
     public ResponseEntity<?> saveBusinessCard(@RequestBody BusinessCard card) {
         try {
             // 유저 이메일 확인
-            User user = businessCardService.findByUserEmail(card.getUser().getUserEmail());
+            User user = businessCardService.findByUserEmail(card.getUserEmail());
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유효하지 않은 사용자 이메일입니다.");
             }
 
             // 명함 저장
-            card.setUser(user);
             BusinessCard savedCard = businessCardService.saveBusinessCard(card);
             return ResponseEntity.ok(savedCard);
         } catch (Exception e) {

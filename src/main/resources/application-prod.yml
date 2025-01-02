@@ -56,8 +56,8 @@ logging:
 
 cors:
   allowed-origins:
-   - https://www.itdat.store
-   - http://192.168.0.31:3000
+  - https://www.itdat.store
+  - http://192.168.0.82:3000
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
