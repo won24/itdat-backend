@@ -49,6 +49,7 @@ logging:
 cors:
   allowed-origins:
     - http://localhost:3000
+    - http://192.168.0.82:3000
     - http://host.docker.internal
     - http://112.221.66.174:8001
     - http://192.168.0.37:3000

@@ -33,7 +33,6 @@ import java.util.Optional;
  * */
 @RestController
 @RequestMapping("/api/auth")
-//@CrossOrigin(origins = "http://localhost:3000")
 @CrossOrigin
 public class UserController {
     @Autowired
@@ -65,11 +64,10 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-        System.out.println("email: " + email);
-        System.out.println("password: " + password);
+        System.out.println("로그인요청"+email+password);
         try {
             String token = userService.login(email, password);
-            System.out.println(token);
+            System.out.println("토큰발급" + token);
             return ResponseEntity.ok(Map.of("token", token));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
@@ -120,15 +118,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
 
-        Optional<User> user = Optional.ofNullable(userRepository.findByUserEmail(email));
-        if (user.isEmpty()) {
+        User user = userRepository.findByUserEmail(email);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("email", user.get().getUserEmail());
-        response.put("name", user.get().getUserName());
-        response.put("isSocialUser", user.get().getProviderType() != null); // 소셜 로그인 여부 확인
+        response.put("email", user.getUserEmail());
+        response.put("name", user.getUserName());
+        response.put("isSocialUser", user.getProviderType() != null); // 소셜 로그인 여부 확인
 
         return ResponseEntity.ok(response);
     }

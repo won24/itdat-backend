@@ -1,7 +1,9 @@
 package com.itdat.back.service.auth;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -10,8 +12,6 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.Map;
 
@@ -20,8 +20,8 @@ public class SocialOAuthService {
 
     private final RestTemplate restTemplate;
 
-    public SocialOAuthService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public SocialOAuthService() {
+        this.restTemplate = new RestTemplate();
     }
 
     // 사용자 ID 가져오기
@@ -139,7 +139,6 @@ public class SocialOAuthService {
     }
 
 
-
     // 다른 소셜 제공자에서 사용자 정보 가져오기
     public Map<String, Object> getUserInfoFromOAuth(String provider, String accessToken) {
         String apiUrl;
@@ -188,5 +187,5 @@ public class SocialOAuthService {
             throw new IllegalArgumentException("네이버 사용자 정보 요청 실패: " + e.getMessage(), e);
         }
     }
-
 }
+
