@@ -4,6 +4,8 @@ import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserStatus;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -22,18 +24,18 @@ public class UnderManagement {
     private int cumulativeCount;
 
     @Column(name = "start_date_at")
-    private Date startDateAt;
+    private LocalDateTime startDateAt;
 
     @Column(name = "end_date_at")
-    private Date endDateAt;
+    private LocalDateTime endDateAt;
 
     @Column(name = "update_at")
-    private Date updateAt;
+    private LocalDateTime updateAt;
 
     public UnderManagement() {
     }
 
-    public UnderManagement(int id, User user, int cumulativeCount, Date startDateAt, Date endDateAt, Date updateAt) {
+    public UnderManagement(int id, User user, int cumulativeCount, LocalDateTime startDateAt, LocalDateTime endDateAt, LocalDateTime updateAt) {
         this.id = id;
         this.user = user;
         this.cumulativeCount = cumulativeCount;
@@ -66,27 +68,27 @@ public class UnderManagement {
         this.cumulativeCount = cumulativeCount;
     }
 
-    public Date getStartDateAt() {
+    public LocalDateTime getStartDateAt() {
         return startDateAt;
     }
 
-    public void setStartDateAt(Date startDateAt) {
+    public void setStartDateAt(LocalDateTime startDateAt) {
         this.startDateAt = startDateAt;
     }
 
-    public Date getEndDateAt() {
+    public LocalDateTime getEndDateAt() {
         return endDateAt;
     }
 
-    public void setEndDateAt(Date endDateAt) {
+    public void setEndDateAt(LocalDateTime endDateAt) {
         this.endDateAt = endDateAt;
     }
 
-    public Date getUpdateAt() {
+    public LocalDateTime getUpdateAt() {
         return updateAt;
     }
 
-    public void setUpdateAt(Date updateAt) {
+    public void setUpdateAt(LocalDateTime updateAt) {
         this.updateAt = updateAt;
     }
 
