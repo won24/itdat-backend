@@ -10,7 +10,11 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Collections;
 import java.util.Map;
@@ -187,5 +191,36 @@ public class SocialOAuthService {
             throw new IllegalArgumentException("네이버 사용자 정보 요청 실패: " + e.getMessage(), e);
         }
     }
+}
+
+    public String getAccessTokenFromKakao(String code) throws Exception {
+        String redirectUri = "kakao387812a6ae2897c3e9e59952c211374e://oauth";
+        String tokenUrl = "https://kauth.kakao.com/oauth/token";
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("grant_type", "authorization_code");
+        params.add("client_id", "6a5e1f66918d24577f91727acffc819a");
+        params.add("redirect_uri", redirectUri);
+        params.add("code", code);
+
+        try {
+            ResponseEntity<Map> response = restTemplate.exchange(
+                    tokenUrl,
+                    HttpMethod.POST,
+                    new HttpEntity<>(params, null),
+                    Map.class
+            );
+
+            Map<String, Object> responseBody = response.getBody();
+            if (responseBody == null || !responseBody.containsKey("access_token")) {
+                throw new Exception("카카오 Access Token 요청 실패: 응답 데이터가 없습니다.");
+            }
+
+            return (String) responseBody.get("access_token");
+        } catch (HttpClientErrorException e) {
+            throw new Exception("카카오 Access Token 요청 실패: " + e.getMessage());
+        }
+    }
+
 }
 
