@@ -118,15 +118,15 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
         }
 
-        Optional<User> user = Optional.ofNullable(userRepository.findByUserEmail(email));
-        if (user.isEmpty()) {
+        User user = userRepository.findByUserEmail(email);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("email", user.get().getUserEmail());
-        response.put("name", user.get().getUserName());
-        response.put("isSocialUser", user.get().getProviderType() != null); // 소셜 로그인 여부 확인
+        response.put("email", user.getUserEmail());
+        response.put("name", user.getUserName());
+        response.put("isSocialUser", user.getProviderType() != null); // 소셜 로그인 여부 확인
 
         return ResponseEntity.ok(response);
     }

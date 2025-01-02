@@ -198,6 +198,10 @@ public class SocialAuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
+        System.out.println("===== Request Parameters =====");
+        System.out.println("code : " + code);
+        System.out.println("state : " + state);
+        System.out.println("==============================");
 
         if (code == null || state == null) {
             response.sendRedirect("http://localhost:3000/login?error=missing_code_or_state");
@@ -216,6 +220,8 @@ public class SocialAuthController {
                     .queryParam("code", code)
                     .queryParam("state", state);
 
+            System.out.println("uriBuilder : " + uriBuilder);
+
             ResponseEntity<Map> responseEntity = restTemplate.exchange(
                     uriBuilder.toUriString(),
                     HttpMethod.GET,
@@ -225,6 +231,10 @@ public class SocialAuthController {
 
             Map<String, Object> tokenResponse = responseEntity.getBody();
             String accessToken = (String) tokenResponse.get("access_token");
+
+            if (accessToken == null) {
+                throw new IllegalArgumentException("Access Token을 가져오지 못했습니다.");
+            }
 
             // 사용자 정보 가져오기
             Map<String, Object> userInfo = socialOAuthService.getNaverUserInfo(accessToken);
@@ -275,6 +285,7 @@ public class SocialAuthController {
                             URLEncoder.encode(naverId, "UTF-8"),
                             URLEncoder.encode(email, "UTF-8")
                     );
+                    System.out.println("===== RedirectUrl 모바일에 전달22 =====");
                     response.sendRedirect(mobileRedirectUrl);
                 } else {
                     // 웹 환경: 기존 URL로 리다이렉트
