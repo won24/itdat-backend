@@ -17,7 +17,7 @@ public class UnderManagement {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id"/*, referencedColumnName = "userId" // 컬럼명이 아닌 엔티티의 필드명을 써야 한다. */)
     private User user;
 
     @Column(name = "cumulative_count")
