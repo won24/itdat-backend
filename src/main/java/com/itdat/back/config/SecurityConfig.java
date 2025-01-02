@@ -60,7 +60,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
         configuration.setAllowedOrigins(List.of("http://192.168.0.82:3000"));
-//         configuration.setAllowedOrigins(List.of("http://192.168.0.31:3000")); // 정원
+        configuration.setAllowedOrigins(List.of("http://192.168.0.19:3000")); // 정원
 //         configuration.setAllowedOrigins(List.of("http://192.168.0.37:3000")); // 원
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",

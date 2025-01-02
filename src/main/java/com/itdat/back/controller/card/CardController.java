@@ -55,6 +55,7 @@ public class CardController {
     // 사용자 명함 가져오기
     @GetMapping("/{userEmail}")
     public List<BusinessCard> getBusinessCardsByUserId(@PathVariable String userEmail) {
+        System.out.println("사용자명함 가져오기");
         return businessCardService.getBusinessCardsByUserEmail(userEmail);
     }
 

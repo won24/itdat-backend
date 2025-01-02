@@ -64,7 +64,7 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-
+        System.out.println("로그인요청"+email+password);
         try {
             String token = userService.login(email, password);
             System.out.println("토큰발급" + token);
