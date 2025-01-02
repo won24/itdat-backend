@@ -33,4 +33,9 @@ public class QnaController {
                     .body("서버측에서 문제가 발생하였습니다. 에러: "+e.getMessage());
         }
     }
+
+//    @GetMapping("/selected-qna-list")
+//    public ResponseEntity<Object> getSelectedQnaList() {
+//
+//    }
 }
