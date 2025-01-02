@@ -29,11 +29,23 @@ public class BusinessCardService {
 
     // 유저 정보 가져오기
     public User findByUserEmail(String userEmail) {
-        Optional<User> user = userRepository.findByUserEmail(userEmail);
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("해당 이메일의 유저를 찾을 수 없습니다: " + userEmail);
+
+        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(userEmail));
+
+        if (!optionalUser.isPresent()) {
+            throw new RuntimeException("존재하지 않는 사용자입니다.");
         }
-        return user.get();
+
+        User user = optionalUser.get();
+        return user;
+
+
+//        User user = userRepository.findByUserEmail(userEmail);
+//        if (user == null) {
+//            throw new IllegalArgumentException("해당 이메일의 유저를 찾을 수 없습니다: " + userEmail);
+//        }
+//        return user.get();
+
     }
 
     // 앰 - 명함 저장
