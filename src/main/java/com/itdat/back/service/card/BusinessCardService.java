@@ -50,8 +50,17 @@ public class BusinessCardService {
 
     // 앰 - 명함 저장
     public BusinessCard saveBusinessCard(BusinessCard card) {
-        if (card.getUser() == null || card.getUser().getUserEmail() == null) {
-            throw new IllegalArgumentException("명함에 연결된 유효한 사용자가 필요합니다.");
+        if (card == null) {
+            throw new IllegalArgumentException("명함 객체가 null입니다.");
+        }
+
+        if (card.getUser() == null) {
+            throw new IllegalArgumentException("명함에 연결된 사용자 정보가 없습니다.");
+        }
+
+        String userEmail = card.getUser().getUserEmail();
+        if (userEmail == null || userEmail.trim().isEmpty()) {
+            throw new IllegalArgumentException("유효한 사용자 이메일이 필요합니다.");
         }
 
         // 사용자 유효성 확인

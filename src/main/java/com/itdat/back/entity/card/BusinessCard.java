@@ -17,8 +17,11 @@ public class BusinessCard {
     private Integer cardId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_email", referencedColumnName = "userEmail", nullable = false)
+    @JoinColumn(name = "user_email", referencedColumnName = "userEmail", insertable = false, updatable = false)
     private User user;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Column(name = "card_no", nullable = false)
     private int cardNo;
@@ -29,8 +32,6 @@ public class BusinessCard {
     @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "company_name")
     private String companyName;
@@ -85,6 +86,9 @@ public class BusinessCard {
 
     public void setUser(User user) {
         this.user = user;
+        if (user != null) {
+            this.email = user.getUserEmail();
+        }
     }
 
     public int getCardNo() {
