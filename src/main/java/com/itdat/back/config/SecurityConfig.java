@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/oauth/**").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -57,14 +58,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
 //         configuration.setAllowedOrigins(List.of("http://192.168.0.31:3000")); // 정원
-         configuration.setAllowedOrigins(List.of("http://192.168.0.37:3000")); // 원
-//        configuration.setAllowedOrigins(List.of(
-//                "http://localhost:3000",
-//                "http://192.168.0.31:3000",
-//                "http://10.0.2.2:8082"
-//        ));
+//         configuration.setAllowedOrigins(List.of("http://192.168.0.37:3000")); // 원
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://192.168.0.31:3000",
+                "http://10.0.2.2:8082",
+                "http://192.168.0.37:3000",
+                "http://localhost:8082"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));
         configuration.setExposedHeaders(List.of("Authorization", "Cross-Origin-Opener-Policy", "Cross-Origin-Embedder-Policy"));

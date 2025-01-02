@@ -4,6 +4,8 @@ import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserStatus;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -16,26 +18,26 @@ public class UnderManagement {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User uerId;
+    private User user;
 
     @Column(name = "cumulative_count")
     private int cumulativeCount;
 
     @Column(name = "start_date_at")
-    private Date startDateAt;
+    private LocalDateTime startDateAt;
 
     @Column(name = "end_date_at")
-    private Date endDateAt;
+    private LocalDateTime endDateAt;
 
     @Column(name = "update_at")
-    private Date updateAt;
+    private LocalDateTime updateAt;
 
     public UnderManagement() {
     }
 
-    public UnderManagement(int id, User uerId, int cumulativeCount, Date startDateAt, Date endDateAt, Date updateAt, UserStatus status) {
+    public UnderManagement(int id, User user, int cumulativeCount, LocalDateTime startDateAt, LocalDateTime endDateAt, LocalDateTime updateAt) {
         this.id = id;
-        this.uerId = uerId;
+        this.user = user;
         this.cumulativeCount = cumulativeCount;
         this.startDateAt = startDateAt;
         this.endDateAt = endDateAt;
@@ -50,12 +52,12 @@ public class UnderManagement {
         this.id = id;
     }
 
-    public User getUerId() {
-        return uerId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUerId(User uerId) {
-        this.uerId = uerId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getCumulativeCount() {
@@ -66,37 +68,35 @@ public class UnderManagement {
         this.cumulativeCount = cumulativeCount;
     }
 
-    public Date getStartDateAt() {
+    public LocalDateTime getStartDateAt() {
         return startDateAt;
     }
 
-    public void setStartDateAt(Date startDateAt) {
+    public void setStartDateAt(LocalDateTime startDateAt) {
         this.startDateAt = startDateAt;
     }
 
-    public Date getEndDateAt() {
+    public LocalDateTime getEndDateAt() {
         return endDateAt;
     }
 
-    public void setEndDateAt(Date endDateAt) {
+    public void setEndDateAt(LocalDateTime endDateAt) {
         this.endDateAt = endDateAt;
     }
 
-    public Date getUpdateAt() {
+    public LocalDateTime getUpdateAt() {
         return updateAt;
     }
 
-    public void setUpdateAt(Date updateAt) {
+    public void setUpdateAt(LocalDateTime updateAt) {
         this.updateAt = updateAt;
     }
-
-
 
     @Override
     public String toString() {
         return "UnderManagement{" +
                 "id=" + id +
-                ", uerId=" + uerId +
+                ", user=" + user +
                 ", cumulativeCount=" + cumulativeCount +
                 ", startDateAt=" + startDateAt +
                 ", endDateAt=" + endDateAt +
