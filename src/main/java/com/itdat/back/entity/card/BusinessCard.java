@@ -214,4 +214,28 @@ public class BusinessCard {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public BusinessCard() {
+    }
+
+    public BusinessCard(Integer cardId, User user, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.cardId = cardId;
+        this.user = user;
+        this.cardNo = cardNo;
+        this.userName = userName;
+        this.phone = phone;
+        this.email = email;
+        this.companyName = companyName;
+        this.companyNumber = companyNumber;
+        this.companyAddress = companyAddress;
+        this.companyFax = companyFax;
+        this.department = department;
+        this.position = position;
+        this.appTemplate = appTemplate;
+        this.webTemplate = webTemplate;
+        this.cardSide = cardSide;
+        this.logoUrl = logoUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }
