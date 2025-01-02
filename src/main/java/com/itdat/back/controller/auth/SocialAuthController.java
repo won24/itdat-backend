@@ -140,6 +140,41 @@ public class SocialAuthController {
         }
     }
 
+    @PostMapping("/callback/kakao")
+    public ResponseEntity<?> handleKakaoCallback(@RequestBody Map<String, String> requestBody) {
+        String code = requestBody.get("code");
+        if (code == null || code.isEmpty()) {
+            return ResponseEntity.badRequest().body("Authorization Code is missing");
+        }
+
+        try {
+            String accessToken = socialOAuthService.getAccessTokenFromKakao(code);
+            Map<String, Object> userInfo = socialOAuthService.getUserInfoFromOAuth("kakao", accessToken);
+
+            String email = socialOAuthService.getKakaoEmail(userInfo);
+            String providerId = socialOAuthService.getKakaoProviderId(userInfo);
+
+            if (email == null || providerId == null) {
+                throw new IllegalArgumentException("Email or Provider ID is missing");
+            }
+
+            User existingUser = userRepository.findByUserEmail(email);
+
+            if (existingUser != null) {
+                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                return ResponseEntity.ok(Map.of("requiresRegistration", false, "token", jwtToken));
+            } else {
+                return ResponseEntity.ok(Map.of("requiresRegistration", true, "email", email, "providerId", providerId));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error during Kakao login: " + e.getMessage());
+        }
+    }
+
+
+
+
     @PostMapping("/naver")
     public ResponseEntity<?> naverLogin(
             @RequestHeader(value = "Authorization", required = true) String accessToken
@@ -258,12 +293,13 @@ public class SocialAuthController {
                 // User-Agent를 확인하여 모바일 또는 웹 환경 구분
                 String userAgent = request.getHeader("User-Agent");
                 if (userAgent != null && userAgent.toLowerCase().contains("mobile")) {
-                    // 모바일 환경: Custom Scheme으로 리다이렉트
+                    // 모바일 환경: /main 스크린으로 리다이렉트
                     String mobileRedirectUrl = String.format(
-                            "myapp://naver-login-success?token=%s",
+                            "myapp://main?token=%s",
                             URLEncoder.encode(jwtToken, "UTF-8")
                     );
                     response.sendRedirect(mobileRedirectUrl);
+                    System.out.println("모바일로 리다이렉트 보냄 : " + mobileRedirectUrl);
                 } else {
                     // 웹 환경: 기존 URL로 리다이렉트
                     response.sendRedirect("http://localhost:3000?token=" + jwtToken);
@@ -281,11 +317,10 @@ public class SocialAuthController {
                 if (userAgent != null && userAgent.toLowerCase().contains("mobile")) {
                     // 모바일 환경: Custom Scheme으로 리다이렉트
                     String mobileRedirectUrl = String.format(
-                            "myapp://naver-register?providerId=%s&email=%s&providerType=NAVER",
+                            "myapp://register?providerId=%s&email=%s&providerType=NAVER",
                             URLEncoder.encode(naverId, "UTF-8"),
                             URLEncoder.encode(email, "UTF-8")
                     );
-                    System.out.println("===== RedirectUrl 모바일에 전달22 =====");
                     response.sendRedirect(mobileRedirectUrl);
                 } else {
                     // 웹 환경: 기존 URL로 리다이렉트
@@ -297,6 +332,7 @@ public class SocialAuthController {
             response.sendRedirect("http://localhost:3000/login?error=naver_login_failed");
         }
     }
+
 
 
 
