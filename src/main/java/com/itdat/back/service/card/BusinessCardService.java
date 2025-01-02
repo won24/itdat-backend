@@ -39,33 +39,13 @@ public class BusinessCardService {
         User user = optionalUser.get();
         return user;
 
-
-//        User user = userRepository.findByUserEmail(userEmail);
-//        if (user == null) {
-//            throw new IllegalArgumentException("해당 이메일의 유저를 찾을 수 없습니다: " + userEmail);
-//        }
-//        return user.get();
-
     }
 
-    // 앰 - 명함 저장
+    // 앱 - 명함 저장
     public BusinessCard saveBusinessCard(BusinessCard card) {
-        if (card == null) {
-            throw new IllegalArgumentException("명함 객체가 null입니다.");
+        if (card.getUserEmail() == null) {
+            throw new IllegalArgumentException("명함에 연결된 유효한 사용자가 필요합니다.");
         }
-
-        if (card.getUser() == null) {
-            throw new IllegalArgumentException("명함에 연결된 사용자 정보가 없습니다.");
-        }
-
-        String userEmail = card.getUser().getUserEmail();
-        if (userEmail == null || userEmail.trim().isEmpty()) {
-            throw new IllegalArgumentException("유효한 사용자 이메일이 필요합니다.");
-        }
-
-        // 사용자 유효성 확인
-        User user = findByUserEmail(card.getUser().getUserEmail());
-        card.setUser(user);
 
         // 명함 저장
         return businessCardRepository.save(card);
@@ -73,8 +53,7 @@ public class BusinessCardService {
 
     // 명함 가져오기
     public List<BusinessCard> getBusinessCardsByUserEmail(String userEmail) {
-        User user = findByUserEmail(userEmail);
-        return businessCardRepository.findByUser(user);
+        return businessCardRepository.findByUserEmail(userEmail);
     }
 
     // 로고 파일 저장

@@ -36,6 +36,7 @@ public class UserService {
     public String login(String email, String password) {
         // 이메일로 사용자 찾기
         Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(email));
+        System.out.println(optionalUser);
         if (!optionalUser.isPresent()) {
             throw new RuntimeException("존재하지 않는 사용자입니다.");
         }

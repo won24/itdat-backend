@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface BusinessCardRepository extends JpaRepository<BusinessCard, Integer> {
 
-    List<BusinessCard> findByUser(User user);
+    List<BusinessCard> findByUserEmail(String userEmail);
 }
