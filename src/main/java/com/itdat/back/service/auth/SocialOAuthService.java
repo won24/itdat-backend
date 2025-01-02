@@ -191,8 +191,6 @@ public class SocialOAuthService {
             throw new IllegalArgumentException("네이버 사용자 정보 요청 실패: " + e.getMessage(), e);
         }
     }
-}
-
     public String getAccessTokenFromKakao(String code) throws Exception {
         String redirectUri = "kakao387812a6ae2897c3e9e59952c211374e://oauth";
         String tokenUrl = "https://kauth.kakao.com/oauth/token";
@@ -221,6 +219,7 @@ public class SocialOAuthService {
             throw new Exception("카카오 Access Token 요청 실패: " + e.getMessage());
         }
     }
-
 }
+
+
 
