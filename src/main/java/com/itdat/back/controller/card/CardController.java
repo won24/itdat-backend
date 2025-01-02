@@ -54,38 +54,68 @@ public class CardController {
 
     // 사용자 명함 가져오기
     @GetMapping("/{userEmail}")
-    public List<BusinessCard> getBusinessCardsByUserId(@PathVariable String userEmail) {
-        return businessCardService.getBusinessCardsByUserEmail(userEmail);
+    public ResponseEntity<List<BusinessCard>> getBusinessCardsByUserEmail(@PathVariable String userEmail) {
+        try {
+            List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
+            return ResponseEntity.ok(cards);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 
     // 앱 - 명함 생성
     @PostMapping("/save")
-    public ResponseEntity<BusinessCard> saveBusinessCard(@RequestBody BusinessCard card){
-        return ResponseEntity.ok(businessCardService.saveBusinessCard(card));
+    public ResponseEntity<?> saveBusinessCard(@RequestBody BusinessCard card) {
+        try {
+            // 유저 이메일 확인
+            User user = businessCardService.findByUserEmail(card.getUser().getUserEmail());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유효하지 않은 사용자 이메일입니다.");
+            }
+
+            // 명함 저장
+            card.setUser(user);
+            BusinessCard savedCard = businessCardService.saveBusinessCard(card);
+            return ResponseEntity.ok(savedCard);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("명함 저장 중 오류가 발생했습니다.");
+        }
     }
 
 
     // 템플릿 가져오기
     @GetMapping("/templates")
     public ResponseEntity<List<Template>> getTemplates() {
-        List<Template> templates = templateService.getAllTemplates();
-        System.out.println("모든 템플릿 가져오기 api 호출");
-        return ResponseEntity.ok(templates);
+        try {
+            List<Template> templates = templateService.getAllTemplates();
+            return ResponseEntity.ok(templates);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
-
 
     // 새 템플릿 저장
     @PostMapping("/upload")
-    public String uploadTemplate(@RequestParam("svgFile") MultipartFile file) throws IOException {
-        // 파일 이름 생성
-        String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-        // 파일 저장 경로
-        File filePath = Paths.get(uploadDir, fileName).toFile();
-        file.transferTo(filePath);
-        // 저장된 파일의 URL 반환
-        return "http://localhost:8082/template/" + fileName;
-    }
+    public ResponseEntity<?> uploadTemplate(@RequestParam("svgFile") MultipartFile file) {
+        try {
+            // 업로드 디렉토리 확인 및 생성
+            File uploadDirectory = new File(uploadDir);
+            if (!uploadDirectory.exists()) {
+                uploadDirectory.mkdirs();
+            }
 
+            // 파일 이름 생성 및 저장
+            String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+            File filePath = Paths.get(uploadDir, fileName).toFile();
+            file.transferTo(filePath);
+
+            // URL 반환
+            String fileUrl = "http://localhost:8082/template/" + fileName;
+            return ResponseEntity.ok(fileUrl);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
+        }
+    }
 
 }
