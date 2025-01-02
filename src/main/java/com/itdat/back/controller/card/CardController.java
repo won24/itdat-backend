@@ -69,13 +69,12 @@ public class CardController {
     public ResponseEntity<?> saveBusinessCard(@RequestBody BusinessCard card) {
         try {
             // 유저 이메일 확인
-            User user = businessCardService.findByUserEmail(card.getUser().getUserEmail());
+            User user = businessCardService.findByUserEmail(card.getUserEmail());
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유효하지 않은 사용자 이메일입니다.");
             }
 
             // 명함 저장
-            card.setUser(user);
             BusinessCard savedCard = businessCardService.saveBusinessCard(card);
             return ResponseEntity.ok(savedCard);
         } catch (Exception e) {
