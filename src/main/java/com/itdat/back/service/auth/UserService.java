@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public String login(String email, String password) {
-        // 이메일로 사용자 찾기
+        // 아이디로 사용자 찾기
         Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(email));
         System.out.println(optionalUser);
         if (!optionalUser.isPresent()) {

@@ -23,10 +23,10 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
         if (token != null) {
             if (jwtTokenUtil.validateToken(token)) {
-                String email = jwtTokenUtil.extractEmail(token);
+                String userID = jwtTokenUtil.extractEmail(token);
 //                System.out.println("Valid Token. Email: " + email);
 
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(email, null, null);
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userID, null, null);
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
 //                System.out.println("Security Context Authentication Set: " + SecurityContextHolder.getContext().getAuthentication());
