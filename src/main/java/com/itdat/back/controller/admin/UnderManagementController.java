@@ -118,12 +118,13 @@ public class UnderManagementController {
         String email = jwtTokenUtil.extractEmail(jwtToken); // 해당 토큰에서 email 추출
 
         User user = userRepository.findByUserEmail(email); // email로 해당 유저의 정보를 추출(ADMIN 권한을 이제 알 수 있다.)
-        if (user.getRole().equals(ADMIN)) {
-            return ResponseEntity.ok(true); // 해당 유저의 권한이 ADMIN이면 true를 리턴
-            // List<User> adminUsers = underManagementService.getAdminUsers();
-        } else {
-            return ResponseEntity.ok(false); // 해당 유저의 권한이 ADMIN이 아니면 false를 리턴
-        }
+        return ResponseEntity.ok(user);
+//        if (user.getRole().equals(ADMIN)) {
+//            return ResponseEntity.ok(true); // 해당 유저의 권한이 ADMIN이면 true를 리턴
+//            // List<User> adminUsers = underManagementService.getAdminUsers();
+//        } else {
+//            return ResponseEntity.ok(false); // 해당 유저의 권한이 ADMIN이 아니면 false를 리턴
+//        }
     }
 
     /**
@@ -198,15 +199,11 @@ public class UnderManagementController {
             for (ReportUser report : reports) {
                 reportUserRepository.delete(report);
             }
-
-
             underManagementRepository.delete(selectedInfo);
-
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok("해당 데이터가 정상적으로 삭제되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
-
     }
 }
