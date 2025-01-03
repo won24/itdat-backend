@@ -61,7 +61,7 @@ public class SocialAuthController {
     ) {
         try {
             String token = null;
-            Map<String, Object> userInfo;
+            Map<String, String> userInfo;
 
             // Google 처리
             if (request == null || !request.containsKey("idToken")) {
@@ -74,12 +74,15 @@ public class SocialAuthController {
             String email = userInfo.get("email").toString();
             String providerId = userInfo.get("sub").toString();
 
+            // 사용자 조회
             User existingUser = userRepository.findByUserEmail(email);
 
             if (existingUser != null) {
+                // 기존 사용자: 로그인 처리
                 String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
                 return ResponseEntity.ok(Map.of("token", jwtToken, "requiresRegistration", false));
             } else {
+                // 새로운 사용자: 회원가입 필요
                 return ResponseEntity.ok(Map.of(
                         "providerId", providerId,
                         "email", email,
@@ -92,6 +95,7 @@ public class SocialAuthController {
                     .body(Map.of("message", "Google 로그인 실패: " + e.getMessage()));
         }
     }
+
 
 
     @PostMapping("/kakao")
