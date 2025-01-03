@@ -1,5 +1,6 @@
 package com.itdat.back.service.auth;
 
+import com.google.api.client.json.JsonFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -108,39 +113,36 @@ public class SocialOAuthService {
     }
 
     // Google ID Token 검증
-    public Map<String, Object> verifyGoogleIdToken(String idToken) {
-        try {
-            // Google 공개 키를 사용하여 ID Token 검증
-            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
-                    new NetHttpTransport(),
-                    JacksonFactory.getDefaultInstance()
-            )
-                    .setAudience(Collections.singletonList("975498336283-bkjiua72fbhkdi0phtugk08sqqhaakff.apps.googleusercontent.com"))
-                    .setIssuer("https://accounts.google.com")
-                    .build();
+    public Map<String, String> verifyGoogleIdToken(String idTokenString) throws GeneralSecurityException, IOException {
+        JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+        NetHttpTransport transport = new NetHttpTransport();
 
-            // ID Token 검증 및 파싱
-            GoogleIdToken googleIdToken = verifier.verify(idToken);
-            if (googleIdToken != null) {
-                GoogleIdToken.Payload payload = googleIdToken.getPayload();
+        // 모바일과 웹 클라이언트 ID
+        List<String> clientIds = Arrays.asList(
+                "257214395762-57gkadgnl29vjv0r0u47gt1m951mmjoc.apps.googleusercontent.com", // 모바일
+                "975498336283-bkjiua72fbhkdi0phtugk08sqqhaakff.apps.googleusercontent.com"  // 웹
+        );
 
-                // 사용자 정보 추출
-                return Map.of(
-                        "email", payload.getEmail(),
-                        "email_verified", payload.getEmailVerified(),
-                        "sub", payload.getSubject(),
-                        "name", payload.get("name"),
-                        "picture", payload.get("picture"),
-                        "given_name", payload.get("given_name"),
-                        "family_name", payload.get("family_name")
-                );
-            } else {
-                throw new IllegalArgumentException("Invalid Google ID Token");
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error verifying Google ID Token: " + e.getMessage(), e);
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(clientIds)
+                .build();
+
+        GoogleIdToken idToken = verifier.verify(idTokenString);
+
+        if (idToken != null) {
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            return Map.of(
+                    "email", payload.getEmail(),
+                    "sub", payload.getSubject(),
+                    "name", String.valueOf(payload.get("name")), // 명시적 변환
+                    "picture", String.valueOf(payload.get("picture")) // 명시적 변환
+            );
+        } else {
+            throw new IllegalArgumentException("Invalid Google ID Token");
         }
     }
+
+
 
 
     // 다른 소셜 제공자에서 사용자 정보 가져오기
