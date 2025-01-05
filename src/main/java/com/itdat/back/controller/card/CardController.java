@@ -55,9 +55,15 @@ public class CardController {
     // 사용자 명함 가져오기
     @GetMapping("/{userEmail}")
     public ResponseEntity<List<BusinessCard>> getBusinessCardsByUserEmail(@PathVariable String userEmail) {
-        System.out.println("사용자 명함 가져오기");
         try {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
+
+            cards.forEach(card -> {
+                if (card.getLogoPath() != null) {
+                    card.setLogoPath("/uploads/" + Paths.get(card.getLogoPath()).getFileName());
+                }
+            });
+
             return ResponseEntity.ok(cards);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -83,6 +89,19 @@ public class CardController {
         }
     }
 
+    // 앱 - 명함 뒷면 저장
+    @PostMapping("/save/back")
+    public ResponseEntity<BusinessCard> saveBackSide(
+            @RequestParam("logo") MultipartFile logo,
+            @RequestParam("businessCard") BusinessCard card) {
+        try {
+            BusinessCard savedCard = businessCardService.saveBusinessCardWithLogo(logo, card);
+            return ResponseEntity.ok(savedCard);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     // 템플릿 가져오기
     @GetMapping("/templates")
@@ -95,27 +114,5 @@ public class CardController {
         }
     }
 
-    // 새 템플릿 저장
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadTemplate(@RequestParam("svgFile") MultipartFile file) {
-        try {
-            // 업로드 디렉토리 확인 및 생성
-            File uploadDirectory = new File(uploadDir);
-            if (!uploadDirectory.exists()) {
-                uploadDirectory.mkdirs();
-            }
-
-            // 파일 이름 생성 및 저장
-            String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-            File filePath = Paths.get(uploadDir, fileName).toFile();
-            file.transferTo(filePath);
-
-            // URL 반환
-            String fileUrl = "http://localhost:8082/template/" + fileName;
-            return ResponseEntity.ok(fileUrl);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("파일 업로드 중 오류가 발생했습니다.");
-        }
-    }
 
 }
