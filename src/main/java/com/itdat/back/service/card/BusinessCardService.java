@@ -8,18 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 @Service
 public class BusinessCardService {
 
-    private static final String LOGO_DIRECTORY = "logo/";
+    private final String UPLOAD_DIR = "uploads/";
 
     @Autowired
     private UserRepository userRepository;
@@ -51,30 +49,30 @@ public class BusinessCardService {
         return businessCardRepository.save(card);
     }
 
+    // 앱 - 명함 뒷면 저장
+    public BusinessCard saveBusinessCardWithLogo(MultipartFile logo, BusinessCard card) throws IOException {
+
+        if (logo != null && !logo.isEmpty()) {
+            String fileName = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
+            String filePath = UPLOAD_DIR + fileName;
+
+            File dest = new File(filePath);
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            logo.transferTo(dest);
+
+            card.setLogoPath(filePath);
+        }
+
+        return businessCardRepository.save(card);
+    }
+
+
     // 명함 가져오기
     public List<BusinessCard> getBusinessCardsByUserEmail(String userEmail) {
         return businessCardRepository.findByUserEmail(userEmail);
     }
 
-    // 로고 파일 저장
-    public String saveLogoFile(MultipartFile logo) throws IOException {
-        if (logo.isEmpty()) {
-            throw new IllegalArgumentException("로고 파일이 비어 있습니다.");
-        }
 
-        // 파일 저장 경로 생성
-        String fileName = UUID.randomUUID() + "_" + logo.getOriginalFilename();
-        Path filePath = Paths.get(LOGO_DIRECTORY, fileName);
-
-        // 디렉토리가 없으면 생성
-        if (!Files.exists(filePath.getParent())) {
-            Files.createDirectories(filePath.getParent());
-        }
-
-        // 파일 저장
-        Files.write(filePath, logo.getBytes());
-
-        // 파일 URL 반환
-        return "/uploads/" + fileName;
-    }
 }

@@ -61,8 +61,8 @@ public class BusinessCard {
     @JsonProperty("cardSide")
     private CardSide cardSide;
 
-    @Column(name = "logo_url")
-    private String logoUrl;
+    @Column(name = "logo_path")
+    private String logoPath;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -76,7 +76,7 @@ public class BusinessCard {
     public BusinessCard() {
     }
 
-    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.cardId = cardId;
         this.userEmail = userEmail;
         this.cardNo = cardNo;
@@ -92,7 +92,7 @@ public class BusinessCard {
         this.appTemplate = appTemplate;
         this.webTemplate = webTemplate;
         this.cardSide = cardSide;
-        this.logoUrl = logoUrl;
+        this.logoPath = logoPath;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -217,12 +217,12 @@ public class BusinessCard {
         this.cardSide = cardSide;
     }
 
-    public String getLogoUrl() {
-        return logoUrl;
+    public String getLogoPath() {
+        return logoPath;
     }
 
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
+    public void setLogoPath(String logoPath) {
+        this.logoPath = logoPath;
     }
 
     public LocalDateTime getCreatedAt() {
