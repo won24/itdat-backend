@@ -45,7 +45,7 @@ public class QnaController {
         }
     }
 
-    @GetMapping("/selected-qna-list")
+    @GetMapping("/selected-qna")
     public ResponseEntity<Object> getSelectedQnaList(@RequestParam int selectedId) {
         System.out.println("selectedId = " + selectedId);
 
@@ -90,6 +90,27 @@ public class QnaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 저장되지 못 했습니다. " + e.getMessage());
         }
 
+    }
+
+    @PostMapping("/check-password")
+    public ResponseEntity<Object> checkPassword(@RequestBody Map<String,String> data) {
+        System.out.println("data = " + data);
+        int selectedQnaId = Integer.parseInt(data.get("id"));
+        String password = data.get("checkPassword");
+        Qna selectedQna = qnaRepository.findById(selectedQnaId).orElse(null);
+        // User slectedUser = userRepository.findByUserId(loginedUserId);
+
+        // 비밀번호 검증
+        try {
+            assert selectedQna != null; // selectedQna가 비어있지 않음을 보장!!
+            if(passwordEncoder.matches(password, selectedQna.getPassword())){
+                return ResponseEntity.ok(true);
+            }else {
+                return ResponseEntity.ok(false);
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
 }
