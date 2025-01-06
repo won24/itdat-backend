@@ -12,4 +12,5 @@ import java.util.List;
 public interface BusinessCardRepository extends JpaRepository<BusinessCard, Integer> {
 
     List<BusinessCard> findByUserEmail(String userEmail);
+    List<BusinessCard> findByIsPublicTrue();
 }

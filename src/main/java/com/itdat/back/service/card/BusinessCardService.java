@@ -74,5 +74,4 @@ public class BusinessCardService {
         return businessCardRepository.findByUserEmail(userEmail);
     }
 
-
 }

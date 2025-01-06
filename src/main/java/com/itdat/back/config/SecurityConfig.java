@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/admin/users").hasRole("ADMIN")
                         .requestMatchers("/qna/**").permitAll()
+                        .requestMatchers("/card/public/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
