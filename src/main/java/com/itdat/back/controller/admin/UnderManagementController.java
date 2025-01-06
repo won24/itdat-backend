@@ -82,6 +82,9 @@ public class UnderManagementController {
     public ResponseEntity<Object> reportUser(@RequestBody ReportUserDTO reportUserDTO) {
         // 사용자로부터 특정 유저의 아이디와 설명(신고 이유) 그리고 신고 당사자의 아이디를 받아낸다.
         // 상기 정보들에 현재 시간을 추가해 ReportUser 엔티티에 추가한다.
+        // 아울러 해당 아이디의 신고당한 횟수를 카운트하여
+        //  - ReportUser 엔티티를 해당 아이디로 조회하여 조회된 리스트의 카운트를 인트로 받아낸다. -
+        // UnderManagement 엔티티의 cumulativeCount에 그 값을 저장한다.
 
         System.out.println("reportUserDTO = " + reportUserDTO);
 

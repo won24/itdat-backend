@@ -2,6 +2,7 @@ package com.itdat.back.controller.qna;
 
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.qna.Qna;
+import com.itdat.back.entity.qna.QnaCategory;
 import com.itdat.back.model.dto.QnaDTO;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.repository.qna.QnaRepository;
@@ -62,19 +63,25 @@ public class QnaController {
     }
 
     @PostMapping("/write")
-    public ResponseEntity<Object> writeQna(@RequestBody QnaDTO qnaDTO) {
-        System.out.println("qnaDTO = " + qnaDTO);
-        User slectedUser = userRepository.findByUserId(qnaDTO.getLoginedUserId());
+    public ResponseEntity<Object> writeQna(@RequestBody Map<String,Object> qnaData) {
+        System.out.println("qnaData asd  = " + qnaData);
+        User slectedUser = userRepository.findByUserId(qnaData.get("loginedUserId").toString());
 
         Qna createdQna = new Qna();
-        createdQna.setTitle(qnaDTO.getTitle());
-        createdQna.setContents(qnaDTO.getContents());
+        createdQna.setTitle(qnaData.get("title").toString());
+        createdQna.setContents(qnaData.get("contents").toString());
         createdQna.setUser(slectedUser);
         createdQna.setCreateDateAt(LocalDateTime.now());
         createdQna.setUpdateAt(LocalDateTime.now());
-        createdQna.setSecret(qnaDTO.isSecret());
-        createdQna.setPassword(passwordEncoder.encode(qnaDTO.getPassword()));
-        createdQna.setCategory(qnaDTO.getCategory());
+//        System.out.println("qnaDTO.isSecret() = " + qnaDTO.isSecret());
+        createdQna.setSecret((Boolean) qnaData.get("isSecret"));
+      if((Boolean) qnaData.get("isSecret")){
+          createdQna.setPassword(passwordEncoder.encode(qnaData.get("password").toString()));
+      }else {
+          createdQna.setPassword(null);
+      }
+//        createdQna.setPassword(passwordEncoder.encode(qnaData.get("password").toString()));
+        createdQna.setCategory(QnaCategory.valueOf(qnaData.get("category").toString()));
 
         try {
             qnaRepository.save(createdQna);

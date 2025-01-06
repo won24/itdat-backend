@@ -144,8 +144,8 @@ public class UserController {
             @RequestParam("type") String type,
             @RequestParam("value") String value) {
 
-        System.out.println("받은 유저 type: " + type);
-        System.out.println("받은 유저 value: " + value);
+//        System.out.println("받은 유저 type: " + type);
+//        System.out.println("받은 유저 value: " + value);
 
         boolean isAvailable = false;
 

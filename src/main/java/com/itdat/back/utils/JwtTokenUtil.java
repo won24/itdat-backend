@@ -27,6 +27,15 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    // 아이디 추출 추후 생성
+    public String extractUserId(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
     // 토큰에서 이메일 추출
     public String extractEmail(String token) {
         return Jwts.parserBuilder()
