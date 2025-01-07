@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @Entity
@@ -72,11 +73,14 @@ public class BusinessCard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic; // 명함 공개 여부
+
 
     public BusinessCard() {
     }
 
-    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoPath, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isPublic) {
         this.cardId = cardId;
         this.userEmail = userEmail;
         this.cardNo = cardNo;
@@ -95,6 +99,7 @@ public class BusinessCard {
         this.logoPath = logoPath;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isPublic = isPublic;
     }
 
     public Integer getCardId() {
@@ -240,4 +245,62 @@ public class BusinessCard {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    @Override
+    public String toString() {
+        return "BusinessCard{" +
+                "cardId=" + cardId +
+                ", userEmail='" + userEmail + '\'' +
+                ", cardNo=" + cardNo +
+                ", userName='" + userName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", companyNumber='" + companyNumber + '\'' +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", companyFax='" + companyFax + '\'' +
+                ", department='" + department + '\'' +
+                ", position='" + position + '\'' +
+                ", appTemplate='" + appTemplate + '\'' +
+                ", webTemplate='" + webTemplate + '\'' +
+                ", cardSide=" + cardSide +
+                ", logoPath='" + logoPath + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", isPublic=" + isPublic +
+                '}';
+    }
+
+    public static BusinessCard fromJson(Map<String, Object> json) {
+        return new BusinessCard(
+                null, // cardId는 서버에서 생성되므로 null로 설정
+                (String) json.getOrDefault("userEmail", ""),
+                (Integer) json.getOrDefault("cardNo", 0),
+                (String) json.getOrDefault("userName", ""),
+                (String) json.getOrDefault("phone", ""),
+                (String) json.getOrDefault("email", ""),
+                (String) json.getOrDefault("companyName", ""),
+                (String) json.getOrDefault("companyNumber", ""),
+                (String) json.getOrDefault("companyAddress", ""),
+                (String) json.getOrDefault("companyFax", ""),
+                (String) json.getOrDefault("department", ""),
+                (String) json.getOrDefault("position", ""),
+                (String) json.getOrDefault("appTemplate", ""),
+                (String) json.getOrDefault("webTemplate", ""),
+                CardSide.valueOf((String) json.getOrDefault("cardSide", "FRONT")), // 기본값: FRONT
+                (String) json.getOrDefault("logoPath", ""),
+                LocalDateTime.now(), // 기본 생성 시간
+                LocalDateTime.now(), // 기본 업데이트 시간
+                (boolean) json.getOrDefault("isPublic", false) // 기본값: false
+        );
+    }
+
 }
