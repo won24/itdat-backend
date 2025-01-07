@@ -39,7 +39,11 @@ dependencies {
 	implementation 'com.google.http-client:google-http-client-apache-v2:1.40.1'
 	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 	implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
-	implementation 'com.google.http-client:google-http-client-jackson2:1.42.3'}
+	implementation 'com.google.http-client:google-http-client-jackson2:1.42.3'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
+}
 
 tasks.named('test') {
 	useJUnitPlatform()

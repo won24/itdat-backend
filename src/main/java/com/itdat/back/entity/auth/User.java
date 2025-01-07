@@ -65,7 +65,6 @@ import java.time.LocalDateTime;
         @Column(name = "provider_type", nullable = false)
         private ProviderType providerType = ProviderType.MANUAL;
 
-
         @Column(updatable = false)
         private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 
@@ -265,6 +264,7 @@ import java.time.LocalDateTime;
         public void setUpdatedAt(LocalDateTime updatedAt) {
             this.updatedAt = updatedAt;
         }
+
 
         @Override
         public String toString() {

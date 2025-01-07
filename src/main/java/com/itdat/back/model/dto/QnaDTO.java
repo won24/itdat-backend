@@ -1,65 +1,33 @@
-package com.itdat.back.entity.qna;
+package com.itdat.back.model.dto;
 
 import com.itdat.back.entity.auth.User;
+import com.itdat.back.entity.qna.QnaCategory;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "qna")
-public class Qna {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "title")
+public class QnaDTO {
     private String title;
-
-    @Column(name = "contents")
     private String contents;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
-    private User user;
-
-    @Column(name = "create_date_at")
+    private String loginedUserId;
     private LocalDateTime createDateAt;
-
-    @Column(name = "update_at")
     private LocalDateTime updateAt;
-
-    @Column(name = "is_secret")
     private boolean isSecret;
-
-    @Column(name = "password")
     private String password;
-
-    @Column(name = "category", columnDefinition = "ENUM('ETC', 'NFC', 'MERCHANDISE', 'APP', 'ACCOUNT')")
-    @Enumerated(EnumType.STRING)
     private QnaCategory category;
 
-    public Qna() {
+    public QnaDTO() {
     }
 
-    public Qna(int id, String title, String contents, User user, LocalDateTime createDateAt, LocalDateTime updateAt, boolean isSecret, String password, QnaCategory category) {
-        this.id = id;
+    public QnaDTO(String title, String contents, String loginedUserId, LocalDateTime createDateAt, LocalDateTime updateAt, boolean isSecret, String password, QnaCategory category) {
         this.title = title;
         this.contents = contents;
-        this.user = user;
+        this.loginedUserId = loginedUserId;
         this.createDateAt = createDateAt;
         this.updateAt = updateAt;
         this.isSecret = isSecret;
         this.password = password;
         this.category = category;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTitle() {
@@ -78,12 +46,12 @@ public class Qna {
         this.contents = contents;
     }
 
-    public User getUser() {
-        return user;
+    public String getLoginedUserId() {
+        return loginedUserId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setLoginedUserId(String loginedUserId) {
+        this.loginedUserId = loginedUserId;
     }
 
     public LocalDateTime getCreateDateAt() {
@@ -128,11 +96,10 @@ public class Qna {
 
     @Override
     public String toString() {
-        return "Qna{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+        return "QnaDTO{" +
+                "title='" + title + '\'' +
                 ", contents='" + contents + '\'' +
-                ", user=" + user +
+                ", loginedUserId='" + loginedUserId + '\'' +
                 ", createDateAt=" + createDateAt +
                 ", updateAt=" + updateAt +
                 ", isSecret=" + isSecret +

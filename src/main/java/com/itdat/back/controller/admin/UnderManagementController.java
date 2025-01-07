@@ -82,6 +82,9 @@ public class UnderManagementController {
     public ResponseEntity<Object> reportUser(@RequestBody ReportUserDTO reportUserDTO) {
         // 사용자로부터 특정 유저의 아이디와 설명(신고 이유) 그리고 신고 당사자의 아이디를 받아낸다.
         // 상기 정보들에 현재 시간을 추가해 ReportUser 엔티티에 추가한다.
+        // 아울러 해당 아이디의 신고당한 횟수를 카운트하여
+        //  - ReportUser 엔티티를 해당 아이디로 조회하여 조회된 리스트의 카운트를 인트로 받아낸다. -
+        // UnderManagement 엔티티의 cumulativeCount에 그 값을 저장한다.
 
         System.out.println("reportUserDTO = " + reportUserDTO);
 
@@ -118,12 +121,13 @@ public class UnderManagementController {
         String email = jwtTokenUtil.extractEmail(jwtToken); // 해당 토큰에서 email 추출
 
         User user = userRepository.findByUserEmail(email); // email로 해당 유저의 정보를 추출(ADMIN 권한을 이제 알 수 있다.)
-        if (user.getRole().equals(ADMIN)) {
-            return ResponseEntity.ok(true); // 해당 유저의 권한이 ADMIN이면 true를 리턴
-            // List<User> adminUsers = underManagementService.getAdminUsers();
-        } else {
-            return ResponseEntity.ok(false); // 해당 유저의 권한이 ADMIN이 아니면 false를 리턴
-        }
+        return ResponseEntity.ok(user);
+//        if (user.getRole().equals(ADMIN)) {
+//            return ResponseEntity.ok(true); // 해당 유저의 권한이 ADMIN이면 true를 리턴
+//            // List<User> adminUsers = underManagementService.getAdminUsers();
+//        } else {
+//            return ResponseEntity.ok(false); // 해당 유저의 권한이 ADMIN이 아니면 false를 리턴
+//        }
     }
 
     /**
@@ -198,15 +202,11 @@ public class UnderManagementController {
             for (ReportUser report : reports) {
                 reportUserRepository.delete(report);
             }
-
-
             underManagementRepository.delete(selectedInfo);
-
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok("해당 데이터가 정상적으로 삭제되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다.");
         }
-
     }
 }
