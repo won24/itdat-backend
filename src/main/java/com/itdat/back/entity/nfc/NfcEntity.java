@@ -3,7 +3,7 @@ package com.itdat.back.entity.nfc;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "nfc_info")
+@Table(name = "my_wallet")
 public class NfcEntity {
 
     @Id
