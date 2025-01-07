@@ -1,12 +1,15 @@
 package com.itdat.back.controller.qna;
 
+import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
+import com.itdat.back.entity.auth.UserStatus;
 import com.itdat.back.entity.qna.Qna;
 import com.itdat.back.entity.qna.QnaCategory;
 import com.itdat.back.model.dto.QnaDTO;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.repository.qna.QnaRepository;
 import com.itdat.back.service.qna.QnaService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +46,17 @@ public class QnaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR/*500, 500번대는 서버문제*/)
                     .body("서버측에서 문제가 발생하였습니다. 에러: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/bring-list-by-logined-user-id")
+    public ResponseEntity<Object> getBringQnaByLoginedUserId(@RequestParam String currentUserId) {
+        List<Qna> qnaListOfUserId = qnaService.findByUserID(currentUserId);
+        if (qnaListOfUserId != null && !qnaListOfUserId.isEmpty()) {
+            return ResponseEntity.ok(qnaListOfUserId);
+        } else {
+            return ResponseEntity.ok("작성한 글이 없습니다.");
+        }
+
     }
 
     @GetMapping("/selected-qna")
@@ -89,7 +103,6 @@ public class QnaController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 저장되지 못 했습니다. " + e.getMessage());
         }
-
     }
 
     @PostMapping("/check-password")
@@ -113,6 +126,29 @@ public class QnaController {
         }
     }
 
+    @GetMapping("/check-permission-to-edit")
+    public ResponseEntity<Object> checkPermissionToEdit(@RequestParam int postId,
+                                                        @RequestParam String currentUserId) {
+        Qna selectedQna = qnaRepository.findById(postId).orElse(null);
+        User currentUser = userRepository.findByUserId(currentUserId);
+
+        System.out.println("currentUserId = " + currentUserId);
+        System.out.println("currentUser = " + currentUser);
+
+        try {
+            if(selectedQna.getUser().getUserId().equals(currentUserId)
+                    || currentUser.getRole().equals(Role.ADMIN)) {
+                return ResponseEntity.ok(true);
+            }else {
+                return ResponseEntity.ok(false);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("서버측의 문제로 서버로부터 게시물의 수정 권한을 확인하지 못했습니다." + e.getMessage());
+        }
+    }
+
+    @Transactional
     @PostMapping("/update")
     public ResponseEntity<Object> updateQna(@RequestBody Map<String, Object> qnaData) {
         System.out.println("qnaData asd  = " + qnaData);
@@ -134,7 +170,30 @@ public class QnaController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 저장되지 못 했습니다. " + e.getMessage());
         }
-
     }
 
+    @Transactional
+    @DeleteMapping("/selected-delete")
+    public ResponseEntity<Object> deleteQna(@RequestParam int selectedId,
+                                            @RequestParam String userId) {
+        System.out.println("selectedId = " + selectedId);
+        System.out.println("userId = " + userId);
+        int postId = selectedId;
+        String currentUserId = userId;
+
+        Qna selectedQna = qnaRepository.findById(postId).orElse(null);
+        User currentUser = userRepository.findByUserId(currentUserId);
+
+        try {
+            if (selectedQna.getUser().getUserId().equals(currentUserId)
+                    || currentUser.getRole().equals(Role.ADMIN)) {
+                qnaRepository.delete(selectedQna);
+                return ResponseEntity.ok(true);
+            } else {
+                return ResponseEntity.ok(false);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 삭제되지 못 했습니다. " + e.getMessage());
+        }
+    }
 }

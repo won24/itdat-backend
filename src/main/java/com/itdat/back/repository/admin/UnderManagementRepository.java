@@ -20,6 +20,8 @@ public interface UnderManagementRepository extends JpaRepository<UnderManagement
 
     UnderManagement findByUserId(int reportedUserId);
 
+    UnderManagement findByUser_UserId(String currentUserId);
+
     // UnderManagement findByReportedUserId(String reportedUserId);
 
     // UnderManagement findByUserId(User user);
