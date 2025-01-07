@@ -12,4 +12,6 @@ public interface FolderRepository extends JpaRepository<Folder, Integer> {
     Optional<Folder> findByUserEmailAndFolderName(String userEmail, String folderName);
 
     List<Folder> findByUserEmail(String userEmail);
+
+    Optional<Object> findByFolderName(String folderName);
 }

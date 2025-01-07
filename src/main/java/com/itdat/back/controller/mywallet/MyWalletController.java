@@ -43,6 +43,12 @@ public class MyWalletController {
         return ResponseEntity.ok(folders);
     }
 
+    @GetMapping("/folderCards")
+    public ResponseEntity<List<MyWallet>> getFolderCards(@RequestParam String folderName) {
+        List<MyWallet> cards = myWalletService.getCardsByFolderName(folderName);
+        return ResponseEntity.ok(cards);
+    }
+
     @PutMapping("/folders/update")
     public ResponseEntity<String> updateFolderName(@RequestBody FolderUpdateRequest request) {
         myWalletService.updateFolderName(request.getUserEmail(), request.getOldFolderName(), request.getNewFolderName());

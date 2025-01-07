@@ -10,6 +10,7 @@ import com.itdat.back.repository.mywallet.MyWalletRepository;
 import com.itdat.back.entity.mywallet.Folder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,4 +57,18 @@ public class MyWalletService {
         folder.setFolderName(newFolderName);
         folderRepository.save(folder);
     }
+
+    public List<MyWallet> getCardsByFolderName(String folderName) {
+        Folder folder = (Folder) folderRepository.findByFolderName(folderName)
+                .orElseThrow(() -> new RuntimeException("Folder not found"));
+        List<FolderCard> folderCards = folderCardRepository.findByFolderId(folder.getId());
+
+        List<MyWallet> cards = new ArrayList<>();
+        for (FolderCard folderCard : folderCards) {
+            myWalletRepository.findById(folderCard.getCardId())
+                    .ifPresent(cards::add);
+        }
+        return cards;
+    }
+
 }
