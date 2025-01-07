@@ -1,7 +1,6 @@
 server:
   ssl:
     enabled: false
-
   port: 8082
 #  port: 8001
   address: 0.0.0.0
@@ -19,6 +18,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 10MB # 업로드할 파일의 최대 크기
+      max-request-size: 10MB # 요청의 최대 크기 (파일 크기 + 기타 데이터 포함)
 
   security:
     ignored: /templates/** # Spring Security가 이 경로를 무시하도록 설정

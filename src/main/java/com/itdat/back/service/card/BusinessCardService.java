@@ -10,14 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Service
 public class BusinessCardService {
 
-    private final String UPLOAD_DIR = "uploads/";
 
     @Autowired
     private UserRepository userRepository;
@@ -45,26 +49,12 @@ public class BusinessCardService {
             throw new IllegalArgumentException("명함에 연결된 유효한 사용자가 필요합니다.");
         }
 
-        // 명함 저장
         return businessCardRepository.save(card);
     }
 
+
     // 앱 - 명함 뒷면 저장
-    public BusinessCard saveBusinessCardWithLogo(MultipartFile logo, BusinessCard card) throws IOException {
-
-        if (logo != null && !logo.isEmpty()) {
-            String fileName = System.currentTimeMillis() + "_" + logo.getOriginalFilename();
-            String filePath = UPLOAD_DIR + fileName;
-
-            File dest = new File(filePath);
-            if (!dest.getParentFile().exists()) {
-                dest.getParentFile().mkdirs();
-            }
-            logo.transferTo(dest);
-
-            card.setLogoPath(filePath);
-        }
-
+    public BusinessCard saveBusinessCardWithLogo(BusinessCard card) throws IOException {
         return businessCardRepository.save(card);
     }
 
