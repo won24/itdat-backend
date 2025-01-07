@@ -1,5 +1,7 @@
 package com.itdat.back.controller.card;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.entity.card.Template;
@@ -15,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.StandardCopyOption;
+import java.util.*;
 
 
 @RestController
@@ -90,17 +92,80 @@ public class CardController {
     }
 
     // 앱 - 명함 뒷면 저장
-    @PostMapping("/save/back")
-    public ResponseEntity<BusinessCard> saveBackSide(
-            @RequestParam("logo") MultipartFile logo,
-            @RequestParam("businessCard") BusinessCard card) {
+    @PostMapping("/save/logo")
+    public ResponseEntity<String> saveBusinessCardWithLogo(
+            @RequestPart("cardInfo") String cardInfoJson,
+            @RequestPart(value = "logo", required = false) MultipartFile logo
+    ) {
         try {
-            BusinessCard savedCard = businessCardService.saveBusinessCardWithLogo(logo, card);
-            return ResponseEntity.ok(savedCard);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            // JSON 파싱
+            ObjectMapper objectMapper = new ObjectMapper();
+            BusinessCard businessCard;
+            try {
+                businessCard = objectMapper.readValue(cardInfoJson, BusinessCard.class);
+            } catch (JsonProcessingException e) {
+                return ResponseEntity.badRequest().body("Invalid cardInfo JSON");
+            }
+
+            try {
+                // 파일 형식 및 크기 검증
+                validateFile(logo);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
+            }
+
+            // 로고 파일 저장
+            if (logo != null && !logo.isEmpty()) {
+                String logoPath = saveFile(logo);
+                businessCard.setLogoPath(logoPath);
+            }
+
+            businessCardService.saveBusinessCardWithLogo(businessCard);
+
+            return ResponseEntity.ok("명함 저장 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("명함 저장 실패: " + e.getMessage());
         }
     }
+
+    private String saveFile(MultipartFile file) {
+        try {
+            String uploadDir = "/uploads/logos";
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            Path uploadPath = Paths.get(uploadDir);
+
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return filePath.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("파일 저장 실패", e);
+        }
+    }
+
+    private void validateFile(MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("파일이 비어 있습니다.");
+        }
+
+        String contentType = file.getContentType();
+        List<String> allowedMimeTypes = Arrays.asList("image/png", "image/jpeg", "image/gif");
+
+        if (!allowedMimeTypes.contains(contentType)) {
+            throw new IllegalArgumentException("허용되지 않는 파일 형식입니다: " + contentType);
+        }
+
+        long maxSize = 5 * 1024 * 1024; // 5MB
+        if (file.getSize() > maxSize) {
+            throw new IllegalArgumentException("파일 크기가 5MB를 초과했습니다.");
+        }
+    }
+
 
 
     // 템플릿 가져오기
@@ -113,6 +178,5 @@ public class CardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
-
 
 }

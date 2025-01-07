@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @Entity
@@ -72,11 +73,14 @@ public class BusinessCard {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_public", nullable = false)
+    private boolean isPublic; // 명함 공개 여부
+
 
     public BusinessCard() {
     }
 
-    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoPath, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoPath, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isPublic) {
         this.cardId = cardId;
         this.userEmail = userEmail;
         this.cardNo = cardNo;
@@ -95,6 +99,7 @@ public class BusinessCard {
         this.logoPath = logoPath;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isPublic = isPublic;
     }
 
     public Integer getCardId() {
@@ -240,4 +245,38 @@ public class BusinessCard {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    @Override
+    public String toString() {
+        return "BusinessCard{" +
+                "cardId=" + cardId +
+                ", userEmail='" + userEmail + '\'' +
+                ", cardNo=" + cardNo +
+                ", userName='" + userName + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", companyName='" + companyName + '\'' +
+                ", companyNumber='" + companyNumber + '\'' +
+                ", companyAddress='" + companyAddress + '\'' +
+                ", companyFax='" + companyFax + '\'' +
+                ", department='" + department + '\'' +
+                ", position='" + position + '\'' +
+                ", appTemplate='" + appTemplate + '\'' +
+                ", webTemplate='" + webTemplate + '\'' +
+                ", cardSide=" + cardSide +
+                ", logoPath='" + logoPath + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", isPublic=" + isPublic +
+                '}';
+    }
+
 }
