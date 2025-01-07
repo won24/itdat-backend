@@ -41,6 +41,7 @@ public class UserService {
             throw new RuntimeException("존재하지 않는 사용자입니다.");
         }
         User user = optionalUser.get();
+        System.out.println(user.getPassword());
         // 비밀번호 검증
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
@@ -48,7 +49,7 @@ public class UserService {
 
         // 토큰 생성 및 반환
         String token = jwtTokenUtil.generateToken(user.getUserEmail());
-        System.out.println("토큰"+token);
+        System.out.println("토큰");
         return token;
     }
 
