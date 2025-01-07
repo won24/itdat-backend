@@ -279,28 +279,4 @@ public class BusinessCard {
                 '}';
     }
 
-    public static BusinessCard fromJson(Map<String, Object> json) {
-        return new BusinessCard(
-                null, // cardId는 서버에서 생성되므로 null로 설정
-                (String) json.getOrDefault("userEmail", ""),
-                (Integer) json.getOrDefault("cardNo", 0),
-                (String) json.getOrDefault("userName", ""),
-                (String) json.getOrDefault("phone", ""),
-                (String) json.getOrDefault("email", ""),
-                (String) json.getOrDefault("companyName", ""),
-                (String) json.getOrDefault("companyNumber", ""),
-                (String) json.getOrDefault("companyAddress", ""),
-                (String) json.getOrDefault("companyFax", ""),
-                (String) json.getOrDefault("department", ""),
-                (String) json.getOrDefault("position", ""),
-                (String) json.getOrDefault("appTemplate", ""),
-                (String) json.getOrDefault("webTemplate", ""),
-                CardSide.valueOf((String) json.getOrDefault("cardSide", "FRONT")), // 기본값: FRONT
-                (String) json.getOrDefault("logoPath", ""),
-                LocalDateTime.now(), // 기본 생성 시간
-                LocalDateTime.now(), // 기본 업데이트 시간
-                (boolean) json.getOrDefault("isPublic", false) // 기본값: false
-        );
-    }
-
 }
