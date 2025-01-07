@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "my_wallet")
-public class NfcEntity {
+public class MyWallet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +22,9 @@ public class NfcEntity {
     @Column(name = "description")
     private String description;
 
-    public NfcEntity() {}
+    public MyWallet() {}
 
-    public NfcEntity(String userEmail, String myEmail, int cardNo, String description) {
+    public MyWallet(String userEmail, String myEmail, int cardNo, String description) {
         this.userEmail = userEmail;
         this.myEmail = myEmail;
         this.cardNo = cardNo;
