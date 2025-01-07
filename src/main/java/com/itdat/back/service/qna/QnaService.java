@@ -16,4 +16,8 @@ public class QnaService {
     public List<Qna> getAllQnaList() {
         return qnaRepository.findAll();
     }
+
+    public Qna findById(int selectedId) {
+        return qnaRepository.findById(selectedId).orElse(null);
+    }
 }

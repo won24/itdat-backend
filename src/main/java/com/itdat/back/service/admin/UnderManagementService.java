@@ -54,7 +54,10 @@ public class UnderManagementService {
 
     /** 사용자가 특정 유저를 신고하는 서비스 */
     public boolean reportUser(ReportUserDTO reportUserDTO) {
+        // reportUserDTO.getReportedUserId(); = 스트링이다.
         ReportUser reportUser = new ReportUser();
+        User selectedUser = userRepository.findByUserId(reportUserDTO.getReportedUserId());
+        UnderManagement selectedUnderManagement = underManagementRepository.findByUserId(selectedUser.getId());
 
         reportUser.setReportedUserId(reportUserDTO.getReportedUserId());
         reportUser.setDescription(reportUserDTO.getDescription());
@@ -62,6 +65,16 @@ public class UnderManagementService {
         reportUser.setReportDateAt(reportUserDTO.getReportDateAt());
 
         ReportUser insertedReportUser = reportUserRepository.save(reportUser);
+
+        // 신고된 내용이 저장됐으니 해당 유저의 신고 누적 횟수를 유저 정보에 대입하자!!
+        // 신고된 유저의 모든 신고 리스트 조회
+        List<ReportUser> reportList = reportUserRepository.findAllByReportedUserId(reportUserDTO.getReportedUserId());
+        // 신고 횟수를 계산하여 담는 변수
+        int reportCount = reportList.size();
+        // 유저 정보에 카운트를 대입
+        selectedUnderManagement.setCumulativeCount(reportCount);
+        // 저장~!!!!!!
+        underManagementRepository.save(selectedUnderManagement);
 
         if (insertedReportUser == null) {
             return false;
