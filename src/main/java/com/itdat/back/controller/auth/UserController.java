@@ -44,12 +44,6 @@ public class UserController {
     @Autowired
     private NaverWorksAuthService naverWorksAuthService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
-
     /**
      * 사용자 로그인
      *
@@ -215,6 +209,21 @@ public class UserController {
             System.err.println("Error fetching access token: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("message", "Failed to fetch access token"));
+        }
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<?> getUserInfoByEmail(@RequestParam String email) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByUserEmail(email));
+        if (user.isPresent()) {
+            User foundUser = user.get();
+            Map<String, String> response = new HashMap<>();
+            response.put("userName", foundUser.getUserName());
+            response.put("companyName", foundUser.getCompany());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("User not found");
         }
     }
 
