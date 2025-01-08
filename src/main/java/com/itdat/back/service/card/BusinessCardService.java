@@ -6,6 +6,7 @@ import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.repository.card.BusinessCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -64,4 +65,14 @@ public class BusinessCardService {
         return businessCardRepository.findByUserEmail(userEmail);
     }
 
+    @Transactional
+    public boolean deleteCard(String email) {
+        List<BusinessCard> cards = businessCardRepository.findByUserEmail(email);
+        if (cards.isEmpty()) {
+            return false;
+        } else {
+            businessCardRepository.deleteByUserEmail(email);
+            return true;
+        }
+    }
 }

@@ -3,12 +3,15 @@ package com.itdat.back.service.auth;
 import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.SocialLogin;
 import com.itdat.back.entity.auth.User;
+import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.repository.auth.SocialLoginRepository;
 import com.itdat.back.repository.auth.UserRepository;
+import com.itdat.back.repository.card.BusinessCardRepository;
 import com.itdat.back.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -20,17 +23,21 @@ public class UserService {
     private final SocialLoginRepository socialLoginRepository;
     private final PasswordEncoder passwordEncoder;
     private final NaverWorksEmailService emailService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
     private final Map<String, VerificationCode> verificationCodes = new HashMap<>(); // 인증 코드와 만료 시간 관리
 
-    public UserService(UserRepository userRepository, SocialLoginRepository socialLoginRepository, PasswordEncoder passwordEncoder, NaverWorksEmailService emailService) {
+    @Autowired
+    public UserService(UserRepository userRepository,
+                       SocialLoginRepository socialLoginRepository,
+                       PasswordEncoder passwordEncoder,
+                       NaverWorksEmailService emailService,
+                       JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
         this.socialLoginRepository = socialLoginRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     public String login(String email, String password) {
@@ -120,6 +127,33 @@ public class UserService {
         return "안녕하세요,\n\n아래 인증 코드를 이용해 회원가입을 진행해주시기 바랍니다.\n\n" +
                 code + "\n\n감사합니다,\nITDAT Team";
     }
+
+    public User findByUserEmail(String email) {
+        User user = userRepository.findByUserEmail(email);
+        return user;
+    }
+
+    public boolean findByUserEmailPassword(String email, String password) {
+        User user = userRepository.findByUserEmail(email);
+        return passwordEncoder.matches(password, user.getPassword());
+
+    }
+
+    public boolean findByUserPasswordchange(String email, String password) {
+        User user = userRepository.findByUserEmail(email);
+        System.out.println(password);
+        user.setPassword(passwordEncoder.encode(password));
+        System.out.println(passwordEncoder.encode(password));
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean deleteAccount(String email) {
+        User user = userRepository.findByUserEmail(email);
+        userRepository.delete(user);
+        return true;
+    }
+
 
     // 내부 클래스: 인증 코드와 만료 시간 관리
     private static class VerificationCode {
