@@ -1,6 +1,6 @@
 package com.itdat.back.service.nfc;
 
-import com.itdat.back.entity.nfc.NfcEntity;
+import com.itdat.back.entity.nfc.MyWallet;
 import com.itdat.back.repository.nfc.NfcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,8 +11,8 @@ public class NfcService {
     @Autowired
     private NfcRepository nfcRepository;
 
-    public NfcEntity saveNfcInfo(String userEmail, int cardNo,String myEmail) {
-        NfcEntity nfcEntity = new NfcEntity();
+    public MyWallet saveNfcInfo(String userEmail, int cardNo, String myEmail) {
+        MyWallet nfcEntity = new MyWallet();
         nfcEntity.setUserEmail(userEmail);
         nfcEntity.setCardNo(cardNo);
         nfcEntity.setMyEmail(myEmail);

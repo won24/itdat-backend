@@ -131,7 +131,6 @@ public class CardController {
 
     private String saveFile(MultipartFile file) {
         try {
-            String uploadDir = "/uploads/logos";
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path uploadPath = Paths.get(uploadDir);
 

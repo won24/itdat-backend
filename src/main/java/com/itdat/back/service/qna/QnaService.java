@@ -20,4 +20,8 @@ public class QnaService {
     public Qna findById(int selectedId) {
         return qnaRepository.findById(selectedId).orElse(null);
     }
+
+    public List<Qna> findByUserID(String currentUserId) {
+        return qnaRepository.findByUser_UserId(currentUserId); // User 클래스의 userId 필드에 접근하기 위해 _를 사용했다.
+    }
 }

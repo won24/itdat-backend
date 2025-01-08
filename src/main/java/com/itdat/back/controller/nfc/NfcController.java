@@ -28,7 +28,7 @@ public class NfcController {
             String myEmail = cardInfo.get("myEmail");
             System.out.println(userEmail+" "+cardNo);
 
-            NfcEntity nfcEntity = nfcService.saveNfcInfo(userEmail, cardNo,myEmail);
+            MyWallet nfcEntity = nfcService.saveNfcInfo(userEmail, cardNo,myEmail);
 
             return ResponseEntity.ok("카드 정보가 성공적으로 처리되었습니다. ID: " + nfcEntity.getId());
         } catch (Exception e) {

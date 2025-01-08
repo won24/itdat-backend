@@ -82,17 +82,44 @@ public class UnderManagementController {
     public ResponseEntity<Object> reportUser(@RequestBody ReportUserDTO reportUserDTO) {
         // 사용자로부터 특정 유저의 아이디와 설명(신고 이유) 그리고 신고 당사자의 아이디를 받아낸다.
         // 상기 정보들에 현재 시간을 추가해 ReportUser 엔티티에 추가한다.
-        // 아울러 해당 아이디의 신고당한 횟수를 카운트하여
-        //  - ReportUser 엔티티를 해당 아이디로 조회하여 조회된 리스트의 카운트를 인트로 받아낸다. -
-        // UnderManagement 엔티티의 cumulativeCount에 그 값을 저장한다.
+        // 아울러 해당 아이디의 신고당한 횟수를 카운트할 수 있도록
+        // UnderManagement 엔티티의 reportedCount를 증가시킨다.
 
         System.out.println("reportUserDTO = " + reportUserDTO);
 
-        boolean result = underManagementService.reportUser(reportUserDTO);
-        if (result) {
-            return ResponseEntity.ok("신고되었습니다.");
+        try {
+            boolean result = underManagementService.reportUser(reportUserDTO);
+            if (result) {
+                return ResponseEntity.ok("신고되었습니다.");
+            } else {
+                return ResponseEntity.ok("신고에 실패하였습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("서버와의 통신에서 오류 발생: " + e.getMessage());
         }
-        return ResponseEntity.status(500).body("신고에 실패하였습니다.");
+    }
+
+    /** 로그인시 해당 유저의 제재 여부를 확인하는 컨트롤러 */
+    @PostMapping("/sanction-verification")
+    public ResponseEntity<Object> sanctionVerification(@RequestBody Map<String, Object> requestBody) {
+        System.out.println("requestBody = " + requestBody);
+        String currentUserId = (String) requestBody.get("userId");
+
+        boolean isStillVanned = underManagementService.checkSanction(currentUserId);
+
+        // 유저의 상태가 밴이면 true를 리턴한다.
+        return ResponseEntity.ok(isStillVanned);
+    }
+
+    /** 관리자가 특정한 유저에게 벌점을 부과하는 컨트롤러 */
+    @GetMapping("/sanctions-count-up")
+    public ResponseEntity<Object> getSanctionsCountUp(@RequestParam int userId) {
+        System.out.println("userId = " + userId);
+        int selectedUserId = userId;
+
+        boolean result = underManagementService.sanctionCountUp(selectedUserId);
+
+        return ResponseEntity.ok(result);
     }
 
     /**
