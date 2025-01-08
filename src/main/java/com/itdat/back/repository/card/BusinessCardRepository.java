@@ -13,4 +13,6 @@ public interface BusinessCardRepository extends JpaRepository<BusinessCard, Inte
 
     List<BusinessCard> findByUserEmail(String userEmail);
     List<BusinessCard> findByIsPublicTrue();
+    void deleteByUserEmail(String email);
+
 }
