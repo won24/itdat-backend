@@ -1,5 +1,6 @@
 package com.itdat.back.entity.nfc;
 
+import com.itdat.back.entity.card.BusinessCard;
 import jakarta.persistence.*;
 
 @Entity
@@ -22,6 +23,13 @@ public class MyWallet {
     @Column(name = "description")
     private String description;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "user_email", referencedColumnName = "user_email", insertable = false, updatable = false),
+            @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)
+    })
+    private BusinessCard businessCard;
+
     public MyWallet() {}
 
     public MyWallet(String userEmail, String myEmail, int cardNo, String description) {
@@ -38,6 +46,7 @@ public class MyWallet {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public String getMyEmail() {
         return myEmail;
     }
@@ -68,5 +77,13 @@ public class MyWallet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public BusinessCard getBusinessCard() {
+        return businessCard;
+    }
+
+    public void setBusinessCard(BusinessCard businessCard) {
+        this.businessCard = businessCard;
     }
 }

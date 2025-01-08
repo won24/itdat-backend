@@ -1,14 +1,12 @@
 package com.itdat.back.controller.mywallet;
 
-import com.itdat.back.entity.mywallet.CardMoveRequest;
-import com.itdat.back.entity.mywallet.Folder;
-import com.itdat.back.entity.mywallet.FolderUpdateRequest;
+import com.itdat.back.entity.mywallet.*;
 import com.itdat.back.entity.nfc.MyWallet;
 import com.itdat.back.repository.mywallet.FolderRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.itdat.back.service.mywallet.MyWalletService;
-import com.itdat.back.entity.mywallet.FolderRequest;
+
 import java.util.List;
 
 @RestController
@@ -69,5 +67,11 @@ public class MyWalletController {
     public ResponseEntity<String> moveCardToFolder(@RequestBody CardMoveRequest request) {
         myWalletService.moveCardToFolder(request);
         return ResponseEntity.ok("Card moved successfully");
+    }
+
+    @GetMapping("/allCards")
+    public ResponseEntity<List<CardInfo>> getAllCards(@RequestParam String userEmail) {
+        List<CardInfo> cards = myWalletService.getAllCards(userEmail);
+        return ResponseEntity.ok(cards);
     }
 }
