@@ -128,11 +128,6 @@ public class UserService {
                 code + "\n\n감사합니다,\nITDAT Team";
     }
 
-    public User findByUserEmail(String email) {
-        User user = userRepository.findByUserEmail(email);
-        return user;
-    }
-
     public boolean findByUserEmailPassword(String email, String password) {
         User user = userRepository.findByUserEmail(email);
         return passwordEncoder.matches(password, user.getPassword());
@@ -154,6 +149,9 @@ public class UserService {
         return true;
     }
 
+    public User findUserByEmail(String email) {
+        return userRepository.findByUserEmail(email);
+    }
 
     // 내부 클래스: 인증 코드와 만료 시간 관리
     private static class VerificationCode {
