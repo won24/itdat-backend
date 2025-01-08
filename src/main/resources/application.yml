@@ -3,13 +3,13 @@ server:
     enabled: false
   port: 8082
 #  port: 8001
+#  port: 8000
   address: 0.0.0.0
   servlet:
     encoding:
       charset: UTF-8
       enabled: true
       force: true
-#  port: 8000
 
 
 spring:
