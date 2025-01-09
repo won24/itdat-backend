@@ -1,13 +1,11 @@
 package com.itdat.back.service.mywallet;
 
-import com.itdat.back.entity.mywallet.CardMoveRequest;
-import com.itdat.back.entity.mywallet.FolderCard;
-import com.itdat.back.entity.mywallet.FolderRequest;
+import com.itdat.back.entity.card.BusinessCard;
+import com.itdat.back.entity.mywallet.*;
 import com.itdat.back.entity.nfc.MyWallet;
 import com.itdat.back.repository.mywallet.FolderCardRepository;
 import com.itdat.back.repository.mywallet.FolderRepository;
 import com.itdat.back.repository.mywallet.MyWalletRepository;
-import com.itdat.back.entity.mywallet.Folder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class MyWalletService {
 
     // 명함 가져오기
     public List<MyWallet> getCards(String myEmail) {
-        return myWalletRepository.findByUserEmail(myEmail);
+        return myWalletRepository.findByMyEmail(myEmail);
     }
 
     // 폴더 생성
@@ -69,6 +67,25 @@ public class MyWalletService {
                     .ifPresent(cards::add);
         }
         return cards;
+    }
+
+    public List<CardInfo> getAllCards(String myEmail) {
+        List<MyWallet> myWallets = myWalletRepository.findByMyEmail(myEmail);
+        List<CardInfo> cardInfoList = new ArrayList<>();
+
+        for (MyWallet myWallet : myWallets) {
+            BusinessCard businessCard = myWallet.getBusinessCard();
+            if (businessCard != null) {
+                cardInfoList.add(new CardInfo(
+                        businessCard.getUserName(),
+                        businessCard.getCompanyName(),
+                        businessCard.getUserEmail(),
+                        myWallet.getCardNo()
+                ));
+            }
+        }
+
+        return cardInfoList;
     }
 
 }

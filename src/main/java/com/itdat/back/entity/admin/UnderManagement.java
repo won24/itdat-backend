@@ -21,7 +21,7 @@ public class UnderManagement {
     private User user;
 
     @Column(name = "cumulative_count")
-    private int cumulativeCount;
+    private Integer cumulativeCount;
 
     @Column(name = "start_date_at")
     private LocalDateTime startDateAt;
@@ -32,16 +32,28 @@ public class UnderManagement {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
+    @Column(name = "reported_count")
+    private Integer reportedCount;
+
+    @Column(name = "banned_count")
+    private Integer bannedCount;
+
+    @Column(name = "demerit")
+    private Integer demerit;
+
     public UnderManagement() {
     }
 
-    public UnderManagement(int id, User user, int cumulativeCount, LocalDateTime startDateAt, LocalDateTime endDateAt, LocalDateTime updateAt) {
+    public UnderManagement(int id, User user, Integer cumulativeCount, LocalDateTime startDateAt, LocalDateTime endDateAt, LocalDateTime updateAt, Integer reportedCount, Integer bannedCount, Integer demerit) {
         this.id = id;
         this.user = user;
         this.cumulativeCount = cumulativeCount;
         this.startDateAt = startDateAt;
         this.endDateAt = endDateAt;
         this.updateAt = updateAt;
+        this.reportedCount = reportedCount;
+        this.bannedCount = bannedCount;
+        this.demerit = demerit;
     }
 
     public int getId() {
@@ -60,11 +72,11 @@ public class UnderManagement {
         this.user = user;
     }
 
-    public int getCumulativeCount() {
+    public Integer getCumulativeCount() {
         return cumulativeCount;
     }
 
-    public void setCumulativeCount(int cumulativeCount) {
+    public void setCumulativeCount(Integer cumulativeCount) {
         this.cumulativeCount = cumulativeCount;
     }
 
@@ -92,6 +104,30 @@ public class UnderManagement {
         this.updateAt = updateAt;
     }
 
+    public Integer getReportedCount() {
+        return reportedCount;
+    }
+
+    public void setReportedCount(Integer reportedCount) {
+        this.reportedCount = reportedCount;
+    }
+
+    public Integer getBannedCount() {
+        return bannedCount;
+    }
+
+    public void setBannedCount(Integer bannedCount) {
+        this.bannedCount = bannedCount;
+    }
+
+    public Integer getDemerit() {
+        return demerit;
+    }
+
+    public void setDemerit(Integer demerit) {
+        this.demerit = demerit;
+    }
+
     @Override
     public String toString() {
         return "UnderManagement{" +
@@ -101,6 +137,9 @@ public class UnderManagement {
                 ", startDateAt=" + startDateAt +
                 ", endDateAt=" + endDateAt +
                 ", updateAt=" + updateAt +
+                ", reportedCount=" + reportedCount +
+                ", bannedCount=" + bannedCount +
+                ", demerit=" + demerit +
                 '}';
     }
 }
