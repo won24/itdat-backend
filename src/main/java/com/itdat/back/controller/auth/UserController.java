@@ -72,7 +72,7 @@ public class UserController {
      * 로그아웃 엔드포인트
      *
      * @param token Authorization 헤더에 포함된 JWT 토큰
-     * @return 로그아웃 결과
+     * @return 로그아웃 결과 메시지(String 형식): "로그아웃 성공" 또는 오류 메시지
      */
     @PostMapping("/logout")
     public ResponseEntity<?> logout(@RequestHeader(value = "Authorization", required = false) String token) {
@@ -106,6 +106,17 @@ public class UserController {
         return ResponseEntity.ok(registeredUser);
     }
 
+    /**
+     * 현재 사용자 정보 조회
+     *
+     * @param email 인증된 사용자의 이메일
+     * @return 사용자 정보(Map 형식):
+     *         - email: 사용자 이메일
+     *         - name: 사용자 이름
+     *         - isSocialUser: 소셜 로그인 여부
+     * @throws HttpStatus.UNAUTHORIZED: 인증되지 않은 사용자
+     * @throws HttpStatus.NOT_FOUND: 사용자 정보 없음
+     */
     @GetMapping("/user")
     public ResponseEntity<?> getUserInfo(@AuthenticationPrincipal String email) {
         if (email == null) {
@@ -212,6 +223,15 @@ public class UserController {
         }
     }
 
+    /**
+     * 이메일로 사용자 정보 조회
+     *
+     * @param email 쿼리 파라미터(String): 조회할 사용자의 이메일
+     * @return 사용자 정보(Map 형식):
+     *         - userName: 사용자 이름
+     *         - companyName: 회사 이름
+     * @throws HttpStatus.NOT_FOUND: 사용자 정보 없음
+     */
     @GetMapping("/info")
     public ResponseEntity<?> getUserInfoByEmail(@RequestParam String email) {
         Optional<User> user = Optional.ofNullable(userRepository.findByUserEmail(email));

@@ -82,6 +82,18 @@ public class SmsController {
         }
     }
 
+    /**
+     * 인증 코드 검증
+     *
+     * @param request 요청 바디:
+     *                - phoneNumber: 인증받을 사용자의 핸드폰 번호
+     *                - code: 사용자가 입력한 인증 코드
+     *
+     * @return 응답 메시지(String 형식):
+     *                     - 성공 시: "인증 성공"
+     *                     - 실패 시: "인증 실패"
+     * @throws HttpStatus.BAD_REQUEST: 인증 실패 시 오류 메시지 반환
+     */
     @PostMapping("/verify")
     public ResponseEntity<?> verifyCode(@RequestBody Map<String, String> request) {
         String phoneNumber = request.get("phoneNumber");
@@ -97,6 +109,12 @@ public class SmsController {
         }
     }
 
+    /**
+     * 인증 코드 생성
+     *
+     * @return 6자리 인증번호(String 형식):
+     *                     - 랜덤으로 생성된 숫자 인증 코드
+     */
     private String generateVerificationCode() {
         Random random = new Random();
         int code = 100000 + random.nextInt(900000); // 6자리 인증번호 생성

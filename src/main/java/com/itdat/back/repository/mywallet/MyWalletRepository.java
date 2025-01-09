@@ -19,4 +19,10 @@ public interface MyWalletRepository extends JpaRepository<MyWallet, Integer> {
     List<CardInfo> findAllCardsByUserEmail(@Param("myEmail") String myEmail);
 
     Optional<Object> findByUserEmailAndMyEmail(String userEmail, String myEmail);
+
+    // MyWalletRepository.java
+    @Query("SELECT m FROM MyWallet m WHERE m.myEmail = :myEmail AND NOT EXISTS (" +
+            "SELECT 1 FROM FolderCard fc WHERE fc.cardId = m.id)")
+    List<MyWallet> findCardsWithoutFolder(@Param("myEmail") String myEmail);
+
 }
