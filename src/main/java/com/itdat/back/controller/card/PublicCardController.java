@@ -18,7 +18,14 @@ public class PublicCardController {
     @Autowired
     private PublicCardService publicCardService;
 
-    // 공개된 명함 가져오기
+    /**
+     * 모든 공개된 명함 가져오기
+     *
+     * @return 공개된 명함 리스트(List<BusinessCard>):
+     *         - 성공 시: 공개된 명함 목록
+     *         - 실패 시: HTTP 500 상태 코드와 null 반환
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR: 명함 가져오기 실패
+     */
     @GetMapping("/all")
     public ResponseEntity<List<BusinessCard>> getAllPublicCards() {
         try {
@@ -29,7 +36,15 @@ public class PublicCardController {
         }
     }
 
-    // 공개 여부 업데이트
+    /**
+     * 명함 공개 여부 업데이트
+     *
+     * @param request 요청 바디(Map 형식):
+     *                - cardId: 업데이트할 명함의 ID
+     *                - isPublic: 공개 여부(true 또는 false)
+     * @return 성공 메시지(String): "Update successful" 또는 오류 메시지
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR: 공개 여부 업데이트 실패
+     */
     @PostMapping("/update")
     public ResponseEntity<String> updateCardVisibility(@RequestBody Map<String, Object> request) {
         try {

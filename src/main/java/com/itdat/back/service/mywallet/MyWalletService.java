@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MyWalletService {
@@ -74,13 +75,38 @@ public class MyWalletService {
         String myEmail = request.getMyEmail();
         String userEmail = request.getUserEmail();
 
-        // 해당 명함의 FolderCard 관계를 모두 삭제
+        // MyWallet에서 명함 존재 여부 확인
+        MyWallet wallet = (MyWallet) myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail)
+                .orElseThrow(() -> new RuntimeException("The card does not exist in MyWallet."));
+
+        // 해당 명함의 FolderCard 관계 조회 및 삭제
         List<FolderCard> folderCards = folderCardRepository.findByCardIdAndUserEmail(myEmail, userEmail);
         if (folderCards.isEmpty()) {
             throw new RuntimeException("The card is not associated with any folder.");
         }
         folderCardRepository.deleteAll(folderCards);
     }
+
+    // 폴더에 속하지 않은 명함 조회
+    public List<MyWallet> getCardsWithoutFolder(String myEmail) {
+        return myWalletRepository.findCardsWithoutFolder(myEmail);
+    }
+
+    // 특정 폴더의 명함 조회
+    public List<MyWallet> getCardsByFolder(String myEmail, String folderName) {
+        Folder folder = folderRepository.findByUserEmailAndFolderName(myEmail, folderName)
+                .orElseThrow(() -> new RuntimeException("Folder not found"));
+
+        List<FolderCard> folderCards = folderCardRepository.findByFolderId(folder.getId());
+
+        // FolderCards에서 MyWallet 리스트 반환
+        return folderCards.stream()
+                .map(fc -> myWalletRepository.findById(fc.getCardId())
+                        .orElseThrow(() -> new RuntimeException("Card not found")))
+                .collect(Collectors.toList());
+    }
+
+
 
 
     public void updateFolderName(String userEmail, String oldFolderName, String newFolderName) {
