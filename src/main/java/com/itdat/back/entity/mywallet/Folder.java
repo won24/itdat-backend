@@ -1,19 +1,25 @@
 package com.itdat.back.entity.mywallet;
 
+import com.itdat.back.entity.card.BusinessCard;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "folders")
 public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private int id;
 
     @Column(name = "user_email", nullable = false)
     private String userEmail;
 
     @Column(name = "folder_name", nullable = false)
     private String folderName;
+
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
+    private List<BusinessCard> businessCards;
 
     public Folder() {}
 

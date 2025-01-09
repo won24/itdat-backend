@@ -3,6 +3,7 @@ package com.itdat.back.controller.mywallet;
 import com.itdat.back.entity.mywallet.*;
 import com.itdat.back.entity.nfc.MyWallet;
 import com.itdat.back.repository.mywallet.FolderRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.itdat.back.service.mywallet.MyWalletService;
@@ -42,8 +43,9 @@ public class MyWalletController {
     }
 
     @GetMapping("/folderCards")
-    public ResponseEntity<List<MyWallet>> getFolderCards(@RequestParam String folderName) {
-        List<MyWallet> cards = myWalletService.getCardsByFolderName(folderName);
+    public ResponseEntity<List<CardInfo>> getFolderCards(@RequestParam String folderName) {
+        List<CardInfo> cards = myWalletService.getCardsByFolderName(folderName);
+        System.out.println("폴더 '{}'에서 가져온 명함 데이터: {}" + folderName + cards);
         return ResponseEntity.ok(cards);
     }
 
@@ -65,9 +67,22 @@ public class MyWalletController {
     // 명함 폴더로 이동
     @PostMapping("/moveCard")
     public ResponseEntity<String> moveCardToFolder(@RequestBody CardMoveRequest request) {
-        myWalletService.moveCardToFolder(request);
-        return ResponseEntity.ok("Card moved successfully");
+        try {
+            if (request.getFolderName() == null || request.getFolderName().isEmpty()) {
+                // 폴더에서 명함 제거
+                myWalletService.removeCardFromFolder(request);
+                return ResponseEntity.ok("Card removed from folder successfully.");
+            } else {
+                // 폴더로 명함 이동
+                myWalletService.moveCardToFolder(request);
+                return ResponseEntity.ok("Card moved to folder successfully.");
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
     }
+
+
 
     @GetMapping("/allCards")
     public ResponseEntity<List<CardInfo>> getAllCards(@RequestParam String userEmail) {

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MyWalletRepository extends JpaRepository<MyWallet, Integer> {
     List<MyWallet> findByMyEmail(String myEmail);
@@ -17,4 +18,5 @@ public interface MyWalletRepository extends JpaRepository<MyWallet, Integer> {
             "WHERE m.myEmail = :myEmail")
     List<CardInfo> findAllCardsByUserEmail(@Param("myEmail") String myEmail);
 
+    Optional<Object> findByUserEmailAndMyEmail(String userEmail, String myEmail);
 }
