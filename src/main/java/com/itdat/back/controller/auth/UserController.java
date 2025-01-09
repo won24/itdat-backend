@@ -58,10 +58,8 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
-        System.out.println("로그인요청"+email+password);
         try {
             String token = userService.login(email, password);
-            System.out.println("토큰발급" + token);
             return ResponseEntity.ok(Map.of("token", token));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
@@ -80,11 +78,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("토큰이 제공되지 않았습니다.");
         }
 
-        // JWT는 상태를 저장하지 않으므로 클라이언트에서만 토큰을 삭제
-        // 추가적으로 토큰을 블랙리스트에 저장하려면 여기에서 처리하면 될 듯 ?
-
-//        System.out.println("로그아웃 요청 처리됨. 토큰: " + token);
-
         // 응답 반환
         return ResponseEntity.ok("로그아웃 성공");
     }
@@ -98,7 +91,6 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
-        System.out.println("받은 유저 데이터: " + user.toString());
         if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
@@ -148,9 +140,6 @@ public class UserController {
     public ResponseEntity<Map<String, Boolean>> checkAvailability(
             @RequestParam("type") String type,
             @RequestParam("value") String value) {
-
-//        System.out.println("받은 유저 type: " + type);
-//        System.out.println("받은 유저 value: " + value);
 
         boolean isAvailable = false;
 
@@ -217,7 +206,6 @@ public class UserController {
             String accessToken = naverWorksAuthService.fetchAccessToken(code);
             return ResponseEntity.ok(Collections.singletonMap("accessToken", accessToken));
         } catch (RuntimeException e) {
-            System.err.println("Error fetching access token: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.singletonMap("message", "Failed to fetch access token"));
         }

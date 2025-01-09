@@ -66,7 +66,6 @@ public class MyWalletController {
     @GetMapping("/folderCards")
     public ResponseEntity<List<CardInfo>> getFolderCards(@RequestParam String folderName) {
         List<CardInfo> cards = myWalletService.getCardsByFolderName(folderName);
-//        System.out.println("폴더 '{}'에서 가져온 명함 데이터: {}" + folderName + cards);
         return ResponseEntity.ok(cards);
     }
 

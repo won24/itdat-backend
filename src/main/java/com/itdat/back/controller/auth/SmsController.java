@@ -53,12 +53,6 @@ public class SmsController {
 
             OkHttpClient client = new OkHttpClient();
 
-            System.out.println("key: " + ALIGO_API_KEY);
-            System.out.println("user_id: " + ALIGO_USER_ID);
-            System.out.println("sender: " + ALIGO_SENDER);
-            System.out.println("receiver: " + request.getPhoneNumber());
-            System.out.println("msg: " + request.getMessage());
-
             FormBody formBody = new FormBody.Builder()
                     .add("key", ALIGO_API_KEY)
                     .add("user_id", ALIGO_USER_ID)
