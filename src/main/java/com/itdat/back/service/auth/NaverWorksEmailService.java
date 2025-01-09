@@ -48,9 +48,9 @@ public class NaverWorksEmailService {
 
         // 6. 응답 확인
         if (response.getStatusCode() == HttpStatus.OK) {
-            System.out.println("이메일 발송 성공: " + response.getBody());
+//            System.out.println("이메일 발송 성공: " + response.getBody());
         } else {
-            System.err.println("이메일 발송 실패: " + response.getBody());
+//            System.err.println("이메일 발송 실패: " + response.getBody());
             throw new RuntimeException("Failed to send email, HTTP status: " + response.getStatusCode());
         }
     }

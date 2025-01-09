@@ -123,7 +123,6 @@ public class SocialAuthController {
     public ResponseEntity<?> kakaoLogin(
             @RequestHeader(value = "Authorization", required = true) String accessToken
     ) {
-//        System.out.println("kakaoLogin 호출됨");
 
         try {
             // Access Token 유효성 검사 및 사용자 정보 가져오기
@@ -134,18 +133,12 @@ public class SocialAuthController {
             String token = accessToken.substring(7);
             Map<String, Object> userInfo = socialOAuthService.getUserInfoFromOAuth("kakao", token);
 
-//            System.out.println("UserInfo: " + userInfo);
-
             // Kakao 응답에서 이메일과 고유 ID 가져오기
             String email = socialOAuthService.getKakaoEmail(userInfo);
             String providerId = socialOAuthService.getKakaoProviderId(userInfo);
 
-//            System.out.println("Email: " + email);
-//            System.out.println("Provider ID: " + providerId);
-
             // DB에서 사용자 정보 조회
             User existingUser = userRepository.findByUserEmail(email);
-//            System.out.println("Existing User: " + existingUser);
 
             // 사용자 존재 여부에 따른 처리
             if (existingUser != null) {
@@ -222,8 +215,6 @@ public class SocialAuthController {
     public ResponseEntity<?> naverLogin(
             @RequestHeader(value = "Authorization", required = true) String accessToken
     ) {
-        System.out.println("naverLogin 호출됨");
-
         try {
             // Access Token 유효성 검사 및 사용자 정보 가져오기
             if (accessToken == null || !accessToken.startsWith("Bearer ")) {
@@ -232,8 +223,6 @@ public class SocialAuthController {
 
             String token = accessToken.substring(7);
             Map<String, Object> userInfo = socialOAuthService.getUserInfoFromOAuth("naver", token);
-
-            System.out.println("UserInfo: " + userInfo);
 
             // Naver 응답에서 이메일과 고유 ID 가져오기
             Map<String, Object> response = (Map<String, Object>) userInfo.get("response");
@@ -244,12 +233,8 @@ public class SocialAuthController {
                 throw new IllegalArgumentException("이메일 정보가 제공되지 않았습니다.");
             }
 
-            System.out.println("Email: " + email);
-            System.out.println("Provider ID: " + providerId);
-
             // DB에서 사용자 정보 조회
             User existingUser = userRepository.findByUserEmail(email);
-            System.out.println("Existing User: " + existingUser);
 
             // 사용자 존재 여부에 따른 처리
             if (existingUser != null) {
@@ -285,10 +270,6 @@ public class SocialAuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-        System.out.println("===== Request Parameters =====");
-        System.out.println("code : " + code);
-        System.out.println("state : " + state);
-        System.out.println("==============================");
 
         if (code == null || state == null) {
             response.sendRedirect("http://localhost:3000/login?error=missing_code_or_state");
@@ -306,8 +287,6 @@ public class SocialAuthController {
                     .queryParam("client_secret", "mwNpwGjHrR")
                     .queryParam("code", code)
                     .queryParam("state", state);
-
-            System.out.println("uriBuilder : " + uriBuilder);
 
             ResponseEntity<Map> responseEntity = restTemplate.exchange(
                     uriBuilder.toUriString(),
@@ -340,7 +319,6 @@ public class SocialAuthController {
             if (existingUser != null) {
                 // 로그인 성공: JWT 생성 후 리다이렉트 처리
                 String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
-                System.out.println("JWT Token: " + jwtToken);
 
                 // User-Agent를 확인하여 모바일 또는 웹 환경 구분
                 String userAgent = request.getHeader("User-Agent");
@@ -351,7 +329,6 @@ public class SocialAuthController {
                             URLEncoder.encode(jwtToken, "UTF-8")
                     );
                     response.sendRedirect(mobileRedirectUrl);
-                    System.out.println("모바일로 리다이렉트 보냄 : " + mobileRedirectUrl);
                 } else {
                     // 웹 환경: 기존 URL로 리다이렉트
                     response.sendRedirect("http://localhost:3000?token=" + jwtToken);
@@ -417,10 +394,6 @@ public class SocialAuthController {
     @PostMapping("/social/register")
     public ResponseEntity<?> registerSocialUser(@RequestBody Map<String, String> requestBody) {
         try {
-            // 요청 데이터 로깅
-            System.out.println("Request Body: " + requestBody);
-            System.out.println("ProviderType: " + requestBody.get("providerType"));
-
             // 요청 데이터 추출
             String userId = requestBody.get("userId");
             String userName = requestBody.get("userName");

@@ -53,7 +53,6 @@ public class JwtTokenUtil {
                     .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
                     .build()
                     .parseClaimsJws(token);
-//            System.out.println("토큰 유효성 검사 성공");
             return true;
         } catch (ExpiredJwtException e) {
             System.out.println("토큰 만료됨");

@@ -18,7 +18,7 @@ public class EmailService {
             verificationCodes.put(email, code);
 
             // 이메일 발송 로직 추가 (예: JavaMailSender)
-            System.out.println("인증 코드 [" + code + "] 이메일 [" + email + "] 로 발송 완료.");
+//            System.out.println("인증 코드 [" + code + "] 이메일 [" + email + "] 로 발송 완료.");
             return true;
         } catch (Exception e) {
             System.err.println("이메일 발송 실패: " + e.getMessage());
