@@ -117,7 +117,7 @@ public class CardController {
             // 로고 파일 저장
             if (logo != null && !logo.isEmpty()) {
                 String logoPath = saveFile(logo);
-                businessCard.setLogoPath(logoPath);
+                businessCard.setLogoUrl(logoPath);
             }
 
             businessCardService.saveBusinessCardWithLogo(businessCard);
