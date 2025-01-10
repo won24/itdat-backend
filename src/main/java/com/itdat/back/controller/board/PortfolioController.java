@@ -35,7 +35,7 @@ public class PortfolioController {
 
             portfolios.forEach(portfolio -> {
                 if (portfolio.getFileUrl() != null) {
-                    portfolio.setFileUrl("/uploads/board" + Paths.get(portfolio.getFileUrl()).getFileName());
+                    portfolio.setFileUrl("/uploads/board/" + Paths.get(portfolio.getFileUrl()).getFileName());
                 }
             });
 
@@ -48,14 +48,9 @@ public class PortfolioController {
 
 
     // 저장
-//    @PostMapping("/save")
-//    public ResponseEntity<Portfolio> savePortfolio(@RequestBody Portfolio newPortfolio) {
-//        Portfolio savedPortfolio = portfolioService.savePortfolio(newPortfolio);
-//        return ResponseEntity.ok(savedPortfolio);
-//    }
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Portfolio> savePortfolio(
-            @RequestParam("data") String jsonData,
+            @RequestParam("postData") String jsonData,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         try {
@@ -67,7 +62,7 @@ public class PortfolioController {
             if (file != null && !file.isEmpty()) {
                 // 파일 저장 경로 설정
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get("/uploads/board", fileName);
+                Path filePath = Paths.get("/uploads/board/", fileName);
                 Files.createDirectories(filePath.getParent()); // 디렉토리 생성
                 Files.write(filePath, file.getBytes());
 
@@ -77,7 +72,7 @@ public class PortfolioController {
 
             // Portfolio 저장
             Portfolio savedPortfolio = portfolioService.savePortfolio(newPortfolio);
-
+            System.out.println("savedPortfolio" + savedPortfolio);
             return ResponseEntity.ok(savedPortfolio);
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,12 +80,39 @@ public class PortfolioController {
         }
     }
 
+
     // 수정
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<Portfolio> updatePortfolio(@PathVariable Integer id, @RequestBody Portfolio updatedPortfolio) {
-        Portfolio updated = portfolioService.updatePortfolio(id, updatedPortfolio);
-        return ResponseEntity.ok(updated);
+    @PutMapping(value = "/edit/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Portfolio> updatePortfolio(
+            @PathVariable Integer id,
+            @RequestParam("postData") String jsonData,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) {
+        try {
+            // JSON 파싱
+            ObjectMapper objectMapper = new ObjectMapper();
+            Portfolio updatedPortfolio = objectMapper.readValue(jsonData, Portfolio.class);
+
+            // 파일 처리
+            if (file != null && !file.isEmpty()) {
+                // 파일 저장 경로 설정
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                Path filePath = Paths.get("/uploads/board/", fileName);
+                Files.createDirectories(filePath.getParent());
+                Files.write(filePath, file.getBytes());
+
+                updatedPortfolio.setFileUrl(filePath.toString());
+            }
+
+            // Portfolio 저장
+            Portfolio updated = portfolioService.updatePortfolio(id, updatedPortfolio);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     // 삭제
     @DeleteMapping("/delete/{id}")

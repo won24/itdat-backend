@@ -28,13 +28,13 @@ public class PortfolioService {
 
     // 포트폴리오 수정
     public Portfolio updatePortfolio(Integer id, Portfolio updatedPortfolio) {
-        Optional<Portfolio> existingPortfolio = portfolioRepository.findById(id);
-        if (existingPortfolio.isPresent()) {
-            Portfolio portfolioToSave = existingPortfolio.get();
-            portfolioToSave.setTitle(updatedPortfolio.getTitle());
-            portfolioToSave.setContent(updatedPortfolio.getContent());
-            portfolioToSave.setFileUrl(updatedPortfolio.getFileUrl());
-            return portfolioRepository.save(portfolioToSave);
+        Optional<Portfolio> findPost = portfolioRepository.findById(id);
+        if (findPost.isPresent()) {
+            Portfolio editPortfolio = findPost.get();
+            editPortfolio.setTitle(updatedPortfolio.getTitle());
+            editPortfolio.setContent(updatedPortfolio.getContent());
+            editPortfolio.setFileUrl(updatedPortfolio.getFileUrl());
+            return portfolioRepository.save(editPortfolio);
         } else {
             throw new IllegalArgumentException("Portfolio " + id + " not found.");
         }

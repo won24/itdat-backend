@@ -55,7 +55,7 @@ public class CardController {
 
             cards.forEach(card -> {
                 if (card.getLogoUrl() != null) {
-                    card.setLogoUrl("/uploads/logos" + Paths.get(card.getLogoUrl()).getFileName());
+                    card.setLogoUrl("/uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
 

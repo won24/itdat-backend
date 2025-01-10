@@ -26,8 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:C:/uploads/logos")
-                .addResourceLocations("file:C:/uploads/board")
+                .addResourceLocations("file:C:/uploads/")
                 .setCachePeriod(3600);  // 캐시 시간 설정
     }
 }
