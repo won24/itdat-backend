@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "history")
-public class history {
+public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,10 +32,10 @@ public class history {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public history() {
+    public History() {
     }
 
-    public history(Integer id, String userEmail, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public History(Integer id, String userEmail, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.userEmail = userEmail;
         this.title = title;

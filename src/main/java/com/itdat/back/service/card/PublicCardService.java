@@ -22,7 +22,7 @@ public class PublicCardService {
     public void updateCardVisibility(Integer cardId, boolean isPublic) {
         BusinessCard card = businessCardRepository.findById(cardId)
                 .orElseThrow(() -> new RuntimeException("Card not found"));
-        card.setPublic(isPublic);
+        card.setIsPublic(isPublic);
         businessCardRepository.save(card);
     }
 }

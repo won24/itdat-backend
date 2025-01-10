@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.card.BusinessCard;
-import com.itdat.back.entity.card.Template;
 import com.itdat.back.service.card.BusinessCardService;
-import com.itdat.back.service.card.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,9 +28,6 @@ public class CardController {
     @Autowired
     private BusinessCardService businessCardService;
 
-    @Autowired
-    private TemplateService templateService;
-
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -41,7 +35,6 @@ public class CardController {
     // 유저 정보 가져오기
     @GetMapping("/userinfo/{userEmail}")
     public ResponseEntity<?> userInfo(@PathVariable("userEmail") String userEmail) {
-        System.out.println("유저정보가져오기");
         try {
             User user = businessCardService.findByUserEmail(userEmail);
             if (user != null) {
@@ -61,8 +54,8 @@ public class CardController {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
 
             cards.forEach(card -> {
-                if (card.getLogoPath() != null) {
-                    card.setLogoPath("/uploads/" + Paths.get(card.getLogoPath()).getFileName());
+                if (card.getLogoUrl() != null) {
+                    card.setLogoUrl("/uploads/logos" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
 
@@ -104,6 +97,7 @@ public class CardController {
             try {
                 businessCard = objectMapper.readValue(cardInfoJson, BusinessCard.class);
             } catch (JsonProcessingException e) {
+                e.printStackTrace();
                 return ResponseEntity.badRequest().body("Invalid cardInfo JSON");
             }
 
@@ -167,16 +161,5 @@ public class CardController {
     }
 
 
-
-    // 템플릿 가져오기
-    @GetMapping("/templates")
-    public ResponseEntity<List<Template>> getTemplates() {
-        try {
-            List<Template> templates = templateService.getAllTemplates();
-            return ResponseEntity.ok(templates);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
 
 }
