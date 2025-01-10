@@ -52,13 +52,12 @@ public class CardController {
     public ResponseEntity<List<BusinessCard>> getBusinessCardsByUserEmail(@PathVariable String userEmail) {
         try {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
-
             cards.forEach(card -> {
                 if (card.getLogoUrl() != null) {
                     card.setLogoUrl("/uploads/logos" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
-
+            System.out.println("클라데이터"+cards);
             return ResponseEntity.ok(cards);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -159,7 +158,4 @@ public class CardController {
             throw new IllegalArgumentException("파일 크기가 5MB를 초과했습니다.");
         }
     }
-
-
-
 }
