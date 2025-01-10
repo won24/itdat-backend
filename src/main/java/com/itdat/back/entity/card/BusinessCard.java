@@ -1,6 +1,7 @@
 package com.itdat.back.entity.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.itdat.back.entity.mywallet.Folder;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -76,6 +77,9 @@ public class BusinessCard {
     @Column(name = "is_public", nullable = false)
     private boolean isPublic; // 명함 공개 여부
 
+    @ManyToOne
+    @JoinColumn(name = "folder_id") // "folder_id"는 폴더를 참조하는 컬럼 이름
+    private Folder folder;
 
     public BusinessCard() {
     }
@@ -252,6 +256,14 @@ public class BusinessCard {
 
     public void setPublic(boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 
     @Override

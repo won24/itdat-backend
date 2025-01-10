@@ -23,7 +23,7 @@ public class MyWallet {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "user_email", referencedColumnName = "user_email", insertable = false, updatable = false),
             @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)

@@ -54,7 +54,7 @@ public class NfcController {
     @PostMapping("/userinfo")
     public ResponseEntity<?> getUserInfo(@RequestBody Map<String, String> payload) {
         String email = payload.get("email");
-        User user = userService.getUserByEmail(email);
+        User user = userService.findUserByEmail(email);
         return ResponseEntity.ok(user);
     }
 

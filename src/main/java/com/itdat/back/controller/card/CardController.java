@@ -59,13 +59,12 @@ public class CardController {
     public ResponseEntity<List<BusinessCard>> getBusinessCardsByUserEmail(@PathVariable String userEmail) {
         try {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
-
             cards.forEach(card -> {
                 if (card.getLogoPath() != null) {
                     card.setLogoPath("/uploads/" + Paths.get(card.getLogoPath()).getFileName());
                 }
             });
-
+            System.out.println("클라데이터"+cards);
             return ResponseEntity.ok(cards);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -179,4 +178,17 @@ public class CardController {
         }
     }
 
+    @PostMapping("/public")
+    public ResponseEntity<String> updateCardPublicStatus(@RequestBody List<Map<String, Object>> cardData) {
+        try {
+            System.out.println("컨트롤");
+            System.out.println(cardData);
+            businessCardService.updateCardPublicStatus(cardData);
+            return ResponseEntity.ok("명함 공개 상태가 성공적으로 변경되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("명함 공개 상태 변경에 실패했습니다: " + e.getMessage());
+        }
+    }
 }

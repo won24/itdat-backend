@@ -1,9 +1,17 @@
 package com.itdat.back.entity.mywallet;
 
 public class CardMoveRequest {
+    private String myEmail;
     private String userEmail;
-    private int cardId;
     private String folderName;
+
+    public String getMyEmail() {
+        return myEmail;
+    }
+
+    public void setMyEmail(String myEmail) {
+        this.myEmail = myEmail;
+    }
 
     public String getUserEmail() {
         return userEmail;
@@ -11,14 +19,6 @@ public class CardMoveRequest {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
-    }
-
-    public int getCardId() {
-        return cardId;
-    }
-
-    public void setCardId(int cardId) {
-        this.cardId = cardId;
     }
 
     public String getFolderName() {
@@ -29,3 +29,4 @@ public class CardMoveRequest {
         this.folderName = folderName;
     }
 }
+
