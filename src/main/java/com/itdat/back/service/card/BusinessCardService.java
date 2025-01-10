@@ -2,6 +2,7 @@ package com.itdat.back.service.card;
 
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.card.BusinessCard;
+import com.itdat.back.entity.card.CardSide;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.repository.card.BusinessCardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,4 +98,25 @@ public class BusinessCardService {
     }
 
 
+    public BusinessCard updateBusinessCard(BusinessCard businessCard) {
+        if ("FRONT".equals(businessCard.getCardSide())) {
+            BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
+                    businessCard.getCardNo(), businessCard.getUserEmail());
+            if (existingCard != null) {
+                return businessCardRepository.save(existingCard);
+            }
+        }
+        return null; // Return null if update fails or if cardSide is not FRONT
+    }
+
+    @Transactional
+    public boolean deleteOnlyCard(Integer cardNo, String userEmail) {
+        List<BusinessCard> cards = (List<BusinessCard>) businessCardRepository.findByCardNoAndUserEmail(cardNo, userEmail);
+        if (!cards.isEmpty()) {
+            businessCardRepository.deleteAll(cards);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -191,4 +191,36 @@ public class CardController {
                     .body("명함 공개 상태 변경에 실패했습니다: " + e.getMessage());
         }
     }
+    @PutMapping("/front/update")
+    public ResponseEntity<BusinessCard> updateBusinessCard(@RequestBody BusinessCard businessCard) {
+        System.out.println("카드업뎃정보"+businessCard);
+        try {
+            BusinessCard updatedCard = businessCardService.updateBusinessCard(businessCard);
+            return ResponseEntity.ok(updatedCard);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteCard(@RequestBody Map<String, Object> request) {
+        Integer cardNo = (Integer) request.get("cardNo");
+        String userEmail = (String) request.get("userEmail");
+        System.out.println(cardNo+userEmail);
+        if (cardNo == null || userEmail == null) {
+            return ResponseEntity.badRequest().body("카드 번호와 사용자 이메일은 필수입니다.");
+        }
+        try {
+            boolean deleted = businessCardService.deleteOnlyCard(cardNo, userEmail);
+            if (deleted) {
+                return ResponseEntity.ok().body("명함이 성공적으로 삭제되었습니다.");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("명함 삭제 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+
 }
