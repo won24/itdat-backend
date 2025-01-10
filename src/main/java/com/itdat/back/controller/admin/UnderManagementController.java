@@ -13,10 +13,10 @@ import com.itdat.back.service.auth.UserService;
 import com.itdat.back.utils.JwtTokenUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -109,6 +109,22 @@ public class UnderManagementController {
 
         // 유저의 상태가 밴이면 true를 리턴한다.
         return ResponseEntity.ok(isStillVanned);
+    }
+
+    /** 관리자가 특정한 유저의 제재 이력을 초기화하는 컨트롤러 */
+    @GetMapping("/selected-user-reset-state")
+    public ResponseEntity<Object> getSelectedUserResetState(@RequestParam int id) {
+        System.out.println("idididididididididididid = " + id);
+        try {
+            UnderManagement selectedUnderManagement = underManagementService.selectedUserResetState(id);
+            if(selectedUnderManagement != null) {
+                return ResponseEntity.ok(true);
+            }else {
+                return ResponseEntity.ok(false);
+            }
+        }catch (Exception e) {
+            return ResponseEntity.status(500).body("서버와의 통신에서 오류 발생: " + e.getMessage());
+        }
     }
 
     /** 관리자가 특정한 유저에게 벌점을 부과하는 컨트롤러 */

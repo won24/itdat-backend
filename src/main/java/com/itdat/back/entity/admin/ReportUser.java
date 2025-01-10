@@ -20,7 +20,7 @@ public class ReportUser {
     private String description;
 
     @Column(name = "user_id") // 신고를 한 유저
-    private String userId; ;
+    private String userId;
 
     @Column(name = "report_date_at")
     private Date reportDateAt;
