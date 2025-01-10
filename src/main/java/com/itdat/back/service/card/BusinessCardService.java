@@ -56,7 +56,7 @@ public class BusinessCardService {
 
 
     // 앱 - 명함 뒷면 저장
-    public BusinessCard saveBusinessCardWithLogo(BusinessCard card) throws IOException {
+    public BusinessCard saveBusinessCardWithLogo(BusinessCard card){
         return businessCardRepository.save(card);
     }
 
