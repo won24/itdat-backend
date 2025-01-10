@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "portfolio")
-public class portfolio {
+public class Portfolio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,10 +34,10 @@ public class portfolio {
     @Column(name = "file_url")
     private String fileUrl;
 
-    public portfolio() {
+    public Portfolio() {
     }
 
-    public portfolio(Integer id, String userEmail, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, String fileUrl) {
+    public Portfolio(Integer id, String userEmail, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, String fileUrl) {
         this.id = id;
         this.userEmail = userEmail;
         this.title = title;
@@ -105,7 +105,7 @@ public class portfolio {
 
     @Override
     public String toString() {
-        return "portfolio{" +
+        return "Portfolio{" +
                 "id=" + id +
                 ", userEmail='" + userEmail + '\'' +
                 ", title='" + title + '\'' +
@@ -116,3 +116,4 @@ public class portfolio {
                 '}';
     }
 }
+
