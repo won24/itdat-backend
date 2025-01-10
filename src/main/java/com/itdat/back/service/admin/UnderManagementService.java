@@ -11,6 +11,7 @@ import com.itdat.back.repository.admin.UnderManagementRepository;
 import com.itdat.back.repository.auth.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -78,6 +79,19 @@ public class UnderManagementService {
             if (selectedUnderManagement.getUser().getStatus() == UserStatus.ACTIVE) {
                 selectedUnderManagement.getUser().setStatus(REPORTED);
             }
+            // 신고 당한 유저의 벌점을 누적 증가 시키는 로직
+            int currentDemerit = selectedUnderManagement.getDemerit();
+            selectedUnderManagement.setDemerit(currentDemerit + 1);
+            if (selectedUnderManagement.getDemerit() > 2){
+                selectedUnderManagement.getUser().setStatus(BANNED);
+                selectedUnderManagement.setStartDateAt(LocalDateTime.now());
+                selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusDays(7));
+            }else if (selectedUnderManagement.getDemerit() > 6){
+                selectedUnderManagement.getUser().setStatus(BANNED);
+                selectedUnderManagement.setStartDateAt(LocalDateTime.now());
+                selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusYears(100));
+            }
+
             underManagementRepository.save(selectedUnderManagement);
 
             if (insertedReportUser == null) {
@@ -116,7 +130,8 @@ public class UnderManagementService {
         User currentUser = userRepository.findByUserId(currentUserId);
 
         // 현재 날짜와 제재 종료일자를 비교하여 유저의 벤 상태를 변경하는 로직
-        if (currentUserUnderManagement.getEndDateAt().isBefore(LocalDateTime.now())) {
+        if(currentUserUnderManagement.getEndDateAt() != null
+                && currentUserUnderManagement.getEndDateAt().isBefore(LocalDateTime.now())) {
             currentUser.setStatus(REPORTED);
             currentUserUnderManagement.setUser(currentUser);
             currentUserUnderManagement.setDemerit(null);
@@ -165,5 +180,28 @@ public class UnderManagementService {
             e.printStackTrace();
             return false; // 실패 시 false 반환
         }
+    }
+
+    /** 관리자가 특정 유저의 제재 이력을 초기화하는 서비스 */
+    @Transactional
+    public UnderManagement selectedUserResetState(int id) {
+        UnderManagement selectedUnderManagement = underManagementRepository.findByUserId(id);
+        /*selectedUnderManagement.setCumulativeCount(0);*/
+        selectedUnderManagement.setDemerit(0); // 벌점 초기화
+        selectedUnderManagement.getUser().setStatus(ACTIVE); // 신고 상태 초기화
+        selectedUnderManagement.setUpdateAt(LocalDateTime.now());
+        selectedUnderManagement.setStartDateAt(null);
+        selectedUnderManagement.setEndDateAt(null);
+        underManagementRepository.save(selectedUnderManagement);
+
+        return selectedUnderManagement;
+    }
+
+
+    public User findByUserEmail(String reportedUserEmail) {
+//        UnderManagement selectecUnderManagement = UnderManagementRepository.findByUserEmail(reportedUserEmail);
+        User selectedUser = userRepository.findByUserEmail(reportedUserEmail);
+
+        return selectedUser;
     }
 }

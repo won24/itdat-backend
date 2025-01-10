@@ -20,8 +20,8 @@ public class UnderManagement {
     @JoinColumn(name = "user_id"/*, referencedColumnName = "userId" // 컬럼명이 아닌 엔티티의 필드명을 써야 한다. */)
     private User user;
 
-    @Column(name = "cumulative_count")
-    private Integer cumulativeCount;
+    @Column(name = "cumulative_count"/*, nullable = false*/)
+    private Integer cumulativeCount = 0;
 
     @Column(name = "start_date_at")
     private LocalDateTime startDateAt;
@@ -32,14 +32,14 @@ public class UnderManagement {
     @Column(name = "update_at")
     private LocalDateTime updateAt;
 
-    @Column(name = "reported_count")
-    private Integer reportedCount;
+    @Column(name = "reported_count"/*, nullable = false*/)
+    private Integer reportedCount = 0;
 
-    @Column(name = "banned_count")
-    private Integer bannedCount;
+    @Column(name = "banned_count"/*, nullable = false*/)
+    private Integer bannedCount = 0;
 
-    @Column(name = "demerit")
-    private Integer demerit;
+    @Column(name = "demerit"/*, nullable = false*/)
+    private Integer demerit = 0;
 
     public UnderManagement() {
     }

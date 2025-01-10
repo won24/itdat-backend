@@ -4,9 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.card.BusinessCard;
-import com.itdat.back.entity.card.Template;
 import com.itdat.back.service.card.BusinessCardService;
-import com.itdat.back.service.card.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,9 +28,6 @@ public class CardController {
     @Autowired
     private BusinessCardService businessCardService;
 
-    @Autowired
-    private TemplateService templateService;
-
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -41,7 +35,6 @@ public class CardController {
     // 유저 정보 가져오기
     @GetMapping("/userinfo/{userEmail}")
     public ResponseEntity<?> userInfo(@PathVariable("userEmail") String userEmail) {
-        System.out.println("유저정보가져오기");
         try {
             User user = businessCardService.findByUserEmail(userEmail);
             if (user != null) {
@@ -60,8 +53,8 @@ public class CardController {
         try {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
             cards.forEach(card -> {
-                if (card.getLogoPath() != null) {
-                    card.setLogoPath("/uploads/" + Paths.get(card.getLogoPath()).getFileName());
+                if (card.getLogoUrl() != null) {
+                    card.setLogoUrl("/uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
             System.out.println("클라데이터"+cards);
@@ -103,6 +96,7 @@ public class CardController {
             try {
                 businessCard = objectMapper.readValue(cardInfoJson, BusinessCard.class);
             } catch (JsonProcessingException e) {
+                e.printStackTrace();
                 return ResponseEntity.badRequest().body("Invalid cardInfo JSON");
             }
 
@@ -116,7 +110,7 @@ public class CardController {
             // 로고 파일 저장
             if (logo != null && !logo.isEmpty()) {
                 String logoPath = saveFile(logo);
-                businessCard.setLogoPath(logoPath);
+                businessCard.setLogoUrl(logoPath);
             }
 
             businessCardService.saveBusinessCardWithLogo(businessCard);
@@ -164,63 +158,4 @@ public class CardController {
             throw new IllegalArgumentException("파일 크기가 5MB를 초과했습니다.");
         }
     }
-
-
-
-    // 템플릿 가져오기
-    @GetMapping("/templates")
-    public ResponseEntity<List<Template>> getTemplates() {
-        try {
-            List<Template> templates = templateService.getAllTemplates();
-            return ResponseEntity.ok(templates);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    }
-
-    @PostMapping("/public")
-    public ResponseEntity<String> updateCardPublicStatus(@RequestBody List<Map<String, Object>> cardData) {
-        try {
-            System.out.println("컨트롤");
-            System.out.println(cardData);
-            businessCardService.updateCardPublicStatus(cardData);
-            return ResponseEntity.ok("명함 공개 상태가 성공적으로 변경되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("명함 공개 상태 변경에 실패했습니다: " + e.getMessage());
-        }
-    }
-    @PutMapping("/front/update")
-    public ResponseEntity<BusinessCard> updateBusinessCard(@RequestBody BusinessCard businessCard) {
-        System.out.println("카드업뎃정보"+businessCard);
-        try {
-            BusinessCard updatedCard = businessCardService.updateBusinessCard(businessCard);
-            return ResponseEntity.ok(updatedCard);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<?> deleteCard(@RequestBody Map<String, Object> request) {
-        Integer cardNo = (Integer) request.get("cardNo");
-        String userEmail = (String) request.get("userEmail");
-        System.out.println(cardNo+userEmail);
-        if (cardNo == null || userEmail == null) {
-            return ResponseEntity.badRequest().body("카드 번호와 사용자 이메일은 필수입니다.");
-        }
-        try {
-            boolean deleted = businessCardService.deleteOnlyCard(cardNo, userEmail);
-            if (deleted) {
-                return ResponseEntity.ok().body("명함이 성공적으로 삭제되었습니다.");
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("명함 삭제 중 오류가 발생했습니다: " + e.getMessage());
-        }
-    }
-
-
 }

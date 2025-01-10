@@ -1,12 +1,12 @@
 package com.itdat.back.entity.card;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.itdat.back.entity.mywallet.Folder;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 
 @Entity
@@ -62,8 +62,8 @@ public class BusinessCard {
     @JsonProperty("cardSide")
     private CardSide cardSide;
 
-    @Column(name = "logo_path")
-    private String logoPath;
+    @Column(name = "logo_url")
+    private String logoUrl;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -76,11 +76,14 @@ public class BusinessCard {
     @Column(name = "is_public", nullable = false)
     private boolean isPublic; // 명함 공개 여부
 
+    @ManyToOne
+    @JoinColumn(name = "folder_id") // "folder_id"는 폴더를 참조하는 컬럼 이름
+    private Folder folder;
 
     public BusinessCard() {
     }
 
-    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoPath, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isPublic) {
+    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoUrl, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isPublic) {
         this.cardId = cardId;
         this.userEmail = userEmail;
         this.cardNo = cardNo;
@@ -96,7 +99,7 @@ public class BusinessCard {
         this.appTemplate = appTemplate;
         this.webTemplate = webTemplate;
         this.cardSide = cardSide;
-        this.logoPath = logoPath;
+        this.logoUrl = logoUrl;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isPublic = isPublic;
@@ -222,12 +225,12 @@ public class BusinessCard {
         this.cardSide = cardSide;
     }
 
-    public String getLogoPath() {
-        return logoPath;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setLogoPath(String logoPath) {
-        this.logoPath = logoPath;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -250,8 +253,16 @@ public class BusinessCard {
         return isPublic;
     }
 
-    public void setPublic(boolean aPublic) {
+    public void setIsPublic(boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public Folder getFolder() {
+        return folder;
+    }
+
+    public void setFolder(Folder folder) {
+        this.folder = folder;
     }
 
     @Override
@@ -272,7 +283,7 @@ public class BusinessCard {
                 ", appTemplate='" + appTemplate + '\'' +
                 ", webTemplate='" + webTemplate + '\'' +
                 ", cardSide=" + cardSide +
-                ", logoPath='" + logoPath + '\'' +
+                ", logoUrl='" + logoUrl + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", isPublic=" + isPublic +
