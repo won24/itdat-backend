@@ -54,6 +54,18 @@ public class SocialAuthController {
      * @throws HttpStatus.CONFLICT: 중복된 이메일
      * @throws HttpStatus.INTERNAL_SERVER_ERROR: 시스템 오류
      */
+
+    /**
+     * Google 소셜 로그인 처리
+     *
+     * @param request       요청 바디(Map 형식): Google ID 토큰을 포함
+     * @param accessToken   요청 헤더에 포함된 Authorization 토큰 (선택적)
+     * @return ResponseEntity: 로그인 결과
+     *         - 성공: JWT 토큰 또는 추가 회원가입 여부
+     *         - 실패: HTTP 오류 코드 및 메시지
+     * @throws HttpStatus.BAD_REQUEST          잘못된 입력 데이터
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR Google 로그인 실패
+     */
     @PostMapping("/google")
     public ResponseEntity<?> googleLogin(
             @RequestBody(required = false) Map<String, String> request,
@@ -97,12 +109,20 @@ public class SocialAuthController {
     }
 
 
-
+    /**
+     * Kakao 소셜 로그인 처리
+     *
+     * @param accessToken   요청 헤더에 포함된 Kakao Access Token
+     * @return ResponseEntity: 로그인 결과
+     *         - 성공: JWT 토큰 또는 추가 회원가입 여부
+     *         - 실패: HTTP 오류 코드 및 메시지
+     * @throws HttpStatus.BAD_REQUEST          Access Token 누락
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR Kakao 로그인 실패
+     */
     @PostMapping("/kakao")
     public ResponseEntity<?> kakaoLogin(
             @RequestHeader(value = "Authorization", required = true) String accessToken
     ) {
-//        System.out.println("kakaoLogin 호출됨");
 
         try {
             // Access Token 유효성 검사 및 사용자 정보 가져오기
@@ -113,18 +133,12 @@ public class SocialAuthController {
             String token = accessToken.substring(7);
             Map<String, Object> userInfo = socialOAuthService.getUserInfoFromOAuth("kakao", token);
 
-//            System.out.println("UserInfo: " + userInfo);
-
             // Kakao 응답에서 이메일과 고유 ID 가져오기
             String email = socialOAuthService.getKakaoEmail(userInfo);
             String providerId = socialOAuthService.getKakaoProviderId(userInfo);
 
-//            System.out.println("Email: " + email);
-//            System.out.println("Provider ID: " + providerId);
-
             // DB에서 사용자 정보 조회
             User existingUser = userRepository.findByUserEmail(email);
-//            System.out.println("Existing User: " + existingUser);
 
             // 사용자 존재 여부에 따른 처리
             if (existingUser != null) {
@@ -144,6 +158,16 @@ public class SocialAuthController {
         }
     }
 
+    /**
+     * Kakao OAuth Callback 처리
+     *
+     * @param requestBody 요청 바디(Map 형식): Kakao 인증 코드
+     * @return ResponseEntity: 로그인 결과
+     *         - 성공: JWT 토큰 또는 추가 회원가입 여부
+     *         - 실패: HTTP 오류 코드 및 메시지
+     * @throws HttpStatus.BAD_REQUEST          Authorization Code 누락
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR Kakao OAuth 처리 실패
+     */
     @PostMapping("/callback/kakao")
     public ResponseEntity<?> handleKakaoCallback(@RequestBody Map<String, String> requestBody) {
         String code = requestBody.get("code");
@@ -177,14 +201,20 @@ public class SocialAuthController {
     }
 
 
-
-
+    /**
+     * Naver 소셜 로그인 처리
+     *
+     * @param accessToken   요청 헤더에 포함된 Naver Access Token
+     * @return ResponseEntity: 로그인 결과
+     *         - 성공: JWT 토큰 또는 추가 회원가입 여부
+     *         - 실패: HTTP 오류 코드 및 메시지
+     * @throws HttpStatus.BAD_REQUEST          Access Token 누락
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR Naver 로그인 실패
+     */
     @PostMapping("/naver")
     public ResponseEntity<?> naverLogin(
             @RequestHeader(value = "Authorization", required = true) String accessToken
     ) {
-        System.out.println("naverLogin 호출됨");
-
         try {
             // Access Token 유효성 검사 및 사용자 정보 가져오기
             if (accessToken == null || !accessToken.startsWith("Bearer ")) {
@@ -193,8 +223,6 @@ public class SocialAuthController {
 
             String token = accessToken.substring(7);
             Map<String, Object> userInfo = socialOAuthService.getUserInfoFromOAuth("naver", token);
-
-            System.out.println("UserInfo: " + userInfo);
 
             // Naver 응답에서 이메일과 고유 ID 가져오기
             Map<String, Object> response = (Map<String, Object>) userInfo.get("response");
@@ -205,12 +233,8 @@ public class SocialAuthController {
                 throw new IllegalArgumentException("이메일 정보가 제공되지 않았습니다.");
             }
 
-            System.out.println("Email: " + email);
-            System.out.println("Provider ID: " + providerId);
-
             // DB에서 사용자 정보 조회
             User existingUser = userRepository.findByUserEmail(email);
-            System.out.println("Existing User: " + existingUser);
 
             // 사용자 존재 여부에 따른 처리
             if (existingUser != null) {
@@ -230,6 +254,15 @@ public class SocialAuthController {
         }
     }
 
+    /**
+     * Naver OAuth Callback 처리
+     *
+     * @param code          요청 파라미터: 인증 코드
+     * @param state         요청 파라미터: 상태 토큰
+     * @param request       HttpServletRequest 객체
+     * @param response      HttpServletResponse 객체
+     * @throws IOException  리다이렉트 처리 중 오류
+     */
     @GetMapping("/callback/naver")
     public void handleNaverCallback(
             @RequestParam(value = "code", required = false) String code,
@@ -237,10 +270,6 @@ public class SocialAuthController {
             HttpServletRequest request,
             HttpServletResponse response
     ) throws IOException {
-        System.out.println("===== Request Parameters =====");
-        System.out.println("code : " + code);
-        System.out.println("state : " + state);
-        System.out.println("==============================");
 
         if (code == null || state == null) {
             response.sendRedirect("http://localhost:3000/login?error=missing_code_or_state");
@@ -258,8 +287,6 @@ public class SocialAuthController {
                     .queryParam("client_secret", "mwNpwGjHrR")
                     .queryParam("code", code)
                     .queryParam("state", state);
-
-            System.out.println("uriBuilder : " + uriBuilder);
 
             ResponseEntity<Map> responseEntity = restTemplate.exchange(
                     uriBuilder.toUriString(),
@@ -292,7 +319,6 @@ public class SocialAuthController {
             if (existingUser != null) {
                 // 로그인 성공: JWT 생성 후 리다이렉트 처리
                 String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
-                System.out.println("JWT Token: " + jwtToken);
 
                 // User-Agent를 확인하여 모바일 또는 웹 환경 구분
                 String userAgent = request.getHeader("User-Agent");
@@ -303,7 +329,6 @@ public class SocialAuthController {
                             URLEncoder.encode(jwtToken, "UTF-8")
                     );
                     response.sendRedirect(mobileRedirectUrl);
-                    System.out.println("모바일로 리다이렉트 보냄 : " + mobileRedirectUrl);
                 } else {
                     // 웹 환경: 기존 URL로 리다이렉트
                     response.sendRedirect("http://localhost:3000?token=" + jwtToken);
@@ -339,14 +364,36 @@ public class SocialAuthController {
 
 
 
-
+    /**
+     * 소셜 사용자 회원가입
+     *
+     * @param requestBody 요청 바디(Map 형식):
+     *                     - userId: 소셜 로그인 고유 ID
+     *                     - userName: 사용자 이름
+     *                     - password: 사용자 비밀번호
+     *                     - confirmPassword: 비밀번호 확인
+     *                     - userPhone: 사용자 전화번호
+     *                     - userEmail: 사용자 이메일
+     *                     - userBirth: 사용자 생년월일(yyyy-MM-dd 형식)
+     *                     - userType: 사용자 유형
+     *                     - company: 회사명
+     *                     - companyRank: 직급
+     *                     - companyDept: 부서명
+     *                     - companyFax: 회사 팩스번호
+     *                     - companyAddr: 회사 주소
+     *                     - companyAddrDetail: 회사 상세주소
+     *                     - companyPhone: 회사 전화번호
+     *                     - providerType: 소셜 제공자(GOOGLE, NAVER, KAKAO)
+     * @return ResponseEntity: 회원가입 결과
+     *         - 성공: JWT 토큰
+     *         - 실패: HTTP 오류 코드 및 메시지
+     * @throws HttpStatus.BAD_REQUEST          필수 필드 누락
+     * @throws HttpStatus.CONFLICT             중복된 이메일
+     * @throws HttpStatus.INTERNAL_SERVER_ERROR 회원가입 실패
+     */
     @PostMapping("/social/register")
     public ResponseEntity<?> registerSocialUser(@RequestBody Map<String, String> requestBody) {
         try {
-            // 요청 데이터 로깅
-            System.out.println("Request Body: " + requestBody);
-            System.out.println("ProviderType: " + requestBody.get("providerType"));
-
             // 요청 데이터 추출
             String userId = requestBody.get("userId");
             String userName = requestBody.get("userName");
