@@ -1,5 +1,6 @@
 package com.itdat.back.utils;
 
+import com.itdat.back.entity.auth.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,9 +19,10 @@ public class JwtTokenUtil {
 
 
     // 토큰 생성
-    public String generateToken(String email) {
+    public String generateToken(User user) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getUserEmail())
+                .claim("userId", user.getUserId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)

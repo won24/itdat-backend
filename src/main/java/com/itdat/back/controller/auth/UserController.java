@@ -56,15 +56,17 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        String email = loginRequest.get("email");
+        String identifier = loginRequest.get("identifier"); // 아이디 또는 이메일
         String password = loginRequest.get("password");
+
         try {
-            String token = userService.login(email, password);
+            String token = userService.login(identifier, password);
             return ResponseEntity.ok(Map.of("token", token));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
         }
     }
+
 
     /**
      * 로그아웃 엔드포인트
