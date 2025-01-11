@@ -79,20 +79,28 @@ public class UnderManagementController {
      * 사용자가 특정 유저를 신고하는 컨트롤러
      */
     @PostMapping("/report-user")
-    public ResponseEntity<Object> reportUser(@RequestBody ReportUserDTO reportUserDTO) {
-        // 사용자로부터 특정 유저의 아이디와 설명(신고 이유) 그리고 신고 당사자의 아이디를 받아낸다.
-        // 상기 정보들에 현재 시간을 추가해 ReportUser 엔티티에 추가한다.
-        // 아울러 해당 아이디의 신고당한 횟수를 카운트할 수 있도록
-        // UnderManagement 엔티티의 reportedCount를 증가시킨다.
+    public ResponseEntity<Object> reportUser(@RequestBody Map<String, Object> data) {
+        System.out.println("datadatadatadatadatadata = " + data);
+        String reason = (String) data.get("reason");
+        String reportedUserEmail = (String) data.get("reportedUserEmail");
+        String loginedUserEmail = (String) data.get("loginedUserEmail");
+        User selectedUser = underManagementService.findByUserEmail(reportedUserEmail);
+        User loginedUser = underManagementService.findByUserEmail(loginedUserEmail);
+
+        ReportUserDTO reportUserDTO = new ReportUserDTO();
+        reportUserDTO.setDescription(reason);
+        reportUserDTO.setReportedUserId(selectedUser.getUserId()); // 신고의 대상이 되는 유저의 아이디
+        reportUserDTO.setUserId(loginedUser.getUserId()); // 신고자의 아이디
+
 
         System.out.println("reportUserDTO = " + reportUserDTO);
 
         try {
             boolean result = underManagementService.reportUser(reportUserDTO);
             if (result) {
-                return ResponseEntity.ok("신고되었습니다.");
+                return ResponseEntity.ok(true);
             } else {
-                return ResponseEntity.ok("신고에 실패하였습니다.");
+                return ResponseEntity.ok(false);
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("서버와의 통신에서 오류 발생: " + e.getMessage());
