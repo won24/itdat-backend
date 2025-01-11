@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UnderManagementRepository extends JpaRepository<UnderManagement, Integer> {
@@ -20,7 +21,7 @@ public interface UnderManagementRepository extends JpaRepository<UnderManagement
 
     UnderManagement findByUserId(int reportedUserId);
 
-    UnderManagement findByUser_UserId(String currentUserId);
+    Optional<UnderManagement> findByUser_UserId(String currentUserId);
 
     // UnderManagement findByReportedUserId(String reportedUserId);
 

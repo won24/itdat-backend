@@ -61,16 +61,25 @@ public class UnderManagementService {
      */
     public boolean reportUser(ReportUserDTO reportUserDTO) {
         try {
-            // reportUserDTO.getReportedUserId(); = 스트링이다.
+            // 새로운 신고 생성 > 신고당한 유저 정보 불러오기(엔티티)
             ReportUser reportUser = new ReportUser();
             User selectedUser = userRepository.findByUserId(reportUserDTO.getReportedUserId());
-            UnderManagement selectedUnderManagement = underManagementRepository.findByUserId(selectedUser.getId());
+
+            // 만약 신고당한 유저의 아이디로 관리 대상 정보를 조회했을 때 정보가 비어있으면 새로운 관리 대상 생성 > new 관리대상에 신고당한 유저를 등록
+            // 정보가 있으면 해당 유저의 관리 대상 정보를 수정 및 관리
+            UnderManagement selectedUnderManagement = underManagementRepository.findByUser_UserId(selectedUser.getUserId()).orElse(null);
+            if (selectedUnderManagement == null) {
+                selectedUnderManagement = new UnderManagement();
+                selectedUnderManagement.setUser(selectedUser);
+                selectedUnderManagement.getUser().setUserId(selectedUser.getUserId());
+                underManagementRepository.save(selectedUnderManagement);
+            }
 
             // 사용자가 입력한 값을 대입 시키는 로직
             reportUser.setReportedUserId(reportUserDTO.getReportedUserId());
             reportUser.setDescription(reportUserDTO.getDescription());
             reportUser.setUserId(reportUserDTO.getUserId());
-            reportUser.setReportDateAt(reportUserDTO.getReportDateAt());
+            reportUser.setReportDateAt(LocalDateTime.now());
             ReportUser insertedReportUser = reportUserRepository.save(reportUser);
 
             // 신고 당한 유저의 신고 카운트를 누적 증가 시키는 로직
@@ -79,17 +88,25 @@ public class UnderManagementService {
             if (selectedUnderManagement.getUser().getStatus() == UserStatus.ACTIVE) {
                 selectedUnderManagement.getUser().setStatus(REPORTED);
             }
+
             // 신고 당한 유저의 벌점을 누적 증가 시키는 로직
             int currentDemerit = selectedUnderManagement.getDemerit();
+            int currentBannedCount = selectedUnderManagement.getBannedCount();
             selectedUnderManagement.setDemerit(currentDemerit + 1);
-            if (selectedUnderManagement.getDemerit() > 2){
-                selectedUnderManagement.getUser().setStatus(BANNED);
-                selectedUnderManagement.setStartDateAt(LocalDateTime.now());
-                selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusDays(7));
+            if (selectedUnderManagement.getDemerit() > 2 && selectedUnderManagement.getDemerit() < 7){
+                if (selectedUnderManagement.getUser().getStatus() != BANNED) {
+                    selectedUnderManagement.getUser().setStatus(BANNED);
+                    selectedUnderManagement.setBannedCount(currentBannedCount + 1);
+                    selectedUnderManagement.setStartDateAt(LocalDateTime.now());
+                    selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusDays(7));
+                }
             }else if (selectedUnderManagement.getDemerit() > 6){
-                selectedUnderManagement.getUser().setStatus(BANNED);
-                selectedUnderManagement.setStartDateAt(LocalDateTime.now());
-                selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusYears(100));
+                if (selectedUnderManagement.getUser().getStatus() != BANNED) {
+                    selectedUnderManagement.getUser().setStatus(BANNED);
+                    selectedUnderManagement.setBannedCount(currentBannedCount + 1000);
+                    selectedUnderManagement.setStartDateAt(LocalDateTime.now());
+                    selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusYears(100));
+                }
             }
 
             underManagementRepository.save(selectedUnderManagement);
@@ -126,7 +143,7 @@ public class UnderManagementService {
 
     /** 로그인 시 해당 유저의 벤 상태를 체크하는 서비스 */
     public boolean checkSanction(String currentUserId) {
-        UnderManagement currentUserUnderManagement = underManagementRepository.findByUser_UserId(currentUserId);
+        UnderManagement currentUserUnderManagement = underManagementRepository.findByUser_UserId(currentUserId).orElse(null);
         User currentUser = userRepository.findByUserId(currentUserId);
 
         // 현재 날짜와 제재 종료일자를 비교하여 유저의 벤 상태를 변경하는 로직
@@ -155,14 +172,18 @@ public class UnderManagementService {
             int currentBannedCount = selectedUnderManagement.getBannedCount(); // 제재 횟수 기존 값
             // 벌점 3점 = 7일 제재, 7점 = 100년(영구) 제재.
             // 제재 횟수 7일 제재는 +1, 영구 제재는 +1000.
-            if (selectedUnderManagement.getDemerit() > 2) {
-                selectedUnderManagement.getUser().setStatus(BANNED);
-                selectedUnderManagement.setBannedCount(currentBannedCount + 1);
+            if (selectedUnderManagement.getDemerit() > 2 && selectedUnderManagement.getDemerit() < 7) {
+                if (selectedUnderManagement.getUser().getStatus() != BANNED) {
+                    selectedUnderManagement.getUser().setStatus(BANNED);
+                    selectedUnderManagement.setBannedCount(currentBannedCount + 1);
+                }
                 selectedUnderManagement.setStartDateAt(LocalDateTime.now());
                 selectedUnderManagement.setEndDateAt(selectedUnderManagement.getStartDateAt().plusDays(7));
             } else if (selectedUnderManagement.getDemerit() > 6) {
-                selectedUnderManagement.getUser().setStatus(BANNED);
-                selectedUnderManagement.setBannedCount(currentBannedCount + 1000);
+                if (selectedUnderManagement.getUser().getStatus() != BANNED) {
+                    selectedUnderManagement.getUser().setStatus(BANNED);
+                    selectedUnderManagement.setBannedCount(currentBannedCount + 1000);
+                }
                 selectedUnderManagement.setStartDateAt(LocalDateTime.now());
                 selectedUnderManagement.setEndDateAt(selectedUnderManagement.getStartDateAt().plusYears(100));
             } else {
