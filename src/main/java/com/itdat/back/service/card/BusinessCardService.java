@@ -86,7 +86,7 @@ public class BusinessCardService {
             // userEmail을 기반으로 명함을 찾아 공개 상태 업데이트
             BusinessCard businessCard = businessCardRepository.findByCardNoAndUserEmail(cardNo, userEmail);
             if (businessCard != null) {
-                businessCard.setPublic(isPublic);
+                businessCard.setIsPublic(isPublic);
                 businessCardRepository.save(businessCard);
             } else {
                 // 명함을 찾지 못한 경우 예외 처리
