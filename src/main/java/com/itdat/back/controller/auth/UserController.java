@@ -9,6 +9,8 @@ import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.service.auth.NaverWorksAuthService;
 import com.itdat.back.service.auth.UserService;
 import com.itdat.back.utils.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,6 +47,9 @@ public class UserController {
 
     @Autowired
     private NaverWorksAuthService naverWorksAuthService;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     /**
      * 사용자 로그인
@@ -83,7 +90,6 @@ public class UserController {
         // 응답 반환
         return ResponseEntity.ok("로그아웃 성공");
     }
-
 
     /**
      * 사용자 회원가입

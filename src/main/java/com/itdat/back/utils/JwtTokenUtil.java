@@ -3,9 +3,11 @@ package com.itdat.back.utils;
 import com.itdat.back.entity.auth.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Component
@@ -16,7 +18,6 @@ public class JwtTokenUtil {
 
     @Value("${jwt.expiration}")
     private long expiration;
-
 
     // 토큰 생성
     public String generateToken(User user) {
