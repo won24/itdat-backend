@@ -81,6 +81,7 @@ public class SocialAuthController {
             }
             token = request.get("idToken");
             userInfo = socialOAuthService.verifyGoogleIdToken(token);
+            System.out.println("token : " + token);
 
             // 사용자 정보 처리
             String email = userInfo.get("email").toString();
@@ -91,7 +92,7 @@ public class SocialAuthController {
 
             if (existingUser != null) {
                 // 기존 사용자: 로그인 처리
-                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                String jwtToken = jwtTokenUtil.generateToken(existingUser);
                 return ResponseEntity.ok(Map.of("token", jwtToken, "requiresRegistration", false));
             } else {
                 // 새로운 사용자: 회원가입 필요
@@ -142,7 +143,7 @@ public class SocialAuthController {
 
             // 사용자 존재 여부에 따른 처리
             if (existingUser != null) {
-                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                String jwtToken = jwtTokenUtil.generateToken(existingUser);
                 return ResponseEntity.ok(Map.of("token", jwtToken, "requiresRegistration", false));
             } else {
                 return ResponseEntity.ok(Map.of(
@@ -189,7 +190,7 @@ public class SocialAuthController {
             User existingUser = userRepository.findByUserEmail(email);
 
             if (existingUser != null) {
-                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                String jwtToken = jwtTokenUtil.generateToken(existingUser);
                 return ResponseEntity.ok(Map.of("requiresRegistration", false, "token", jwtToken));
             } else {
                 return ResponseEntity.ok(Map.of("requiresRegistration", true, "email", email, "providerId", providerId));
@@ -238,7 +239,7 @@ public class SocialAuthController {
 
             // 사용자 존재 여부에 따른 처리
             if (existingUser != null) {
-                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                String jwtToken = jwtTokenUtil.generateToken(existingUser);
                 return ResponseEntity.ok(Map.of("token", jwtToken, "requiresRegistration", false));
             } else {
                 return ResponseEntity.ok(Map.of(
@@ -318,7 +319,7 @@ public class SocialAuthController {
 
             if (existingUser != null) {
                 // 로그인 성공: JWT 생성 후 리다이렉트 처리
-                String jwtToken = jwtTokenUtil.generateToken(existingUser.getUserEmail());
+                String jwtToken = jwtTokenUtil.generateToken(existingUser);
 
                 // User-Agent를 확인하여 모바일 또는 웹 환경 구분
                 String userAgent = request.getHeader("User-Agent");
@@ -468,7 +469,7 @@ public class SocialAuthController {
             userRepository.save(newUser);
 
             // JWT 토큰 생성
-            String token = jwtTokenUtil.generateToken(userEmail);
+            String token = jwtTokenUtil.generateToken(newUser);
 
             // 응답 반환
             return ResponseEntity.ok(Map.of("token", token));
