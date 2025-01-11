@@ -19,4 +19,5 @@ public interface BusinessCardRepository extends JpaRepository<BusinessCard, Inte
     //Optional<BusinessCard> findByUserEmailAndCardNo(String userEmail, int cardNo);
 
     BusinessCard findByCardNoAndUserEmail(Integer cardNo, String userEmail);
+
 }

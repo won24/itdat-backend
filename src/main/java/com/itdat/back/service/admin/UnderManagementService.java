@@ -79,6 +79,19 @@ public class UnderManagementService {
             if (selectedUnderManagement.getUser().getStatus() == UserStatus.ACTIVE) {
                 selectedUnderManagement.getUser().setStatus(REPORTED);
             }
+            // 신고 당한 유저의 벌점을 누적 증가 시키는 로직
+            int currentDemerit = selectedUnderManagement.getDemerit();
+            selectedUnderManagement.setDemerit(currentDemerit + 1);
+            if (selectedUnderManagement.getDemerit() > 2){
+                selectedUnderManagement.getUser().setStatus(BANNED);
+                selectedUnderManagement.setStartDateAt(LocalDateTime.now());
+                selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusDays(7));
+            }else if (selectedUnderManagement.getDemerit() > 6){
+                selectedUnderManagement.getUser().setStatus(BANNED);
+                selectedUnderManagement.setStartDateAt(LocalDateTime.now());
+                selectedUnderManagement.setEndDateAt(LocalDateTime.now().plusYears(100));
+            }
+
             underManagementRepository.save(selectedUnderManagement);
 
             if (insertedReportUser == null) {
@@ -182,5 +195,13 @@ public class UnderManagementService {
         underManagementRepository.save(selectedUnderManagement);
 
         return selectedUnderManagement;
+    }
+
+
+    public User findByUserEmail(String reportedUserEmail) {
+//        UnderManagement selectecUnderManagement = UnderManagementRepository.findByUserEmail(reportedUserEmail);
+        User selectedUser = userRepository.findByUserEmail(reportedUserEmail);
+
+        return selectedUser;
     }
 }
