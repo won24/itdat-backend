@@ -1,8 +1,10 @@
 package com.itdat.back.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.board.Portfolio;
 import com.itdat.back.service.board.PortfolioService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,15 +17,13 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
-@RequestMapping("/board")
+@RequestMapping("/board/portfolio")
 @CrossOrigin
 public class PortfolioController {
 
-    private final PortfolioService portfolioService;
+    @Autowired
+    private PortfolioService portfolioService;
 
-    public PortfolioController(PortfolioService portfolioService) {
-        this.portfolioService = portfolioService;
-    }
 
     // 가져오기
     @GetMapping("/{userEmail}")
@@ -69,8 +69,13 @@ public class PortfolioController {
             }
 
             // Portfolio 저장
+
+            User user = portfolioService.findByUserEmail(newPortfolio.getUserEmail());
+            if (user == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
             Portfolio savedPortfolio = portfolioService.savePortfolio(newPortfolio);
-            System.out.println("savedPortfolio" + savedPortfolio);
             return ResponseEntity.ok(savedPortfolio);
         } catch (Exception e) {
             e.printStackTrace();
