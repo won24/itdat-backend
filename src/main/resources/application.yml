@@ -99,6 +99,13 @@ logging:
   level:
     root: INFO
     org.springframework: INFO
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
