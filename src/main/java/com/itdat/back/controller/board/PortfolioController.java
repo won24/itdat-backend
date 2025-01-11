@@ -1,9 +1,7 @@
 package com.itdat.back.controller.board;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itdat.back.entity.board.Portfolio;
-import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.service.board.PortfolioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
