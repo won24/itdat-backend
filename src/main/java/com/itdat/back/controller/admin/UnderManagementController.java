@@ -84,14 +84,19 @@ public class UnderManagementController {
         String reason = (String) data.get("reason");
         String reportedUserEmail = (String) data.get("reportedUserEmail");
         String loginedUserEmail = (String) data.get("loginedUserEmail");
+        System.out.println("reason = " + reason);
+        System.out.println("reportedUserEmail = " + reportedUserEmail);
+        System.out.println("loginedUserEmail = " + loginedUserEmail);
+
         User selectedUser = underManagementService.findByUserEmail(reportedUserEmail);
+        System.out.println("selectedUser = " + selectedUser);
         User loginedUser = underManagementService.findByUserEmail(loginedUserEmail);
+        System.out.println("loginedUser = " + loginedUser);
 
         ReportUserDTO reportUserDTO = new ReportUserDTO();
         reportUserDTO.setDescription(reason);
         reportUserDTO.setReportedUserId(selectedUser.getUserId()); // 신고의 대상이 되는 유저의 아이디
         reportUserDTO.setUserId(loginedUser.getUserId()); // 신고자의 아이디
-
 
         System.out.println("reportUserDTO = " + reportUserDTO);
 

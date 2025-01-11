@@ -3,6 +3,7 @@ package com.itdat.back.entity.admin;
 import com.itdat.back.entity.auth.User;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -23,12 +24,12 @@ public class ReportUser {
     private String userId;
 
     @Column(name = "report_date_at")
-    private Date reportDateAt;
+    private LocalDateTime reportDateAt;
 
     public ReportUser() {
     }
 
-    public ReportUser(int id, String reportedUserId, String description, String userId, Date reportDateAt) {
+    public ReportUser(int id, String reportedUserId, String description, String userId, LocalDateTime reportDateAt) {
         this.id = id;
         this.reportedUserId = reportedUserId;
         this.description = description;
@@ -68,11 +69,11 @@ public class ReportUser {
         this.userId = userId;
     }
 
-    public Date getReportDateAt() {
+    public LocalDateTime getReportDateAt() {
         return reportDateAt;
     }
 
-    public void setReportDateAt(Date reportDateAt) {
+    public void setReportDateAt(LocalDateTime reportDateAt) {
         this.reportDateAt = reportDateAt;
     }
 
