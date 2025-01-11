@@ -26,15 +26,20 @@ public class ReportUser {
     @Column(name = "report_date_at")
     private LocalDateTime reportDateAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    private ReportCategory category;
+
     public ReportUser() {
     }
 
-    public ReportUser(int id, String reportedUserId, String description, String userId, LocalDateTime reportDateAt) {
+    public ReportUser(int id, String reportedUserId, String description, String userId, LocalDateTime reportDateAt, ReportCategory category) {
         this.id = id;
         this.reportedUserId = reportedUserId;
         this.description = description;
         this.userId = userId;
         this.reportDateAt = reportDateAt;
+        this.category = category;
     }
 
     public int getId() {
@@ -77,6 +82,14 @@ public class ReportUser {
         this.reportDateAt = reportDateAt;
     }
 
+    public ReportCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ReportCategory category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "ReportUser{" +
@@ -85,6 +98,7 @@ public class ReportUser {
                 ", description='" + description + '\'' +
                 ", userId='" + userId + '\'' +
                 ", reportDateAt=" + reportDateAt +
+                ", category=" + category +
                 '}';
     }
 }

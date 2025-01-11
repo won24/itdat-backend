@@ -1,5 +1,6 @@
 package com.itdat.back.controller.admin;
 
+import com.itdat.back.entity.admin.ReportCategory;
 import com.itdat.back.entity.admin.ReportUser;
 import com.itdat.back.entity.admin.UnderManagement;
 import com.itdat.back.entity.auth.User;
@@ -82,23 +83,21 @@ public class UnderManagementController {
     public ResponseEntity<Object> reportUser(@RequestBody Map<String, Object> data) {
         System.out.println("datadatadatadatadatadata = " + data);
         String reason = (String) data.get("reason");
+        System.out.println("data.get(\"selectedCategory\") = " + data.get("selectedCategory"));
+        ReportCategory category = ReportCategory.valueOf(data.get("selectedCategory").toString());
+        System.out.println("categorycategory = " + category);
         String reportedUserEmail = (String) data.get("reportedUserEmail");
         String loginedUserEmail = (String) data.get("loginedUserEmail");
-        System.out.println("reason = " + reason);
-        System.out.println("reportedUserEmail = " + reportedUserEmail);
-        System.out.println("loginedUserEmail = " + loginedUserEmail);
 
         User selectedUser = underManagementService.findByUserEmail(reportedUserEmail);
-        System.out.println("selectedUser = " + selectedUser);
         User loginedUser = underManagementService.findByUserEmail(loginedUserEmail);
-        System.out.println("loginedUser = " + loginedUser);
 
         ReportUserDTO reportUserDTO = new ReportUserDTO();
         reportUserDTO.setDescription(reason);
+        reportUserDTO.setCategory(category);
+        System.out.println("reportUserDTO.getCategory() = " + reportUserDTO.getCategory());
         reportUserDTO.setReportedUserId(selectedUser.getUserId()); // 신고의 대상이 되는 유저의 아이디
         reportUserDTO.setUserId(loginedUser.getUserId()); // 신고자의 아이디
-
-        System.out.println("reportUserDTO = " + reportUserDTO);
 
         try {
             boolean result = underManagementService.reportUser(reportUserDTO);
