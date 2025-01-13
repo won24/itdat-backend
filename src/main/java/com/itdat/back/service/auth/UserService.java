@@ -40,7 +40,7 @@ public class UserService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public String login(String identifier, String password) {
+    public User login(String identifier, String password) {
         User user = Optional.ofNullable(
                         identifier.contains("@")
                                 ? userRepository.findByUserEmail(identifier)
@@ -51,8 +51,9 @@ public class UserService {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        return jwtTokenUtil.generateToken(user);
+        return user; // 사용자 객체 반환
     }
+
 
 
 

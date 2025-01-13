@@ -63,16 +63,26 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        String identifier = loginRequest.get("identifier"); // 아이디 또는 이메일
+        String identifier = loginRequest.get("identifier");
         String password = loginRequest.get("password");
+        System.out.println("로그인 아이디 또는 이메일 : " + identifier);
+        System.out.println("로그인 패스워드 : " + password);
 
         try {
-            String token = userService.login(identifier, password);
-            return ResponseEntity.ok(Map.of("token", token));
+            User user = userService.login(identifier, password);
+            String token = jwtTokenUtil.generateToken(user);
+
+            // 이메일과 토큰을 응답으로 반환
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "userEmail", user.getUserEmail(),
+                    "userId", user.getUserId()
+            ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
         }
     }
+
 
 
     /**
