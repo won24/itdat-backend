@@ -1,5 +1,7 @@
 package com.itdat.back.model.dto;
 
+import com.itdat.back.entity.admin.ReportCategory;
+
 import java.util.Date;
 
 public class ReportUserDTO {
@@ -7,15 +9,17 @@ public class ReportUserDTO {
     private String description;
     private String userId;
     private Date reportDateAt;
+    private ReportCategory category;
 
     public ReportUserDTO() {
     }
 
-    public ReportUserDTO(String reportedUserId, String description, String userId, Date reportDateAt) {
+    public ReportUserDTO(String reportedUserId, String description, String userId, Date reportDateAt, ReportCategory category) {
         this.reportedUserId = reportedUserId;
         this.description = description;
         this.userId = userId;
         this.reportDateAt = reportDateAt;
+        this.category = category;
     }
 
     public String getReportedUserId() {
@@ -50,6 +54,14 @@ public class ReportUserDTO {
         this.reportDateAt = reportDateAt;
     }
 
+    public ReportCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ReportCategory category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "ReportUserDTO{" +
@@ -57,6 +69,7 @@ public class ReportUserDTO {
                 ", description='" + description + '\'' +
                 ", userId='" + userId + '\'' +
                 ", reportDateAt=" + reportDateAt +
+                ", category=" + category +
                 '}';
     }
 }
