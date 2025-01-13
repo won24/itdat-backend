@@ -18,19 +18,6 @@ spring:
       base-url: ${NAVER_WORKS_BASE_URL}
       redirect-url: ${NAVER_WORKS_REDIRECT_URL}
 
-
-#  mail:
-#    host: smtp.worksmail.com
-#    port: 587
-#    username: noreply@www.itdat.store
-#    password: ${MAIL_PASSWORD}  # 시스템 환경 변수로 관리
-#    properties:
-#      mail:
-#        smtp:
-#          auth: true
-#          starttls:
-#            enable: true
-
   mail:
     host: ${MAIL_HOST}
     port: ${MAIL_PORT}
