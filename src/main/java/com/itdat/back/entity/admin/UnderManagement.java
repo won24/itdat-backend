@@ -41,10 +41,13 @@ public class UnderManagement {
     @Column(name = "demerit"/*, nullable = false*/)
     private Integer demerit = 0;
 
+    @Column(name = "last_reported_date_at")
+    private LocalDateTime lastReportedDateAt;
+
     public UnderManagement() {
     }
 
-    public UnderManagement(int id, User user, Integer cumulativeCount, LocalDateTime startDateAt, LocalDateTime endDateAt, LocalDateTime updateAt, Integer reportedCount, Integer bannedCount, Integer demerit) {
+    public UnderManagement(int id, User user, Integer cumulativeCount, LocalDateTime startDateAt, LocalDateTime endDateAt, LocalDateTime updateAt, Integer reportedCount, Integer bannedCount, Integer demerit, LocalDateTime lastReportedDateAt) {
         this.id = id;
         this.user = user;
         this.cumulativeCount = cumulativeCount;
@@ -54,6 +57,7 @@ public class UnderManagement {
         this.reportedCount = reportedCount;
         this.bannedCount = bannedCount;
         this.demerit = demerit;
+        this.lastReportedDateAt = lastReportedDateAt;
     }
 
     public int getId() {
@@ -128,6 +132,14 @@ public class UnderManagement {
         this.demerit = demerit;
     }
 
+    public LocalDateTime getLastReportedDateAt() {
+        return lastReportedDateAt;
+    }
+
+    public void setLastReportedDateAt(LocalDateTime lastReportedDateAt) {
+        this.lastReportedDateAt = lastReportedDateAt;
+    }
+
     @Override
     public String toString() {
         return "UnderManagement{" +
@@ -140,6 +152,7 @@ public class UnderManagement {
                 ", reportedCount=" + reportedCount +
                 ", bannedCount=" + bannedCount +
                 ", demerit=" + demerit +
+                ", lastReportedDateAt=" + lastReportedDateAt +
                 '}';
     }
 }

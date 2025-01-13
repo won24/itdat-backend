@@ -68,7 +68,7 @@ public class UnderManagementController {
      */
     @GetMapping("/bring-reported-user-list")
     public ResponseEntity<Object> getReportedUserListBrief() {
-        List<Object> reportedUserList = underManagementService.getReportedUsers();
+        List<UnderManagement> reportedUserList = underManagementService.getReportedUsers();
 
         if (reportedUserList.isEmpty()) {
             return ResponseEntity.status(500).body("신고된 유저가 없습니다.");
