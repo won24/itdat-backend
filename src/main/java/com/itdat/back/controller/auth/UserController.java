@@ -9,6 +9,8 @@ import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.service.auth.NaverWorksAuthService;
 import com.itdat.back.service.auth.UserService;
 import com.itdat.back.utils.JwtTokenUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,6 +48,9 @@ public class UserController {
     @Autowired
     private NaverWorksAuthService naverWorksAuthService;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     /**
      * 사용자 로그인
      *
@@ -56,15 +63,27 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        String email = loginRequest.get("email");
+        String identifier = loginRequest.get("identifier");
         String password = loginRequest.get("password");
+        System.out.println("로그인 아이디 또는 이메일 : " + identifier);
+        System.out.println("로그인 패스워드 : " + password);
+
         try {
-            String token = userService.login(email, password);
-            return ResponseEntity.ok(Map.of("token", token));
+            User user = userService.login(identifier, password);
+            String token = jwtTokenUtil.generateToken(user);
+
+            // 이메일과 토큰을 응답으로 반환
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "userEmail", user.getUserEmail(),
+                    "userId", user.getUserId()
+            ));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", e.getMessage()));
         }
     }
+
+
 
     /**
      * 로그아웃 엔드포인트
@@ -81,7 +100,6 @@ public class UserController {
         // 응답 반환
         return ResponseEntity.ok("로그아웃 성공");
     }
-
 
     /**
      * 사용자 회원가입

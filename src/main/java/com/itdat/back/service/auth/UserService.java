@@ -40,25 +40,22 @@ public class UserService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public String login(String email, String password) {
-        // 아이디로 사용자 찾기
-        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(email));
-        System.out.println(optionalUser);
-        if (!optionalUser.isPresent()) {
-            throw new RuntimeException("존재하지 않는 사용자입니다.");
-        }
-        User user = optionalUser.get();
-        System.out.println(user.getPassword());
-        // 비밀번호 검증
+    public User login(String identifier, String password) {
+        User user = Optional.ofNullable(
+                        identifier.contains("@")
+                                ? userRepository.findByUserEmail(identifier)
+                                : userRepository.findByUserId(identifier))
+                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
-        // 토큰 생성 및 반환
-        String token = jwtTokenUtil.generateToken(user.getUserEmail());
-        System.out.println("토큰");
-        return token;
+        return user; // 사용자 객체 반환
     }
+
+
+
 
     public User getUserByEmail(String email) {
         return userRepository.findByUserEmail(email);

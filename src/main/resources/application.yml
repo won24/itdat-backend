@@ -2,9 +2,9 @@ server:
   ssl:
     enabled: false
 
-  port: 8082
+#  port: 8082
 #  port: 8001
-#  port: 8000
+  port: 8000
   servlet:
     encoding:
       charset: UTF-8
@@ -99,6 +99,13 @@ logging:
   level:
     root: INFO
     org.springframework: INFO
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
