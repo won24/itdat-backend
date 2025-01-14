@@ -158,4 +158,15 @@ public class CardController {
             throw new IllegalArgumentException("파일 크기가 5MB를 초과했습니다.");
         }
     }
+    @PostMapping("/publicstatus")
+    public ResponseEntity<?> updateCardPublicStatus(@RequestBody List<Map<String, Object>> cardData) {
+        try {
+            businessCardService.updateCardPublicStatus(cardData);
+            return ResponseEntity.ok("명함 공개 상태가 성공적으로 업데이트되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 }
