@@ -80,6 +80,15 @@ public class BusinessCard {
     @JoinColumn(name = "folder_id") // "folder_id"는 폴더를 참조하는 컬럼 이름
     private Folder folder;
 
+    @Column(name = "background_color")
+    private String backgroundColor;
+
+    @Column(name = "text_color")
+    private String textColor;
+
+    @Column(name = "font_family")
+    private String fontFamily;
+
     public BusinessCard() {
     }
 
@@ -103,6 +112,34 @@ public class BusinessCard {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isPublic = isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public String getTextColor() {
+        return textColor;
+    }
+
+    public void setTextColor(String textColor) {
+        this.textColor = textColor;
+    }
+
+    public String getFontFamily() {
+        return fontFamily;
+    }
+
+    public void setFontFamily(String fontFamily) {
+        this.fontFamily = fontFamily;
     }
 
     public Integer getCardId() {
