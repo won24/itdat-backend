@@ -16,6 +16,9 @@ public class JwtTokenUtil {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
+    @Value("${jwt.refresh-expiration}")
+    private long refreshTokenExpiration;
+
     @Value("${jwt.expiration}")
     private long expiration;
 
@@ -29,6 +32,18 @@ public class JwtTokenUtil {
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    // 리프레시 토큰 생성
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+                .setSubject(user.getUserEmail())
+                .claim("userId", user.getUserId())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 
     // 아이디 추출 추후 생성
     public String extractUserId(String token) {

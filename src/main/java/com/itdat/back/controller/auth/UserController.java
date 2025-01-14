@@ -65,8 +65,6 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String identifier = loginRequest.get("identifier");
         String password = loginRequest.get("password");
-        System.out.println("로그인 아이디 또는 이메일 : " + identifier);
-        System.out.println("로그인 패스워드 : " + password);
 
         try {
             User user = userService.login(identifier, password);
@@ -251,6 +249,29 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("User not found");
         }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody Map<String, String> request) {
+        String refreshToken = request.get("refreshToken");
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return ResponseEntity.badRequest().body("리프레시 토큰이 필요합니다.");
+        }
+
+        if (!jwtTokenUtil.validateToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프레시 토큰입니다.");
+        }
+
+        String email = jwtTokenUtil.extractEmail(refreshToken);
+        User user = userRepository.findByUserEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("사용자를 찾을 수 없습니다.");
+        }
+
+        // 새로운 액세스 토큰 생성
+        String newAccessToken = jwtTokenUtil.generateToken(user);
+        return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
     }
 
 
