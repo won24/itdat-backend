@@ -50,8 +50,12 @@ public class UnderManagementService {
     /**
      * 신고된 유저의 정보를 가져오는 서비스
      */
-    public List<Object> getReportedUsers() {
-        List<Object> underManagements = underManagementRepository.findAllByUserStatusNotACTIVE();
+    public List<UnderManagement> getReportedUsers() {
+        System.out.println("11111111111111111111111111111111111111");
+        List<UnderManagement> underManagements = underManagementRepository.findAll();
+        System.out.println("underManagements = " + underManagements);
+        System.out.println("222222222222222222222222222222222222222222222222");
+//        List<Object> underManagements = underManagementRepository.findAllByUserStatusNotACTIVE();
         return underManagements; // Object 형태로 변환
         // return new ArrayList<>(underManagements); // underManagements를 새로 하나 더 만드는 행위.. 그럴 필요가 없다..
     }
@@ -74,6 +78,7 @@ public class UnderManagementService {
                 selectedUnderManagement.getUser().setUserId(selectedUser.getUserId());
                 underManagementRepository.save(selectedUnderManagement);
             }
+            selectedUnderManagement.setLastReportedDateAt(LocalDateTime.now()); // 신고된 유저의 가장 최근 신고 기록을 남겨두기 위함.
 
             // 사용자가 입력한 값을 대입 시키는 로직
             reportUser.setReportedUserId(reportUserDTO.getReportedUserId());

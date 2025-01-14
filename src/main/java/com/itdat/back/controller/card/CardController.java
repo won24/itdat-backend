@@ -6,7 +6,6 @@ import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.service.card.BusinessCardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +26,7 @@ public class CardController {
 
     @Autowired
     private BusinessCardService businessCardService;
-
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    
 
 
     // 유저 정보 가져오기
@@ -65,7 +62,7 @@ public class CardController {
     }
 
 
-    // 앱 - 명함 생성
+    // 이미지 없는 명함 저장
     @PostMapping("/save")
     public ResponseEntity<?> saveBusinessCard(@RequestBody BusinessCard card) {
         try {
@@ -77,13 +74,14 @@ public class CardController {
 
             // 명함 저장
             BusinessCard savedCard = businessCardService.saveBusinessCard(card);
+
             return ResponseEntity.ok(savedCard);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("명함 저장 중 오류가 발생했습니다.");
         }
     }
 
-    // 앱 - 명함 뒷면 저장
+    // 이미지 있는 명함 저장
     @PostMapping("/save/logo")
     public ResponseEntity<String> saveBusinessCardWithLogo(
             @RequestPart("cardInfo") String cardInfoJson,

@@ -135,4 +135,27 @@ public class NfcController {
             return ResponseEntity.internalServerError().body("Failed to delete account: " + e.getMessage());
         }
     }
+
+    @PostMapping("/mywallet/cardmemo")
+    public ResponseEntity<?> saveCardMemo(@RequestBody Map<String, String> cardMemo) {
+        System.out.println(cardMemo);
+        try {
+            nfcService.saveDescription(cardMemo);
+            return ResponseEntity.ok("카드 메모가 성공적으로 저장되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("카드 메모 저장 중 오류 발생: " + e.getMessage());
+        }
+    }
+    @PostMapping("/mywallet/loadmemo")
+    public ResponseEntity<String> loadCardMemo(@RequestBody Map<String, String> cardMemo) {
+        System.out.println(cardMemo);
+        try {
+            String memo = nfcService.loadDescription(cardMemo);
+            return ResponseEntity.ok(memo);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("카드 메모 저장 중 오류 발생: " + e.getMessage());
+        }
+    }
 }

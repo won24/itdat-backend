@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NfcRepository extends JpaRepository<MyWallet, Integer> {
 
+    MyWallet findByUserEmailAndCardNoAndMyEmail(String userEmail, int cardNo, String myEmail);
 }
