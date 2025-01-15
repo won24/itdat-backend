@@ -75,9 +75,7 @@ public class NfcController {
             user.setCompanyFax(userInfo.get("companyFax"));
             user.setCompanyAddr(userInfo.get("companyAddr"));
             user.setCompanyAddrDetail(userInfo.get("companyAddrDetail"));
-            System.out.println(user);
             userRepository.save(user);
-            System.out.println(user);
             return ResponseEntity.ok("User information updated successfully");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error updating user information: " + e.getMessage());
