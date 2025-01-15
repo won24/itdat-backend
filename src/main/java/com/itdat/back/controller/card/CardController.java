@@ -87,6 +87,7 @@ public class CardController {
             @RequestPart("cardInfo") String cardInfoJson,
             @RequestPart(value = "logo", required = false) MultipartFile logo
     ) {
+        System.out.println("Received BusinessCard: " + cardInfoJson);
         try {
             // JSON 파싱
             ObjectMapper objectMapper = new ObjectMapper();

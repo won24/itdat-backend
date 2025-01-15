@@ -89,10 +89,20 @@ public class BusinessCard {
     @Column(name = "font_family")
     private String fontFamily;
 
+    @Column(name = "custom_text")
+    private String customText;
+
+    @JsonProperty("isTextEnabled")
+    @Column(name = "is_text_enabled")
+    private boolean isTextEnabled;
+
+    @Column(name = "text_position")
+    private String textPosition;
+
     public BusinessCard() {
     }
 
-    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoUrl, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isPublic) {
+    public BusinessCard(Integer cardId, String userEmail, int cardNo, String userName, String phone, String email, String companyName, String companyNumber, String companyAddress, String companyFax, String department, String position, String appTemplate, String webTemplate, CardSide cardSide, String logoUrl, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isPublic, Folder folder, String backgroundColor, String textColor, String fontFamily, String customText, boolean isTextEnabled, String textPosition) {
         this.cardId = cardId;
         this.userEmail = userEmail;
         this.cardNo = cardNo;
@@ -112,6 +122,37 @@ public class BusinessCard {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isPublic = isPublic;
+        this.folder = folder;
+        this.backgroundColor = backgroundColor;
+        this.textColor = textColor;
+        this.fontFamily = fontFamily;
+        this.customText = customText;
+        this.isTextEnabled = isTextEnabled;
+        this.textPosition = textPosition;
+    }
+
+    public String getCustomText() {
+        return customText;
+    }
+
+    public void setCustomText(String customText) {
+        this.customText = customText;
+    }
+
+    public boolean isTextEnabled() {
+        return isTextEnabled;
+    }
+
+    public void setTextEnabled(boolean IsTextEnabled) {
+        isTextEnabled = IsTextEnabled;
+    }
+
+    public String getTextPosition() {
+        return textPosition;
+    }
+
+    public void setTextPosition(String textPosition) {
+        this.textPosition = textPosition;
     }
 
     public void setPublic(boolean aPublic) {
