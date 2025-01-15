@@ -6,8 +6,6 @@ server:
     key-store-password: 1234
     key-store-type: PKCS12
     key-alias: tomcat
-  http:
-    port: 8080
 
 spring:
   jpa:
