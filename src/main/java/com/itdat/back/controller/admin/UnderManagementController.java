@@ -157,7 +157,7 @@ public class UnderManagementController {
     public ResponseEntity<Object> getReportUserList() {
         List<ReportUser> reportUserList = underManagementService.bringReportUserList();
         if (reportUserList.isEmpty()) {
-            return ResponseEntity.status(500).body("아직 신고된 기록이 없습니.");
+            return ResponseEntity.status(500).body("아직 신고된 기록이 없습니다.");
         }
         return ResponseEntity.ok(reportUserList);
     }
