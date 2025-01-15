@@ -9,6 +9,7 @@ import com.itdat.back.entity.qna.QnaCategory;
 import com.itdat.back.model.dto.QnaDTO;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.repository.qna.QnaRepository;
+import com.itdat.back.service.auth.UserService;
 import com.itdat.back.service.qna.QnaService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class QnaController {
     private UserRepository userRepository;
     @Autowired
     private QnaRepository qnaRepository;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/all-list")
     public ResponseEntity<Object> getAllQnaList() {
@@ -116,6 +119,16 @@ public class QnaController {
             qnaRepository.save(createdQna);
             return ResponseEntity.ok("저장됐습니다.");
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 저장되지 못 했습니다. " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/answer-write")
+    public ResponseEntity<Object> answerQna(@RequestBody Map<String, Object> qnaAnswerData) {
+        try {
+            boolean result = qnaService.insertQnaAnswer(qnaAnswerData);
+            return ResponseEntity.ok(result);
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 저장되지 못 했습니다. " + e.getMessage());
         }
     }
