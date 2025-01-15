@@ -4,6 +4,7 @@ import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserStatus;
 import com.itdat.back.entity.qna.Qna;
+import com.itdat.back.entity.qna.QnaAnswer;
 import com.itdat.back.entity.qna.QnaCategory;
 import com.itdat.back.model.dto.QnaDTO;
 import com.itdat.back.repository.auth.UserRepository;
@@ -73,6 +74,20 @@ public class QnaController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("서버측에서 문제가 발생하였습니다. " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/selected-qna-answer-list")
+    public ResponseEntity<Object> getSelectedQnaAnswerList(@RequestParam int selectedId) {
+        try {
+            QnaAnswer selectedQnaAnswerList = qnaService.getListById(selectedId);
+            if(selectedQnaAnswerList != null) {
+                return ResponseEntity.ok(selectedQnaAnswerList);
+            } else {
+                return ResponseEntity.ok("선택된 게시물에 등록된 답변이 없습니다.");
+            }
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측에서 문제가 발생하였습니다. " + e.getMessage());
         }
     }
 
