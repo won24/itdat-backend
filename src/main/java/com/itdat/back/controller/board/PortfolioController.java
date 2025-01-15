@@ -25,7 +25,6 @@ public class PortfolioController {
     private PortfolioService portfolioService;
 
 
-    // 가져오기
     @GetMapping("/{userEmail}")
     public ResponseEntity<List<Portfolio>> getPortfoliosByUserEmail(@PathVariable String userEmail) {
         try{
@@ -45,30 +44,23 @@ public class PortfolioController {
 
 
 
-    // 저장
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Portfolio> savePortfolio(
             @RequestParam("postData") String jsonData,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         try {
-            // JSON 파싱
             ObjectMapper objectMapper = new ObjectMapper();
             Portfolio newPortfolio = objectMapper.readValue(jsonData, Portfolio.class);
 
-            // 파일 처리
             if (file != null && !file.isEmpty()) {
-                // 파일 저장 경로 설정
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 Path filePath = Paths.get("/uploads/board/", fileName);
-                Files.createDirectories(filePath.getParent()); // 디렉토리 생성
+                Files.createDirectories(filePath.getParent());
                 Files.write(filePath, file.getBytes());
 
-                // 저장된 파일 경로를 Portfolio 객체에 설정
                 newPortfolio.setFileUrl(filePath.toString());
             }
-
-            // Portfolio 저장
 
             User user = portfolioService.findByUserEmail(newPortfolio.getUserEmail());
             if (user == null) {
@@ -84,7 +76,7 @@ public class PortfolioController {
     }
 
 
-    // 수정
+
     @PutMapping(value = "/edit/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Portfolio> updatePortfolio(
             @PathVariable Integer id,
@@ -92,22 +84,18 @@ public class PortfolioController {
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         try {
-            // JSON 파싱
             ObjectMapper objectMapper = new ObjectMapper();
             Portfolio updatedPortfolio = objectMapper.readValue(jsonData, Portfolio.class);
 
-            // 파일 처리
             if (file != null && !file.isEmpty()) {
-                // 파일 저장 경로 설정
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get("/uploads/board/", fileName);
+                Path filePath = Paths.get("C:/uploads/board/", fileName);
                 Files.createDirectories(filePath.getParent());
                 Files.write(filePath, file.getBytes());
 
                 updatedPortfolio.setFileUrl(filePath.toString());
             }
 
-            // Portfolio 저장
             Portfolio updated = portfolioService.updatePortfolio(id, updatedPortfolio);
             return ResponseEntity.ok(updated);
         } catch (Exception e) {
@@ -117,7 +105,6 @@ public class PortfolioController {
     }
 
 
-    // 삭제
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePortfolio(@PathVariable Integer id) {
         portfolioService.deletePortfolio(id);

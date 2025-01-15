@@ -29,7 +29,6 @@ public class CardController {
     
 
 
-    // 유저 정보 가져오기
     @GetMapping("/userinfo/{userEmail}")
     public ResponseEntity<?> userInfo(@PathVariable("userEmail") String userEmail) {
         try {
@@ -44,7 +43,7 @@ public class CardController {
         }
     }
 
-    // 사용자 명함 가져오기
+
     @GetMapping("/{userEmail}")
     public ResponseEntity<List<BusinessCard>> getBusinessCardsByUserEmail(@PathVariable String userEmail) {
         try {
@@ -62,17 +61,14 @@ public class CardController {
     }
 
 
-    // 이미지 없는 명함 저장
     @PostMapping("/save")
     public ResponseEntity<?> saveBusinessCard(@RequestBody BusinessCard card) {
         try {
-            // 유저 이메일 확인
             User user = businessCardService.findByUserEmail(card.getUserEmail());
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("유효하지 않은 사용자 이메일입니다.");
             }
 
-            // 명함 저장
             BusinessCard savedCard = businessCardService.saveBusinessCard(card);
 
             return ResponseEntity.ok(savedCard);
@@ -81,15 +77,13 @@ public class CardController {
         }
     }
 
-    // 이미지 있는 명함 저장
+
     @PostMapping("/save/logo")
     public ResponseEntity<String> saveBusinessCardWithLogo(
             @RequestPart("cardInfo") String cardInfoJson,
             @RequestPart(value = "logo", required = false) MultipartFile logo
     ) {
-        System.out.println("Received BusinessCard: " + cardInfoJson);
         try {
-            // JSON 파싱
             ObjectMapper objectMapper = new ObjectMapper();
             BusinessCard businessCard;
             try {
@@ -100,14 +94,13 @@ public class CardController {
             }
 
             try {
-                // 파일 형식 및 크기 검증
                 validateFile(logo);
             } catch (IllegalArgumentException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
 
-            // 로고 파일 저장
-            if (logo != null && !logo.isEmpty()) {
+
+            if (!logo.isEmpty()) {
                 String logoPath = saveFile(logo);
                 businessCard.setLogoUrl(logoPath);
             }
@@ -123,7 +116,7 @@ public class CardController {
 
     private String saveFile(MultipartFile file) {
         try {
-            String upload_dir = "/uploads/logos";
+            String upload_dir = "C:/uploads/logos";
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path uploadPath = Paths.get(upload_dir);
 
@@ -152,11 +145,13 @@ public class CardController {
             throw new IllegalArgumentException("허용되지 않는 파일 형식입니다: " + contentType);
         }
 
-        long maxSize = 5 * 1024 * 1024; // 5MB
+        long maxSize = 5 * 1024 * 1024;
         if (file.getSize() > maxSize) {
             throw new IllegalArgumentException("파일 크기가 5MB를 초과했습니다.");
         }
     }
+
+
     @PostMapping("/publicstatus")
     public ResponseEntity<?> updateCardPublicStatus(@RequestBody List<Map<String, Object>> cardData) {
         try {
