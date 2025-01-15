@@ -46,7 +46,7 @@ public class BusinessCardService {
 
 
     // 앱 - 명함 뒷면 저장
-    public BusinessCard saveBusinessCardWithLogo(BusinessCard card){
+    public BusinessCard saveBusinessCardWithLogo(BusinessCard card) {
         return businessCardRepository.save(card);
     }
 
@@ -100,7 +100,8 @@ public class BusinessCardService {
 
     @Transactional
     public boolean deleteOnlyCard(Integer cardNo, String userEmail) {
-        List<BusinessCard> cards = (List<BusinessCard>) businessCardRepository.findByCardNoAndUserEmail(cardNo, userEmail);
+        System.out.println(cardNo + userEmail);
+        List<BusinessCard> cards = businessCardRepository.findAllByCardNoAndUserEmail(cardNo, userEmail);
         if (!cards.isEmpty()) {
             businessCardRepository.deleteAll(cards);
             return true;

@@ -3,20 +3,20 @@ server:
     enabled: false
 
   port: 8082
-#  port: 8001
-#  port: 8000
   servlet:
     encoding:
       charset: UTF-8
       enabled: true
       force: true
 
+app:
+  base-url: https://itdat.store
 
 spring:
   config:
     import: "classpath:application-db.yml"
   profiles:
-    active: dev  # 기본 프로파일을 개발 환경(dev)으로 설정
+    active: prod  # 기본 프로파일을 개발 환경(dev)으로 설정
   web:
     resources:
       static-locations: classpath:/templates/
@@ -111,6 +111,7 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   # 환경변수 등록 필요
   expiration: 86400000
+  refresh-expiration: 604800000
 
 file:
   upload-dir: "C:\\uploads"  # Windows 경로에서 백슬래시 두 개 사용

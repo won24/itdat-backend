@@ -6,7 +6,6 @@ import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.service.card.BusinessCardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,9 +26,7 @@ public class CardController {
 
     @Autowired
     private BusinessCardService businessCardService;
-
-    @Value("${file.upload-dir}")
-    private String uploadDir;
+    
 
 
     // 유저 정보 가져오기
@@ -65,7 +62,7 @@ public class CardController {
     }
 
 
-    // 앱 - 명함 생성
+    // 이미지 없는 명함 저장
     @PostMapping("/save")
     public ResponseEntity<?> saveBusinessCard(@RequestBody BusinessCard card) {
         try {
@@ -77,18 +74,20 @@ public class CardController {
 
             // 명함 저장
             BusinessCard savedCard = businessCardService.saveBusinessCard(card);
+
             return ResponseEntity.ok(savedCard);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("명함 저장 중 오류가 발생했습니다.");
         }
     }
 
-    // 앱 - 명함 뒷면 저장
+    // 이미지 있는 명함 저장
     @PostMapping("/save/logo")
     public ResponseEntity<String> saveBusinessCardWithLogo(
             @RequestPart("cardInfo") String cardInfoJson,
             @RequestPart(value = "logo", required = false) MultipartFile logo
     ) {
+        System.out.println("Received BusinessCard: " + cardInfoJson);
         try {
             // JSON 파싱
             ObjectMapper objectMapper = new ObjectMapper();
@@ -156,6 +155,57 @@ public class CardController {
         long maxSize = 5 * 1024 * 1024; // 5MB
         if (file.getSize() > maxSize) {
             throw new IllegalArgumentException("파일 크기가 5MB를 초과했습니다.");
+        }
+    }
+    @PostMapping("/publicstatus")
+    public ResponseEntity<?> updateCardPublicStatus(@RequestBody List<Map<String, Object>> cardData) {
+        try {
+            businessCardService.updateCardPublicStatus(cardData);
+            return ResponseEntity.ok("명함 공개 상태가 성공적으로 업데이트되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/front/update")
+    public ResponseEntity<?> updateBusinessCard(@RequestBody BusinessCard card) {
+        try {
+            BusinessCard updatedCard = businessCardService.updateBusinessCard(card);
+            if (updatedCard != null) {
+                return ResponseEntity.ok(updatedCard);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("명함 업데이트에 실패했습니다. 카드 면이 FRONT인지 확인해주세요.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("명함 업데이트 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> deleteCard(@RequestBody Map<String, Object> request) {
+        try {
+            Integer cardNo = (Integer) request.get("cardNo");
+            String userEmail = (String) request.get("userEmail");
+            System.out.println("컨트롤러 :"+cardNo+userEmail);
+
+            if (cardNo == null || userEmail == null) {
+                return ResponseEntity.badRequest().body("cardNo와 userEmail은 필수 입력 항목입니다.");
+            }
+
+            boolean isDeleted = businessCardService.deleteOnlyCard(cardNo, userEmail);
+            if (isDeleted) {
+                return ResponseEntity.ok("명함이 성공적으로 삭제되었습니다.");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("삭제할 명함을 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("명함 삭제 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
 }

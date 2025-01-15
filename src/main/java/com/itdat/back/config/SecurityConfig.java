@@ -39,6 +39,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .requiresChannel(channel -> channel
+                        .anyRequest()
+                        .requiresSecure()
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login",
                                          "/api/auth/register",
@@ -75,7 +79,9 @@ public class SecurityConfig {
                 "http://10.0.2.2:8082",
                 "http://192.168.0.37:3000",
                 "http://localhost:8082",
-                "http://192.168.0.19:3000"
+                "http://192.168.0.19:3000",
+                "https://www.itdat.store",
+                "https://www.namewallet.store"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));
