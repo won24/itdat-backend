@@ -113,7 +113,7 @@ jwt:
   expiration: 86400000
   refresh-expiration: 604800000
 
-file:
-  upload-dir: "C:\\uploads"  # Windows 경로에서 백슬래시 두 개 사용
-  expiration: 86400000
+#file:
+#  upload-dir: "C:\\uploads"  # Windows 경로에서 백슬래시 두 개 사용
+#  expiration: 86400000
 

@@ -22,36 +22,34 @@ public class BusinessCardService {
     @Autowired
     private BusinessCardRepository businessCardRepository;
 
-    // 유저 정보 가져오기
+
     public User findByUserEmail(String userEmail) {
 
         Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(userEmail));
 
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new RuntimeException("존재하지 않는 사용자입니다.");
         }
 
-        User user = optionalUser.get();
-        return user;
+        return optionalUser.get();
     }
 
-    // 앱 - 명함 저장
+
     public BusinessCard saveBusinessCard(BusinessCard card) {
         if (card.getUserEmail() == null) {
             throw new IllegalArgumentException("명함에 연결된 유효한 사용자가 필요합니다.");
         }
-
         return businessCardRepository.save(card);
     }
 
 
-    // 앱 - 명함 뒷면 저장
-    public BusinessCard saveBusinessCardWithLogo(BusinessCard card) {
-        return businessCardRepository.save(card);
+
+    public void saveBusinessCardWithLogo(BusinessCard card) {
+        businessCardRepository.save(card);
     }
 
 
-    // 명함 가져오기
+
     public List<BusinessCard> getBusinessCardsByUserEmail(String userEmail) {
         return businessCardRepository.findByUserEmail(userEmail);
     }

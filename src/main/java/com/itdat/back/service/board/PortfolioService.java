@@ -19,27 +19,25 @@ public class PortfolioService {
     @Autowired
     private PortfolioRepository portfolioRepository;
 
-    // 유저 정보 가져오기
+
     public User findByUserEmail(String userEmail) {
 
         Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUserEmail(userEmail));
 
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             throw new RuntimeException("존재하지 않는 사용자입니다.");
         }
 
-        User user = optionalUser.get();
-        return user;
+        return optionalUser.get();
     }
 
 
-    // 모든 포트폴리오 가져오기
     public List<Portfolio> getPortfoliosByUserEmail(String userEmail) {
         return portfolioRepository.findByUserEmail(userEmail);
     }
 
 
-    // 포트폴리오 저장
+
     public Portfolio savePortfolio(Portfolio newPortfolio) {
         if (newPortfolio.getUserEmail() == null) {
             throw new IllegalArgumentException("포트폴리오에 연결된 유효한 사용자가 필요합니다.");
@@ -48,7 +46,7 @@ public class PortfolioService {
     }
 
 
-    // 포트폴리오 수정
+
     public Portfolio updatePortfolio(Integer id, Portfolio updatedPortfolio) {
         Optional<Portfolio> findPost = portfolioRepository.findById(id);
         if (findPost.isPresent()) {
@@ -62,7 +60,7 @@ public class PortfolioService {
         }
     }
 
-    // 포트폴리오 삭제
+
     public void deletePortfolio(Integer id) {
         if (portfolioRepository.existsById(id)) {
             portfolioRepository.deleteById(id);

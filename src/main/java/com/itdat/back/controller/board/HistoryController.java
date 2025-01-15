@@ -3,7 +3,6 @@ package com.itdat.back.controller.board;
 
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.board.History;
-import com.itdat.back.entity.board.Portfolio;
 import com.itdat.back.service.board.HistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ public class HistoryController {
     @Autowired
     private HistoryService historyService;
 
-    // 가져오기
+
     @GetMapping("/{userEmail}")
     public ResponseEntity<List<History>> getHistoriesByUserEmail(@PathVariable String userEmail) {
         try{
@@ -31,8 +30,6 @@ public class HistoryController {
     }
 
 
-
-    // 저장
     @PostMapping(value = "/save")
     public ResponseEntity<History> saveHistory(@RequestBody History history) {
         try {
@@ -40,7 +37,6 @@ public class HistoryController {
             if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-
             History savedHistory = historyService.saveHistory(history);
             return ResponseEntity.ok(savedHistory);
         } catch (Exception e) {
@@ -50,7 +46,6 @@ public class HistoryController {
     }
 
 
-    // 수정
     @PutMapping(value = "/edit/{id}")
     public ResponseEntity<History> updateHistory(@PathVariable Integer id, @RequestBody History history) {
         try {
@@ -64,7 +59,6 @@ public class HistoryController {
     }
 
 
-    // 삭제
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteHistory(@PathVariable Integer id) {
         historyService.deleteHistory(id);
