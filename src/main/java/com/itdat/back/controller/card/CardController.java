@@ -81,7 +81,6 @@ public class CardController {
     public ResponseEntity<String> saveBusinessCardWithLogo(
             @RequestPart("cardInfo") String cardInfoJson,
             @RequestPart(value = "logo", required = false) MultipartFile logo) {
-        System.out.println("클라이언트에서 넘어온 logo data: " + logo);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             BusinessCard businessCard;
@@ -101,7 +100,6 @@ public class CardController {
             if (!logo.isEmpty()) {
                 String logoPath = saveFile(logo);
                 businessCard.setLogoUrl(logoPath);
-                System.out.println("DB 저장 : " + logoPath);
             }
             businessCardService.saveBusinessCardWithLogo(businessCard);
 
@@ -124,8 +122,6 @@ public class CardController {
 
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            System.out.println("이미지 경로:" + filePath);
             return filePath.toString();
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
