@@ -50,7 +50,7 @@ public class CardController {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
             cards.forEach(card -> {
                 if (card.getLogoUrl() != null) {
-                    card.setLogoUrl("C:/uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
+                    card.setLogoUrl("uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
             return ResponseEntity.ok(cards);
