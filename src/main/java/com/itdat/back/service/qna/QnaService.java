@@ -44,8 +44,8 @@ public class QnaService {
 
     public boolean insertQnaAnswer(Map<String, Object> qnaAnswerData) {
         QnaAnswer newQnaAnswer = new QnaAnswer();
-        Qna selectedQna = qnaRepository.findById((Integer) qnaAnswerData.get("postId")).orElse(null);
-        User selectedUser = userRepository.findById((Integer) qnaAnswerData.get("loginedUserId")).orElse(null);
+        Qna selectedQna = qnaRepository.findById(Integer.valueOf(qnaAnswerData.get("postId").toString())).orElse(null);
+        User selectedUser = userRepository.findById(Integer.valueOf(qnaAnswerData.get("loginedUserId").toString())).orElse(null);
         newQnaAnswer.setQna(selectedQna); // 새답변이 어느 게시글에 속했는지 대입한다.
         newQnaAnswer.setCreateDateAt(LocalDateTime.now());
         newQnaAnswer.setUser(selectedUser); // 새답변을 쓴 관리자의 정보를 대입한다.
