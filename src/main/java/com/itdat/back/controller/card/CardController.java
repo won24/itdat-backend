@@ -127,6 +127,7 @@ public class CardController {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
+            System.out.println("이미지 경로:" + filePath);
             return filePath.toString();
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
