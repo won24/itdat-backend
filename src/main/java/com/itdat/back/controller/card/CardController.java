@@ -53,7 +53,6 @@ public class CardController {
                     card.setLogoUrl("/uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
-            System.out.println("클라데이터"+cards);
             return ResponseEntity.ok(cards);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -81,8 +80,8 @@ public class CardController {
     @PostMapping("/save/logo")
     public ResponseEntity<String> saveBusinessCardWithLogo(
             @RequestPart("cardInfo") String cardInfoJson,
-            @RequestPart(value = "logo", required = false) MultipartFile logo
-    ) {
+            @RequestPart(value = "logo", required = false) MultipartFile logo) {
+        System.out.println("클라이언트에서 넘어온 logo data: " + logo);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             BusinessCard businessCard;
@@ -99,12 +98,11 @@ public class CardController {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
 
-
             if (!logo.isEmpty()) {
                 String logoPath = saveFile(logo);
                 businessCard.setLogoUrl(logoPath);
+                System.out.println("DB 저장 : " + logoPath);
             }
-
             businessCardService.saveBusinessCardWithLogo(businessCard);
 
             return ResponseEntity.ok("명함 저장 성공");
@@ -116,7 +114,7 @@ public class CardController {
 
     private String saveFile(MultipartFile file) {
         try {
-            String upload_dir = "C:/uploads/logos";
+            String upload_dir = "/uploads/logos";
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path uploadPath = Paths.get(upload_dir);
 
