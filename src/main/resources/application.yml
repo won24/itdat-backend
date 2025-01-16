@@ -11,6 +11,11 @@ server:
 
 app:
   base-url: https://itdat.store
+  naver:
+    token-url: https://apis.worksmobile.com/oauth2/v2.0/token
+    client-id: RFqdC7PF7PVsvVnoN1Yy
+    client-secret: uOtFkIpZS6
+    redirect-uri: http://localhost:3000/callback
 
 spring:
   config:
