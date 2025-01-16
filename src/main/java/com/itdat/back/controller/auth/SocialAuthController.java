@@ -81,7 +81,6 @@ public class SocialAuthController {
             }
             token = request.get("idToken");
             userInfo = socialOAuthService.verifyGoogleIdToken(token);
-            System.out.println("token : " + token);
 
             // 사용자 정보 처리
             String email = userInfo.get("email").toString();

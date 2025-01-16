@@ -57,7 +57,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/admin/users").hasRole("ADMIN")
-                                .requestMatchers("/api/base-url").permitAll()
 //                        .requestMatchers("/qna/**").authenticated()
                                 .requestMatchers("/qna/**").permitAll()
                         .requestMatchers("/card/public/**").permitAll()

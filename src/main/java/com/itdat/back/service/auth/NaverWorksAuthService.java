@@ -14,10 +14,10 @@ public class NaverWorksAuthService {
 
     private final NaverWorksConfig naverWorksConfig;
 
-    private static final String TOKEN_URL = "https://apis.worksmobile.com/oauth2/v2.0/token";
-    private static final String CLIENT_ID = "RFqdC7PF7PVsvVnoN1Yy"; // 네이버 웍스 클라이언트 ID
-    private static final String CLIENT_SECRET = "uOtFkIpZS6";       // 네이버 웍스 클라이언트 Secret
-    private static final String REDIRECT_URI = "http://localhost:3000/callback"; // 리다이렉트 URI
+    private static final String TOKEN_URL = System.getenv("TOKEN_URL");
+    private static final String CLIENT_ID = System.getenv("CLIENT_ID");
+    private static final String CLIENT_SECRET = System.getenv("CLIENT_SECRET");
+    private static final String REDIRECT_URI = System.getenv("REDIRECT_URI");
 
     public String fetchAccessToken(String authorizationCode) {
         RestTemplate restTemplate = new RestTemplate();
