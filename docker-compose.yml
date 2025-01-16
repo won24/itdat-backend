@@ -13,7 +13,9 @@ services:
       - "8082:8082"
     networks:
       - default
-
+    volumes:
+      - ./uploads:/logos
+      - ./uploads:/board
 networks:
   default:
     driver: bridge
