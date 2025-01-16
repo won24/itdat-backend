@@ -89,7 +89,7 @@ public class PortfolioController {
 
             if (file != null && !file.isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get("C:/uploads/board/", fileName);
+                Path filePath = Paths.get("/uploads/board/", fileName);
                 Files.createDirectories(filePath.getParent());
                 Files.write(filePath, file.getBytes());
 
