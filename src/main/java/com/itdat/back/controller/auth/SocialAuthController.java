@@ -4,7 +4,6 @@ import com.itdat.back.entity.auth.ProviderType;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.entity.auth.UserType;
 import com.itdat.back.repository.auth.UserRepository;
-import com.itdat.back.service.auth.SocialOAuthService;
 import com.itdat.back.utils.JwtTokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
