@@ -39,10 +39,13 @@ public class Qna {
     @Enumerated(EnumType.STRING)
     private QnaCategory category;
 
+    @Column(name = "is_answered")
+    private boolean isAnswered = false;
+
     public Qna() {
     }
 
-    public Qna(int id, String title, String contents, User user, LocalDateTime createDateAt, LocalDateTime updateAt, boolean isSecret, String password, QnaCategory category) {
+    public Qna(int id, String title, String contents, User user, LocalDateTime createDateAt, LocalDateTime updateAt, boolean isSecret, String password, QnaCategory category, boolean isAnswered) {
         this.id = id;
         this.title = title;
         this.contents = contents;
@@ -52,6 +55,7 @@ public class Qna {
         this.isSecret = isSecret;
         this.password = password;
         this.category = category;
+        this.isAnswered = isAnswered;
     }
 
     public int getId() {
@@ -126,6 +130,14 @@ public class Qna {
         this.category = category;
     }
 
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(boolean answered) {
+        isAnswered = answered;
+    }
+
     @Override
     public String toString() {
         return "Qna{" +
@@ -138,6 +150,7 @@ public class Qna {
                 ", isSecret=" + isSecret +
                 ", password='" + password + '\'' +
                 ", category=" + category +
+                ", isAnswered=" + isAnswered +
                 '}';
     }
 }

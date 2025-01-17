@@ -83,7 +83,7 @@ public class QnaController {
     @GetMapping("/selected-qna-answer-list")
     public ResponseEntity<Object> getSelectedQnaAnswerList(@RequestParam int selectedId) {
         try {
-            QnaAnswer selectedQnaAnswerList = qnaService.getListById(selectedId);
+            List<QnaAnswer> selectedQnaAnswerList = qnaService.getListById(selectedId);
             if(selectedQnaAnswerList != null) {
                 return ResponseEntity.ok(selectedQnaAnswerList);
             } else {
@@ -204,8 +204,6 @@ public class QnaController {
     @DeleteMapping("/selected-delete")
     public ResponseEntity<Object> deleteQna(@RequestParam int selectedId,
                                             @RequestParam String userId) {
-        System.out.println("selectedId = " + selectedId);
-        System.out.println("userId = " + userId);
         int postId = selectedId;
         String currentUserId = userId;
 
@@ -222,6 +220,20 @@ public class QnaController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측의 문제로 게시물이 삭제되지 못 했습니다. " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/answer-delete")
+    public ResponseEntity<Object> deletQnaAnswer(@RequestParam int selectedId){
+        int selectedAnswerID = selectedId;
+        System.out.println(selectedAnswerID);
+
+        boolean result = qnaService.findAnswerById(selectedAnswerID);
+
+        if(result) {
+            return ResponseEntity.ok(true);
+        }else {
+            return ResponseEntity.ok(false);
         }
     }
 }
