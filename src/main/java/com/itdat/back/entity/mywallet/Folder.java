@@ -15,7 +15,7 @@ public class Folder {
     @Column(name = "user_email", nullable = false)
     private String userEmail;
 
-    @Column(name = "folder_name", nullable = false)
+    @Column(name = "folder_name", nullable = false, length = 50)
     private String folderName;
 
     @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
