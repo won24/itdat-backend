@@ -1,17 +1,12 @@
 package com.itdat.back.service.auth;
 
-import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.SocialLogin;
 import com.itdat.back.entity.auth.User;
-import com.itdat.back.entity.card.BusinessCard;
-import com.itdat.back.repository.auth.SocialLoginRepository;
 import com.itdat.back.repository.auth.UserRepository;
-import com.itdat.back.repository.card.BusinessCardRepository;
 import com.itdat.back.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
