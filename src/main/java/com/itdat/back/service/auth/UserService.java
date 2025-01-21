@@ -1,6 +1,5 @@
 package com.itdat.back.service.auth;
 
-import com.itdat.back.entity.auth.SocialLogin;
 import com.itdat.back.entity.auth.User;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.utils.JwtTokenUtil;
@@ -15,7 +14,6 @@ import java.util.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final SocialLoginRepository socialLoginRepository;
     private final PasswordEncoder passwordEncoder;
     private final NaverWorksEmailService emailService;
     private final JwtTokenUtil jwtTokenUtil;
@@ -24,12 +22,10 @@ public class UserService {
 
     @Autowired
     public UserService(UserRepository userRepository,
-                       SocialLoginRepository socialLoginRepository,
                        PasswordEncoder passwordEncoder,
                        NaverWorksEmailService emailService,
                        JwtTokenUtil jwtTokenUtil) {
         this.userRepository = userRepository;
-        this.socialLoginRepository = socialLoginRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.jwtTokenUtil = jwtTokenUtil;

@@ -17,33 +17,43 @@ import java.time.LocalDateTime;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private int id;
 
-        @Column(nullable = false, unique = true)
+        @Column(nullable = false, unique = true, length = 30)
         private String userId;
 
-        @Column(nullable = false)
+        @Column(nullable = false, length = 255)
         private String password;
 
-        @Column(nullable = false)
+        @Column(nullable = false, length = 20)
         private String userName;
 
+        @Column(length = 50)
         private String company;
 
+        @Column(nullable = false, length = 15)
         private String userPhone;
 
-        @Column(nullable = false, unique = true)
+        @Column(nullable = false, unique = true, length = 100)
         private String userEmail;
 
         @Column(name = "user_birth")
         private LocalDate userBirth;
 
+        @Column(length = 20)
         private String companyRank;
+
+        @Column(length = 20)
         private String companyDept;
+
+        @Column(length = 20)
         private String companyFax;
+
+        @Column(length = 255)
         private String companyAddr;
 
-        @Column(name = "company_addr_detail")
+        @Column(name = "company_addr_detail", length = 255)
         private String companyAddrDetail;
 
+        @Column(length = 20)
         private String companyPhone;
 
         @Enumerated(EnumType.STRING)
@@ -59,6 +69,7 @@ import java.time.LocalDateTime;
         private Role role = Role.USER;
 
         @Enumerated(EnumType.STRING)
+        @Column
         private UserStatus status = UserStatus.ACTIVE;
 
         @Enumerated(EnumType.STRING)
@@ -68,6 +79,7 @@ import java.time.LocalDateTime;
         @Column(updatable = false)
         private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
 
+        @Column
         private java.time.LocalDateTime updatedAt = java.time.LocalDateTime.now();
 
         public User() {
