@@ -34,10 +34,16 @@ public class Portfolio {
     @Column(name = "file_url")
     private String fileUrl;
 
+    @Column(name = "link_url")
+    private String linkUrl;
+
+    @Column(name = "document_url")
+    private String documentUrl;
+
     public Portfolio() {
     }
 
-    public Portfolio(Integer id, String userEmail, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, String fileUrl) {
+    public Portfolio(Integer id, String userEmail, String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt, String fileUrl, String linkUrl, String documentUrl) {
         this.id = id;
         this.userEmail = userEmail;
         this.title = title;
@@ -45,6 +51,24 @@ public class Portfolio {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.fileUrl = fileUrl;
+        this.linkUrl = linkUrl;
+        this.documentUrl = documentUrl;
+    }
+
+    public String getDocumentUrl() {
+        return documentUrl;
+    }
+
+    public void setDocumentUrl(String documentUrl) {
+        this.documentUrl = documentUrl;
+    }
+
+    public String getLinkUrl() {
+        return linkUrl;
+    }
+
+    public void setLinkUrl(String linkUrl) {
+        this.linkUrl = linkUrl;
     }
 
     public Integer getId() {

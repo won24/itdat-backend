@@ -54,6 +54,8 @@ public class PortfolioService {
             editPortfolio.setTitle(updatedPortfolio.getTitle());
             editPortfolio.setContent(updatedPortfolio.getContent());
             editPortfolio.setFileUrl(updatedPortfolio.getFileUrl());
+            editPortfolio.setLinkUrl(updatedPortfolio.getLinkUrl());
+            editPortfolio.setDocumentUrl(updatedPortfolio.getDocumentUrl());
             return portfolioRepository.save(editPortfolio);
         } else {
             throw new IllegalArgumentException("Portfolio " + id + " not found.");
