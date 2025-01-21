@@ -45,6 +45,8 @@ public class BusinessCardService {
 
 
     public void saveBusinessCardWithLogo(BusinessCard card) {
+        System.out.println("서비스 로고");
+        System.out.println(card);
         businessCardRepository.save(card);
     }
 
@@ -91,7 +93,6 @@ public class BusinessCardService {
         if (existingCard != null) {
             existingCard.setUserName(businessCard.getUserName());
             existingCard.setPhone(businessCard.getPhone());
-            existingCard.setEmail(businessCard.getEmail());
             existingCard.setCompanyName(businessCard.getCompanyName());
             existingCard.setCompanyNumber(businessCard.getCompanyNumber());
             existingCard.setCompanyAddress(businessCard.getCompanyAddress());
@@ -99,12 +100,9 @@ public class BusinessCardService {
             existingCard.setDepartment(businessCard.getDepartment());
             existingCard.setPosition(businessCard.getPosition());
             existingCard.setCardSide(businessCard.getCardSide());
-            existingCard.setFolder(businessCard.getFolder());
             existingCard.setBackgroundColor(businessCard.getBackgroundColor());
             existingCard.setTextColor(businessCard.getTextColor());
             existingCard.setFontFamily(businessCard.getFontFamily());
-            existingCard.setCustomText(businessCard.getCustomText());
-            existingCard.setTextPosition(businessCard.getTextPosition());
             return businessCardRepository.save(existingCard);
         }
         return null;
@@ -125,10 +123,10 @@ public class BusinessCardService {
     public BusinessCard updateBusinessCardWithLogo(BusinessCard updatedCard) {
         BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
                 updatedCard.getCardNo(), updatedCard.getUserEmail());
+        System.out.println(updatedCard.getLogoUrl());
         if (existingCard != null) {
             existingCard.setUserName(updatedCard.getUserName());
             existingCard.setPhone(updatedCard.getPhone());
-            existingCard.setEmail(updatedCard.getEmail());
             existingCard.setCompanyName(updatedCard.getCompanyName());
             existingCard.setCompanyNumber(updatedCard.getCompanyNumber());
             existingCard.setCompanyAddress(updatedCard.getCompanyAddress());
@@ -137,12 +135,9 @@ public class BusinessCardService {
             existingCard.setPosition(updatedCard.getPosition());
             existingCard.setCardSide(updatedCard.getCardSide());
             existingCard.setLogoUrl(updatedCard.getLogoUrl());
-            existingCard.setFolder(updatedCard.getFolder());
             existingCard.setBackgroundColor(updatedCard.getBackgroundColor());
             existingCard.setTextColor(updatedCard.getTextColor());
             existingCard.setFontFamily(updatedCard.getFontFamily());
-            existingCard.setCustomText(updatedCard.getCustomText());
-            existingCard.setTextPosition(updatedCard.getTextPosition());
             return businessCardRepository.save(existingCard);
         }
         return null;
