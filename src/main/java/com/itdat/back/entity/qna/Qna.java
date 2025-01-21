@@ -13,23 +13,23 @@ public class Qna {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "contents")
+    @Column(name = "contents", nullable = false)
     private String contents;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "userId")
     private User user;
 
-    @Column(name = "create_date_at")
+    @Column(name = "create_date_at", nullable = false)
     private LocalDateTime createDateAt;
 
-    @Column(name = "update_at")
+    @Column(name = "update_at", nullable = false)
     private LocalDateTime updateAt;
 
-    @Column(name = "is_secret")
+    @Column(name = "is_secret", nullable = false)
     private boolean isSecret;
 
     @Column(name = "password")

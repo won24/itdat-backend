@@ -6,6 +6,7 @@ import com.itdat.back.entity.auth.User;
 
 import com.itdat.back.entity.auth.UserType;
 import com.itdat.back.repository.auth.UserRepository;
+import com.itdat.back.service.admin.UnderManagementService;
 import com.itdat.back.service.auth.NaverWorksAuthService;
 import com.itdat.back.service.auth.UserService;
 import com.itdat.back.utils.JwtTokenUtil;
@@ -51,6 +52,9 @@ public class UserController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private UnderManagementService underManagementService;
+
     /**
      * 사용자 로그인
      *
@@ -68,6 +72,11 @@ public class UserController {
 
         try {
             User user = userService.login(identifier, password);
+            boolean isStillBanned = underManagementService.checkSanction(user.getUserId());
+            if (isStillBanned) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Map.of("message", "해당 유저는 현재 제재 상태입니다."));
+            }
             String token = jwtTokenUtil.generateToken(user);
 
             // 이메일과 토큰을 응답으로 반환
