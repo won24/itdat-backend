@@ -51,18 +51,6 @@ public class UnderManagementController {
     @Autowired
     private ReportUserRepository reportUserRepository;
 
-//    @GetMapping("/bring-reported-user-list-detail")
-//    public ResponseEntity<Object> getReportedUserListDetail() {
-//        System.out.println("-------------------------------- 신고된 유저의 상세 정보 리스트를 가져오는 컨트롤러 --------------------------------");
-//
-//            List<User> reportedUserList = underManagementService.reportedUserListDetail();
-//
-//            if(reportedUserList.isEmpty()) {
-//                return ResponseEntity.status(500).body("신고된 유저가 없습니다.");
-//            }
-//            return ResponseEntity.ok(reportedUserList);
-//    }
-
     /**
      * 신고된 유저의 정보를 가져오는 컨트롤러
      */
