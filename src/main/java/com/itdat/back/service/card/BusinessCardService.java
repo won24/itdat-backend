@@ -86,12 +86,11 @@ public class BusinessCardService {
 
 
     public BusinessCard updateBusinessCard(BusinessCard businessCard) {
-        if ("FRONT".equals(businessCard.getCardSide())) {
-            BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
-                    businessCard.getCardNo(), businessCard.getUserEmail());
-            if (existingCard != null) {
-                return businessCardRepository.save(existingCard);
-            }
+        BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
+                businessCard.getCardNo(), businessCard.getUserEmail());
+        if (existingCard != null) {
+            businessCard.setCardId(existingCard.getCardId());
+            return businessCardRepository.save(businessCard);
         }
         return null; // Return null if update fails or if cardSide is not FRONT
     }
@@ -106,5 +105,16 @@ public class BusinessCardService {
         } else {
             return false;
         }
+    }
+
+    public BusinessCard updateBusinessCardWithLogo(BusinessCard updatedCard) {
+        BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
+                updatedCard.getCardNo(), updatedCard.getUserEmail());
+        if (existingCard != null) {
+            updatedCard.setCardId(existingCard.getCardId());
+            return businessCardRepository.save(updatedCard);
+
+        }
+        return null;
     }
 }
