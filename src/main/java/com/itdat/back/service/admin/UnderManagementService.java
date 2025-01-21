@@ -155,23 +155,25 @@ public class UnderManagementService {
 
     /** 로그인 시 해당 유저의 벤 상태를 체크하는 서비스 */
     public boolean checkSanction(String currentUserId) {
-        UnderManagement currentUserUnderManagement = underManagementRepository.findByUser_UserId(currentUserId).orElse(null);
-        User currentUser = userRepository.findByUserId(currentUserId);
+        UnderManagement currentUserUnderManagement = underManagementRepository
+                .findByUser_UserId(currentUserId)
+                .orElse(null);
 
-        // 현재 날짜와 제재 종료일자를 비교하여 유저의 벤 상태를 변경하는 로직
-        if(currentUserUnderManagement.getEndDateAt() != null
-                && currentUserUnderManagement.getEndDateAt().isBefore(LocalDateTime.now())) {
-            currentUser.setStatus(REPORTED);
-            currentUserUnderManagement.setUser(currentUser);
-            currentUserUnderManagement.setDemerit(null);
-        }
-        if (currentUserUnderManagement.getUser().getStatus() == BANNED) {
-            return true;
-        } else {
+        if (currentUserUnderManagement == null) {
             return false;
         }
 
+        if (currentUserUnderManagement.getEndDateAt() != null
+                && currentUserUnderManagement.getEndDateAt().isBefore(LocalDateTime.now())) {
+            User currentUser = userRepository.findByUserId(currentUserId);
+            currentUser.setStatus(UserStatus.REPORTED);
+            underManagementRepository.delete(currentUserUnderManagement);
+            return false;
+        }
+
+        return currentUserUnderManagement.getUser().getStatus() == UserStatus.BANNED;
     }
+
 
     /** 관리자가 벌점을 부과하고 그에 따른 적당한 제재를 자동으로 부과하는 로직 */
     public boolean sanctionCountUp(int selectedUserId) {

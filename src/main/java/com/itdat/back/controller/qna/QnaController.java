@@ -16,8 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +100,66 @@ public class QnaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("서버측에서 문제가 발생하였습니다. " + e.getMessage());
         }
     }
+
+    @PostMapping("/image-upload")
+    public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        System.out.println("file = " + file);
+        // 파일이 비어있지 않은지 확인
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("파일이 없습니다.");
+        }
+
+        // 파일 이름과 저장 경로 설정
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        System.out.println("fileName = " + fileName);
+        Path path = Paths.get("image-uploads/" + fileName);
+        System.out.println("path = " + path);
+
+        // 업로드 디렉토리가 없으면 생성
+        File directory = new File("image-uploads");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // 파일을 서버에 저장
+        Files.write(path, file.getBytes());
+
+        // 이미지 URL을 반환 (예: 이미지가 저장된 URL을 반환)
+        String imageUrl = "`"+"${BASE_URL}/qna/image-uploads/" + fileName+"`"; // 실제 서버 주소와 포트에 맞게 수정
+//        String imageUrl = "http://localhost:8082/qna/image-uploads/" + fileName; // 실제 서버 주소와 포트에 맞게 수정
+        System.out.println("imageUrl = " + imageUrl);
+        return ResponseEntity.ok().body("{\"url\": \"" + imageUrl + "\"}");
+    }
+
+
+
+    @GetMapping("/image-uploads/{fileName}")
+    @ResponseBody
+    public byte[] serveFile(@PathVariable String fileName) throws IOException {
+        Path filePath = Paths.get("image-uploads/" + fileName);
+        return Files.readAllBytes(filePath); // 파일의 바이트 배열을 반환
+    }
+
+
+//    @PostMapping("/image-upload")
+//    public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+//        System.out.println("file = " + file);
+////        try {
+////            // 파일 저장 로직 (예: 로컬 저장소, S3, Cloud Storage 등)
+////            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+////            String fileUrl = "/uploads/" + fileName; // 파일 URL 생성
+////
+////            // 파일 저장 예제
+////            file.transferTo(new java.io.File("uploads/" + fileName));
+////
+////            // 업로드된 파일의 URL을 반환
+////            return ResponseEntity.ok().body(Map.of("url", fileUrl));
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+////        }
+//        return ResponseEntity.ok(false);
+//    }
 
     @PostMapping("/write")
     public ResponseEntity<Object> writeQna(@RequestBody Map<String, Object> qnaData) {
