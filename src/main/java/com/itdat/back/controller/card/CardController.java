@@ -203,6 +203,7 @@ public class CardController {
             @RequestPart("cardInfo") String cardInfoJson,
             @RequestPart(value = "logo", required = false) MultipartFile logo) {
         try {
+            System.out.println("로고프린트");
             ObjectMapper objectMapper = new ObjectMapper();
             BusinessCard updatedCard;
             try {
@@ -221,12 +222,11 @@ public class CardController {
                     return ResponseEntity.badRequest().body(e.getMessage());
                 }
             }
-
             // 카드 정보 업데이트
             businessCardService.updateBusinessCardWithLogo(updatedCard);
-
             return ResponseEntity.ok("명함 업데이트 성공");
         } catch (Exception e) {
+            System.out.println("에러");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("명함 업데이트 실패: " + e.getMessage());
         }
