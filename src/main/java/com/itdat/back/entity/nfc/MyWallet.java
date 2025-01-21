@@ -11,10 +11,10 @@ public class MyWallet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "user_email", nullable = false)
+    @Column(name = "user_email", nullable = false, length = 30)
     private String userEmail;
 
-    @Column(name = "my_email", nullable = false)
+    @Column(name = "my_email", nullable = false, length = 30)
     private String myEmail;
 
     @Column(name = "card_no", nullable = false)
@@ -30,7 +30,8 @@ public class MyWallet {
     })
     private BusinessCard businessCard;
 
-    public MyWallet() {}
+    public MyWallet() {
+    }
 
     public MyWallet(String userEmail, String myEmail, int cardNo, String description) {
         this.userEmail = userEmail;
@@ -47,20 +48,20 @@ public class MyWallet {
         this.id = id;
     }
 
-    public String getMyEmail() {
-        return myEmail;
-    }
-
-    public void setMyEmail(String myEmail) {
-        this.myEmail = myEmail;
-    }
-
     public String getUserEmail() {
         return userEmail;
     }
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
+    }
+
+    public String getMyEmail() {
+        return myEmail;
+    }
+
+    public void setMyEmail(String myEmail) {
+        this.myEmail = myEmail;
     }
 
     public int getCardNo() {
