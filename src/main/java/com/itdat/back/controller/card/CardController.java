@@ -50,10 +50,9 @@ public class CardController {
             List<BusinessCard> cards = businessCardService.getBusinessCardsByUserEmail(userEmail);
             cards.forEach(card -> {
                 if (card.getLogoUrl() != null) {
-                    card.setLogoUrl("/uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
+                    card.setLogoUrl("uploads/logos/" + Paths.get(card.getLogoUrl()).getFileName());
                 }
             });
-            System.out.println("클라데이터"+cards);
             return ResponseEntity.ok(cards);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -81,8 +80,7 @@ public class CardController {
     @PostMapping("/save/logo")
     public ResponseEntity<String> saveBusinessCardWithLogo(
             @RequestPart("cardInfo") String cardInfoJson,
-            @RequestPart(value = "logo", required = false) MultipartFile logo
-    ) {
+            @RequestPart(value = "logo", required = false) MultipartFile logo) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             BusinessCard businessCard;
@@ -99,12 +97,10 @@ public class CardController {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
 
-
             if (!logo.isEmpty()) {
                 String logoPath = saveFile(logo);
                 businessCard.setLogoUrl(logoPath);
             }
-
             businessCardService.saveBusinessCardWithLogo(businessCard);
 
             return ResponseEntity.ok("명함 저장 성공");
@@ -116,7 +112,7 @@ public class CardController {
 
     private String saveFile(MultipartFile file) {
         try {
-            String upload_dir = "C:/uploads/logos";
+            String upload_dir = "/uploads/logos";
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
             Path uploadPath = Paths.get(upload_dir);
 
@@ -126,7 +122,6 @@ public class CardController {
 
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
             return filePath.toString();
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
@@ -201,6 +196,39 @@ public class CardController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("명함 삭제 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+    @PostMapping("/update/logo")
+    public ResponseEntity<String> updateBusinessCardWithLogo(
+            @RequestPart("cardInfo") String cardInfoJson,
+            @RequestPart(value = "logo", required = false) MultipartFile logo) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            BusinessCard updatedCard;
+            try {
+                updatedCard = objectMapper.readValue(cardInfoJson, BusinessCard.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().body("Invalid cardInfo JSON");
+            }
+            // 로고 파일 처리
+            if (logo != null && !logo.isEmpty()) {
+                try {
+                    validateFile(logo);
+                    String logoPath = saveFile(logo);
+                    updatedCard.setLogoUrl(logoPath);
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                }
+            }
+
+            // 카드 정보 업데이트
+            businessCardService.updateBusinessCardWithLogo(updatedCard);
+
+            return ResponseEntity.ok("명함 업데이트 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("명함 업데이트 실패: " + e.getMessage());
         }
     }
 }

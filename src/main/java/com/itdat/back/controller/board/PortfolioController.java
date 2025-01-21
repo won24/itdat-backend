@@ -47,7 +47,8 @@ public class PortfolioController {
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Portfolio> savePortfolio(
             @RequestParam("postData") String jsonData,
-            @RequestPart(value = "file", required = false) MultipartFile file
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "document", required = false) MultipartFile document
     ) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -60,6 +61,15 @@ public class PortfolioController {
                 Files.write(filePath, file.getBytes());
 
                 newPortfolio.setFileUrl(filePath.toString());
+            }
+
+            if (document != null && !document.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + document.getOriginalFilename();
+                Path filePath = Paths.get("/uploads/board/", fileName);
+                Files.createDirectories(filePath.getParent());
+                Files.write(filePath, document.getBytes());
+
+                newPortfolio.setDocumentUrl(filePath.toString());
             }
 
             User user = portfolioService.findByUserEmail(newPortfolio.getUserEmail());
@@ -81,7 +91,8 @@ public class PortfolioController {
     public ResponseEntity<Portfolio> updatePortfolio(
             @PathVariable Integer id,
             @RequestParam("postData") String jsonData,
-            @RequestPart(value = "file", required = false) MultipartFile file
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @RequestPart(value = "document", required = false) MultipartFile document
     ) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -89,11 +100,20 @@ public class PortfolioController {
 
             if (file != null && !file.isEmpty()) {
                 String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                Path filePath = Paths.get("C:/uploads/board/", fileName);
+                Path filePath = Paths.get("/uploads/board/", fileName);
                 Files.createDirectories(filePath.getParent());
                 Files.write(filePath, file.getBytes());
 
                 updatedPortfolio.setFileUrl(filePath.toString());
+            }
+
+            if (document != null && !document.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + document.getOriginalFilename();
+                Path filePath = Paths.get("/uploads/board/", fileName);
+                Files.createDirectories(filePath.getParent());
+                Files.write(filePath, document.getBytes());
+
+                updatedPortfolio.setDocumentUrl(filePath.toString());
             }
 
             Portfolio updated = portfolioService.updatePortfolio(id, updatedPortfolio);
