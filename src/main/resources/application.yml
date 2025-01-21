@@ -21,7 +21,7 @@ spring:
   config:
     import: "classpath:application-db.yml"
   profiles:
-    active: dev  # 기본 프로파일을 개발 환경(dev)으로 설정
+    active: prod  # 개발 환경에선 (dev)으로 설정
   web:
     resources:
       static-locations: classpath:/templates/
@@ -30,6 +30,7 @@ spring:
       ddl-auto: update
   servlet:
     multipart:
+      enabled: true
       max-file-size: 10MB # 업로드할 파일의 최대 크기
       max-request-size: 10MB # 요청의 최대 크기 (파일 크기 + 기타 데이터 포함)
 

@@ -12,22 +12,17 @@ import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.service.admin.UnderManagementService;
 import com.itdat.back.service.auth.UserService;
 import com.itdat.back.utils.JwtTokenUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import static com.itdat.back.entity.auth.Role.ADMIN;
+
 
 @RestController
 @RequestMapping("/admin")
@@ -35,9 +30,6 @@ public class UnderManagementController {
 
     @Autowired
     private UnderManagementService underManagementService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private UnderManagementRepository underManagementRepository;
@@ -69,11 +61,8 @@ public class UnderManagementController {
      */
     @PostMapping("/report-user")
     public ResponseEntity<Object> reportUser(@RequestBody Map<String, Object> data) {
-        System.out.println("datadatadatadatadatadata = " + data);
         String reason = (String) data.get("reason");
-        System.out.println("data.get(\"selectedCategory\") = " + data.get("selectedCategory"));
         ReportCategory category = ReportCategory.valueOf(data.get("selectedCategory").toString());
-        System.out.println("categorycategory = " + category);
         String reportedUserEmail = (String) data.get("reportedUserEmail");
         String loginedUserEmail = (String) data.get("loginedUserEmail");
 
@@ -83,7 +72,6 @@ public class UnderManagementController {
         ReportUserDTO reportUserDTO = new ReportUserDTO();
         reportUserDTO.setDescription(reason);
         reportUserDTO.setCategory(category);
-        System.out.println("reportUserDTO.getCategory() = " + reportUserDTO.getCategory());
         reportUserDTO.setReportedUserId(selectedUser.getUserId()); // 신고의 대상이 되는 유저의 아이디
         reportUserDTO.setUserId(loginedUser.getUserId()); // 신고자의 아이디
 
@@ -102,7 +90,6 @@ public class UnderManagementController {
     /** 로그인시 해당 유저의 제재 여부를 확인하는 컨트롤러 */
     @PostMapping("/sanction-verification")
     public ResponseEntity<Object> sanctionVerification(@RequestBody Map<String, Object> requestBody) {
-        System.out.println("requestBody = " + requestBody);
         String currentUserId = (String) requestBody.get("userId");
 
         boolean isStillVanned = underManagementService.checkSanction(currentUserId);
@@ -114,7 +101,6 @@ public class UnderManagementController {
     /** 관리자가 특정한 유저의 제재 이력을 초기화하는 컨트롤러 */
     @GetMapping("/selected-user-reset-state")
     public ResponseEntity<Object> getSelectedUserResetState(@RequestParam int id) {
-        System.out.println("idididididididididididid = " + id);
         try {
             UnderManagement selectedUnderManagement = underManagementService.selectedUserResetState(id);
             if(selectedUnderManagement != null) {
@@ -130,7 +116,6 @@ public class UnderManagementController {
     /** 관리자가 특정한 유저에게 벌점을 부과하는 컨트롤러 */
     @GetMapping("/sanctions-count-up")
     public ResponseEntity<Object> getSanctionsCountUp(@RequestParam int userId) {
-        System.out.println("userId = " + userId);
         int selectedUserId = userId;
 
         boolean result = underManagementService.sanctionCountUp(selectedUserId);
@@ -165,12 +150,6 @@ public class UnderManagementController {
 
         User user = userRepository.findByUserEmail(email); // email로 해당 유저의 정보를 추출(ADMIN 권한을 이제 알 수 있다.)
         return ResponseEntity.ok(user);
-//        if (user.getRole().equals(ADMIN)) {
-//            return ResponseEntity.ok(true); // 해당 유저의 권한이 ADMIN이면 true를 리턴
-//            // List<User> adminUsers = underManagementService.getAdminUsers();
-//        } else {
-//            return ResponseEntity.ok(false); // 해당 유저의 권한이 ADMIN이 아니면 false를 리턴
-//        }
     }
 
     /**
@@ -178,17 +157,8 @@ public class UnderManagementController {
      */
     @GetMapping("/detail-info")
     public ResponseEntity<Object> detailInfo(@RequestParam String reportedUserId) {
-        System.out.println("reportedUserId: " + reportedUserId);
-
-
-
         User selectedUser = userRepository.findByUserId(reportedUserId);
-//        if (selectedUser == null) {
-//            return ResponseEntity.ok("해당 유저는 이미 삭제되었습니다.");
-//        }
-        System.out.println("selectedUser.getId(): " + selectedUser.getId());
         UnderManagement detailInfo = underManagementService.findByUserId(selectedUser.getId());
-        System.out.println("detailInfo = " + detailInfo);
         if (detailInfo == null) {
             return ResponseEntity.status(500).body("해당 유저는 존재하지 않습니다.");
         } else {

@@ -2,11 +2,9 @@ package com.itdat.back.controller.qna;
 
 import com.itdat.back.entity.auth.Role;
 import com.itdat.back.entity.auth.User;
-import com.itdat.back.entity.auth.UserStatus;
 import com.itdat.back.entity.qna.Qna;
 import com.itdat.back.entity.qna.QnaAnswer;
 import com.itdat.back.entity.qna.QnaCategory;
-import com.itdat.back.model.dto.QnaDTO;
 import com.itdat.back.repository.auth.UserRepository;
 import com.itdat.back.repository.qna.QnaRepository;
 import com.itdat.back.service.auth.UserService;
@@ -17,7 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +38,6 @@ public class QnaController {
     private UserRepository userRepository;
     @Autowired
     private QnaRepository qnaRepository;
-    @Autowired
-    private UserService userService;
 
     @GetMapping("/all-list")
     public ResponseEntity<Object> getAllQnaList() {
@@ -65,8 +67,6 @@ public class QnaController {
 
     @GetMapping("/selected-qna")
     public ResponseEntity<Object> getSelectedQnaList(@RequestParam int selectedId) {
-        System.out.println("selectedId = " + selectedId);
-
         try {
             Qna selectedQna = qnaService.findById(selectedId);
             if (selectedQna != null) {
@@ -94,9 +94,42 @@ public class QnaController {
         }
     }
 
+    @PostMapping("/image-upload")
+    public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("파일이 없습니다.");
+        }
+
+        // 파일 이름과 저장 경로 설정
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path path = Paths.get("image-uploads/" + fileName);
+
+        // 업로드 디렉토리가 없으면 생성
+        File directory = new File("image-uploads");
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // 파일을 서버에 저장
+        Files.write(path, file.getBytes());
+
+        // 이미지 URL을 반환 (예: 이미지가 저장된 URL을 반환)
+        String imageUrl = "`"+"${BASE_URL}/qna/image-uploads/" + fileName+"`"; // 실제 서버 주소와 포트에 맞게 수정
+        // String imageUrl = "http://localhost:8082/qna/image-uploads/" + fileName; // 실제 서버 주소와 포트에 맞게 수정
+        return ResponseEntity.ok().body("{\"url\": \"" + imageUrl + "\"}");
+    }
+
+
+
+    @GetMapping("/image-uploads/{fileName}")
+    @ResponseBody
+    public byte[] serveFile(@PathVariable String fileName) throws IOException {
+        Path filePath = Paths.get("image-uploads/" + fileName);
+        return Files.readAllBytes(filePath); // 파일의 바이트 배열을 반환
+    }
+
     @PostMapping("/write")
     public ResponseEntity<Object> writeQna(@RequestBody Map<String, Object> qnaData) {
-        System.out.println("qnaData asd  = " + qnaData);
         User slectedUser = userRepository.findByUserId(qnaData.get("loginedUserId").toString());
 
         Qna createdQna = new Qna();
@@ -105,14 +138,12 @@ public class QnaController {
         createdQna.setUser(slectedUser);
         createdQna.setCreateDateAt(LocalDateTime.now());
         createdQna.setUpdateAt(LocalDateTime.now());
-//        System.out.println("qnaDTO.isSecret() = " + qnaDTO.isSecret());
         createdQna.setSecret((Boolean) qnaData.get("isSecret"));
         if ((Boolean) qnaData.get("isSecret")) {
             createdQna.setPassword(passwordEncoder.encode(qnaData.get("password").toString()));
         } else {
             createdQna.setPassword(null);
         }
-//        createdQna.setPassword(passwordEncoder.encode(qnaData.get("password").toString()));
         createdQna.setCategory(QnaCategory.valueOf(qnaData.get("category").toString()));
 
         try {
@@ -139,7 +170,6 @@ public class QnaController {
         int selectedQnaId = Integer.parseInt(data.get("id"));
         String password = data.get("checkPassword");
         Qna selectedQna = qnaRepository.findById(selectedQnaId).orElse(null);
-        // User slectedUser = userRepository.findByUserId(loginedUserId);
 
         // 비밀번호 검증
         try {
