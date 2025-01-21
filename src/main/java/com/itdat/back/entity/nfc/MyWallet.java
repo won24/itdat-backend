@@ -26,7 +26,7 @@ public class MyWallet {
     @ManyToOne(fetch = FetchType.EAGER) // 즉시 로드
     @JoinColumns({
             @JoinColumn(name = "user_email", referencedColumnName = "user_email", insertable = false, updatable = false),
-            @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)
+//            @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)
     })
     private BusinessCard businessCard;
 
