@@ -89,10 +89,25 @@ public class BusinessCardService {
         BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
                 businessCard.getCardNo(), businessCard.getUserEmail());
         if (existingCard != null) {
-            businessCard.setCardId(existingCard.getCardId());
-            return businessCardRepository.save(businessCard);
+            existingCard.setUserName(businessCard.getUserName());
+            existingCard.setPhone(businessCard.getPhone());
+            existingCard.setEmail(businessCard.getEmail());
+            existingCard.setCompanyName(businessCard.getCompanyName());
+            existingCard.setCompanyNumber(businessCard.getCompanyNumber());
+            existingCard.setCompanyAddress(businessCard.getCompanyAddress());
+            existingCard.setCompanyFax(businessCard.getCompanyFax());
+            existingCard.setDepartment(businessCard.getDepartment());
+            existingCard.setPosition(businessCard.getPosition());
+            existingCard.setCardSide(businessCard.getCardSide());
+            existingCard.setFolder(businessCard.getFolder());
+            existingCard.setBackgroundColor(businessCard.getBackgroundColor());
+            existingCard.setTextColor(businessCard.getTextColor());
+            existingCard.setFontFamily(businessCard.getFontFamily());
+            existingCard.setCustomText(businessCard.getCustomText());
+            existingCard.setTextPosition(businessCard.getTextPosition());
+            return businessCardRepository.save(existingCard);
         }
-        return null; // Return null if update fails or if cardSide is not FRONT
+        return null;
     }
 
     @Transactional
@@ -111,9 +126,24 @@ public class BusinessCardService {
         BusinessCard existingCard = businessCardRepository.findByCardNoAndUserEmail(
                 updatedCard.getCardNo(), updatedCard.getUserEmail());
         if (existingCard != null) {
-            updatedCard.setCardId(existingCard.getCardId());
-            return businessCardRepository.save(updatedCard);
-
+            existingCard.setUserName(updatedCard.getUserName());
+            existingCard.setPhone(updatedCard.getPhone());
+            existingCard.setEmail(updatedCard.getEmail());
+            existingCard.setCompanyName(updatedCard.getCompanyName());
+            existingCard.setCompanyNumber(updatedCard.getCompanyNumber());
+            existingCard.setCompanyAddress(updatedCard.getCompanyAddress());
+            existingCard.setCompanyFax(updatedCard.getCompanyFax());
+            existingCard.setDepartment(updatedCard.getDepartment());
+            existingCard.setPosition(updatedCard.getPosition());
+            existingCard.setCardSide(updatedCard.getCardSide());
+            existingCard.setLogoUrl(updatedCard.getLogoUrl());
+            existingCard.setFolder(updatedCard.getFolder());
+            existingCard.setBackgroundColor(updatedCard.getBackgroundColor());
+            existingCard.setTextColor(updatedCard.getTextColor());
+            existingCard.setFontFamily(updatedCard.getFontFamily());
+            existingCard.setCustomText(updatedCard.getCustomText());
+            existingCard.setTextPosition(updatedCard.getTextPosition());
+            return businessCardRepository.save(existingCard);
         }
         return null;
     }
