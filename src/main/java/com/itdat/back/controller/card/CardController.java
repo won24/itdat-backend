@@ -198,4 +198,37 @@ public class CardController {
                     .body("명함 삭제 중 오류가 발생했습니다: " + e.getMessage());
         }
     }
+    @PostMapping("/update/logo")
+    public ResponseEntity<String> updateBusinessCardWithLogo(
+            @RequestPart("cardInfo") String cardInfoJson,
+            @RequestPart(value = "logo", required = false) MultipartFile logo) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            BusinessCard updatedCard;
+            try {
+                updatedCard = objectMapper.readValue(cardInfoJson, BusinessCard.class);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+                return ResponseEntity.badRequest().body("Invalid cardInfo JSON");
+            }
+            // 로고 파일 처리
+            if (logo != null && !logo.isEmpty()) {
+                try {
+                    validateFile(logo);
+                    String logoPath = saveFile(logo);
+                    updatedCard.setLogoUrl(logoPath);
+                } catch (IllegalArgumentException e) {
+                    return ResponseEntity.badRequest().body(e.getMessage());
+                }
+            }
+
+            // 카드 정보 업데이트
+            businessCardService.updateBusinessCardWithLogo(updatedCard);
+
+            return ResponseEntity.ok("명함 업데이트 성공");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("명함 업데이트 실패: " + e.getMessage());
+        }
+    }
 }
