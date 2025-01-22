@@ -132,7 +132,7 @@ public class MyWalletService {
 
         for (MyWallet wallet : wallets) {
             // 해당 명함의 FolderCard 관계 조회 및 삭제
-            List<FolderCard> folderCards = folderCardRepository.findByCardIdAndUserEmail(wallet.getId(), myEmail);
+            List<FolderCard> folderCards = folderCardRepository.findByCardIdAndUserEmail(String.valueOf(wallet.getId()), myEmail);
             if (folderCards.isEmpty()) {
                 throw new RuntimeException("The card is not associated with any folder.");
             }
