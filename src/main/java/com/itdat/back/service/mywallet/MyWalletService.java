@@ -44,30 +44,6 @@ public class MyWalletService {
     }
 
     // 명함 폴더로 이동
-//    @Transactional
-//    public void moveCardToFolder(CardMoveRequest request) {
-//        String myEmail = request.getMyEmail();
-//        String userEmail = request.getUserEmail();
-//        String folderName = request.getFolderName();
-//
-//        // 폴더 조회
-//        Folder folder = folderRepository.findByUserEmailAndFolderName(myEmail, folderName)
-//                .orElseThrow(() -> new RuntimeException("Folder not found"));
-//
-//        // MyWallet 데이터 조회
-//        MyWallet wallet = (MyWallet) myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail)
-//                .orElseThrow(() -> new RuntimeException("MyWallet entry not found"));
-//
-//        // 중복 관계 확인
-//        boolean alreadyExists = folderCardRepository.existsByFolderIdAndCardId(folder.getId(), wallet.getId());
-//        if (alreadyExists) {
-//            throw new RuntimeException("This card is already in the folder.");
-//        }
-//
-//        // FolderCard 관계 추가
-//        FolderCard folderCard = new FolderCard(folder.getId(), wallet.getId());
-//        folderCardRepository.save(folderCard);
-//    }
     @Transactional
     public void moveCardToFolder(CardMoveRequest request) {
         String myEmail = request.getMyEmail();
@@ -79,11 +55,8 @@ public class MyWalletService {
                 .orElseThrow(() -> new RuntimeException("Folder not found"));
 
         // MyWallet 데이터 조회
-        List<MyWallet> wallets = myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail);
-        if (wallets.isEmpty()) {
-            throw new RuntimeException("MyWallet entry not found");
-        }
-        MyWallet wallet = wallets.get(0); // 첫 번째 결과 가져오기
+        MyWallet wallet = (MyWallet) myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail)
+                .orElseThrow(() -> new RuntimeException("MyWallet entry not found"));
 
         // 중복 관계 확인
         boolean alreadyExists = folderCardRepository.existsByFolderIdAndCardId(folder.getId(), wallet.getId());
@@ -96,50 +69,28 @@ public class MyWalletService {
         folderCardRepository.save(folderCard);
     }
 
-
     // 폴더에서 명함 제거
-//    @Transactional
-//    public void removeCardFromFolder(CardMoveRequest request) {
-//        String myEmail = request.getMyEmail();
-//        String userEmail = request.getUserEmail();
-//
-//        // MyWallet에서 명함 존재 여부 확인
-//        MyWallet wallet = (MyWallet) myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail)
-//                .orElseThrow(() -> new RuntimeException("The card does not exist in MyWallet."));
-//
-//        // 해당 명함의 FolderCard 관계 조회 및 삭제
-//        List<FolderCard> folderCards = folderCardRepository.findByCardIdAndUserEmail(myEmail, userEmail);
-//        if (folderCards.isEmpty()) {
-//            throw new RuntimeException("The card is not associated with any folder.");
-//        }
-//        folderCardRepository.deleteAll(folderCards);
-//    }
-//
-    // 폴더에 속하지 않은 명함 조회
-    public List<MyWallet> getCardsWithoutFolder(String myEmail) {
-        return myWalletRepository.findCardsWithoutFolder(myEmail);
-    }
     @Transactional
     public void removeCardFromFolder(CardMoveRequest request) {
         String myEmail = request.getMyEmail();
         String userEmail = request.getUserEmail();
 
         // MyWallet에서 명함 존재 여부 확인
-        List<MyWallet> wallets = myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail);
-        if (wallets.isEmpty()) {
-            throw new RuntimeException("The card does not exist in MyWallet.");
-        }
+        MyWallet wallet = (MyWallet) myWalletRepository.findByUserEmailAndMyEmail(userEmail, myEmail)
+                .orElseThrow(() -> new RuntimeException("The card does not exist in MyWallet."));
 
-        for (MyWallet wallet : wallets) {
-            // 해당 명함의 FolderCard 관계 조회 및 삭제
-            List<FolderCard> folderCards = folderCardRepository.findByCardIdAndUserEmail(String.valueOf(wallet.getId()), myEmail);
-            if (folderCards.isEmpty()) {
-                throw new RuntimeException("The card is not associated with any folder.");
-            }
-            folderCardRepository.deleteAll(folderCards);
+        // 해당 명함의 FolderCard 관계 조회 및 삭제
+        List<FolderCard> folderCards = folderCardRepository.findByCardIdAndUserEmail(myEmail, userEmail);
+        if (folderCards.isEmpty()) {
+            throw new RuntimeException("The card is not associated with any folder.");
         }
+        folderCardRepository.deleteAll(folderCards);
     }
 
+    // 폴더에 속하지 않은 명함 조회
+    public List<MyWallet> getCardsWithoutFolder(String myEmail) {
+        return myWalletRepository.findCardsWithoutFolder(myEmail);
+    }
 
     // 특정 폴더의 명함 조회
     public List<MyWallet> getCardsByFolder(String myEmail, String folderName) {
@@ -185,9 +136,9 @@ public class MyWalletService {
     }
 
 
-    public List<BusinessCard> getAllCards(String myEmail) {
+    public List<CardInfo> getAllCards(String myEmail) {
         List<MyWallet> myWallets = myWalletRepository.findByMyEmail(myEmail);
-        List<BusinessCard> cardInfoList = new ArrayList<>();
+        List<CardInfo> cardInfoList = new ArrayList<>();
 
         for (MyWallet myWallet : myWallets) {
             boolean isInFolder = folderCardRepository.existsByCardId(myWallet.getId());
@@ -196,11 +147,11 @@ public class MyWalletService {
             }
 
             BusinessCard businessCard = myWallet.getBusinessCard();
-//            if (businessCard != null) {
-//                cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
-//            }
+            if (businessCard != null) {
+                cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
+            }
         }
-        System.out.println("cardInfoList: " + cardInfoList);
+
         return cardInfoList;
     }
 
