@@ -81,7 +81,8 @@ public class SecurityConfig {
                 "http://localhost:8082",
                 "http://192.168.0.19:3000",
                 "https://www.itdat.store",
-                "https://www.namewallet.store"
+                "https://www.namewallet.store",
+                "https://namewallet.store:6816"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));
@@ -102,8 +103,8 @@ public class SecurityConfig {
                     throws ServletException, IOException {
                 response.setHeader("Content-Security-Policy",
                         "script-src 'self' https://apis.google.com https://accounts.google.com https://developers.kakao.com 'unsafe-inline'; " +
-                                "frame-src 'self' https://accounts.google.com https://apis.google.com https://developers.kakao.com https://nid.naver.com;" +
-                                "connect-src 'self' https://oauth2.googleapis.com");
+                        "frame-src 'self' https://accounts.google.com https://apis.google.com https://developers.kakao.com https://nid.naver.com;" +
+                        "connect-src 'self' https://oauth2.googleapis.com");
                 response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
                 response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
                 filterChain.doFilter(request, response);
