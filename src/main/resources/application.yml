@@ -21,7 +21,7 @@ spring:
   config:
     import: "classpath:application-db.yml"
   profiles:
-    active: prod  # 개발 환경에선 (dev)으로 설정.
+    active: prod  # 기본 프로파일을 개발 환경(dev)으로 설정
   web:
     resources:
       static-locations: classpath:/templates/

@@ -12,7 +12,8 @@ import java.util.Optional;
 public interface MyWalletRepository extends JpaRepository<MyWallet, Integer> {
     List<MyWallet> findByMyEmail(String myEmail);
 
-    Optional<Object> findByUserEmailAndMyEmail(String userEmail, String myEmail);
+//    Optional<Object> findByUserEmailAndMyEmail(String userEmail, String myEmail);
+    List<MyWallet> findByUserEmailAndMyEmail(String userEmail, String myEmail);
 
     @Query("SELECT m FROM MyWallet m WHERE m.myEmail = :myEmail AND NOT EXISTS (" +
             "SELECT 1 FROM FolderCard fc WHERE fc.cardId = m.id)")

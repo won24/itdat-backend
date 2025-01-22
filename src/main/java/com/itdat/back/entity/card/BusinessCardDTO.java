@@ -26,6 +26,5 @@ public class BusinessCardDTO {
         this.logoUrl = businessCard.getLogoUrl();
         this.cardSide = businessCard.getCardSide().toString();
     }
-
     // Getters and Setters
 }

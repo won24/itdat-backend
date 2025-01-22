@@ -81,7 +81,8 @@ public class SecurityConfig {
                 "http://localhost:8082",
                 "http://192.168.0.19:3000",
                 "https://www.itdat.store",
-                "https://www.namewallet.store"
+                "https://www.namewallet.store",
+                "https://namewallet.store:6816"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization", "X-Requested-With", "Origin", "Accept"));

@@ -23,15 +23,13 @@ public class MyWallet {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER) // 즉시 로드
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumns({
             @JoinColumn(name = "user_email", referencedColumnName = "user_email", insertable = false, updatable = false),
             @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)
     })
     private BusinessCard businessCard;
-
-    public MyWallet() {
-    }
+    public MyWallet() {}
 
     public MyWallet(String userEmail, String myEmail, int cardNo, String description) {
         this.userEmail = userEmail;
