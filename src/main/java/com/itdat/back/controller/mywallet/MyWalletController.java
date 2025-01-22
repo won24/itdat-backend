@@ -1,6 +1,5 @@
 package com.itdat.back.controller.mywallet;
 
-import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.entity.mywallet.*;
 import com.itdat.back.entity.nfc.MyWallet;
 import com.itdat.back.repository.mywallet.FolderRepository;
@@ -154,10 +153,8 @@ public class MyWalletController {
      * @return 사용자의 모든 명함 리스트(List<CardInfo>)
      */
     @GetMapping("/allCards")
-    public ResponseEntity<List<BusinessCard>> getAllCards(@RequestParam String userEmail) {
-        System.out.println("컨트롤러");
-        List<BusinessCard> cards = myWalletService.getAllCards(userEmail);
-        System.out.println("cards: " + cards);
+    public ResponseEntity<List<CardInfo>> getAllCards(@RequestParam String userEmail) {
+        List<CardInfo> cards = myWalletService.getAllCards(userEmail);
         return ResponseEntity.ok(cards);
     }
 }
