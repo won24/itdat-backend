@@ -155,7 +155,9 @@ public class MyWalletController {
      */
     @GetMapping("/allCards")
     public ResponseEntity<List<BusinessCard>> getAllCards(@RequestParam String userEmail) {
+        System.out.println("컨트롤러");
         List<BusinessCard> cards = myWalletService.getAllCards(userEmail);
+        System.out.println("cards: " + cards);
         return ResponseEntity.ok(cards);
     }
 }
