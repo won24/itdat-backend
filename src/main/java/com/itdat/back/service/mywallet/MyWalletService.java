@@ -166,16 +166,41 @@ public class MyWalletService {
         folderRepository.save(folder);
     }
 
+//    public List<CardInfo> getCardsByFolderName(String folderName) {
+//        Folder folder = (Folder) folderRepository.findByFolderName(folderName)
+//                .orElseThrow(() -> new RuntimeException("Folder not found"));
+//
+//        List<FolderCard> folderCards = folderCardRepository.findByFolderId(folder.getId());
+//        List<CardInfo> cardInfoList = new ArrayList<>();
+//
+//        for (FolderCard folderCard : folderCards) {
+//            myWalletRepository.findById(folderCard.getCardId()).ifPresent(myWallet -> {
+//                BusinessCard businessCard = myWallet.getBusinessCard();
+//                if (businessCard != null) {
+//                    cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
+//                }
+//            });
+//        }
+//
+//        return cardInfoList;
+//    }
+
     public List<CardInfo> getCardsByFolderName(String folderName) {
+        // 폴더 찾기
         Folder folder = (Folder) folderRepository.findByFolderName(folderName)
                 .orElseThrow(() -> new RuntimeException("Folder not found"));
 
+        // 해당 폴더의 FolderCard 목록 조회
         List<FolderCard> folderCards = folderCardRepository.findByFolderId(folder.getId());
         List<CardInfo> cardInfoList = new ArrayList<>();
 
+        // FolderCard를 기반으로 MyWallet과 BusinessCard 정보 조합
         for (FolderCard folderCard : folderCards) {
             myWalletRepository.findById(folderCard.getCardId()).ifPresent(myWallet -> {
-                BusinessCard businessCard = myWallet.getBusinessCard();
+                // BusinessCard 데이터를 명시적으로 조회
+                BusinessCard businessCard = myWalletRepository.findByUserEmailAndCardNo(
+                        myWallet.getUserEmail(), myWallet.getCardNo()
+                );
                 if (businessCard != null) {
                     cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
                 }
@@ -186,23 +211,49 @@ public class MyWalletService {
     }
 
 
-    public List<CardInfo> getAllCards(String myEmail) {
-        List<MyWallet> myWallets = myWalletRepository.findByMyEmail(myEmail);
-        List<CardInfo> cardInfoList = new ArrayList<>();
 
-        for (MyWallet myWallet : myWallets) {
-            boolean isInFolder = folderCardRepository.existsByCardId(myWallet.getId());
-            if (isInFolder) {
-                continue;
-            }
+//    public List<CardInfo> getAllCards(String myEmail) {
+//        List<MyWallet> myWallets = myWalletRepository.findByMyEmail(myEmail);
+//        List<CardInfo> cardInfoList = new ArrayList<>();
+//
+//        for (MyWallet myWallet : myWallets) {
+//            boolean isInFolder = folderCardRepository.existsByCardId(myWallet.getId());
+//            if (isInFolder) {
+//                continue;
+//            }
+//
+//            BusinessCard businessCard = myWallet.getBusinessCard();
+//            if (businessCard != null) {
+//                cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
+//            }
+//        }
+//
+//        return cardInfoList;
+//    }
+public List<CardInfo> getAllCards(String myEmail) {
+    // MyWallet 데이터 조회
+    List<MyWallet> myWallets = myWalletRepository.findByMyEmail(myEmail);
+    List<CardInfo> cardInfoList = new ArrayList<>();
 
-            BusinessCard businessCard = myWallet.getBusinessCard();
-            if (businessCard != null) {
-                cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
-            }
+    for (MyWallet myWallet : myWallets) {
+        // 폴더에 포함되어 있는지 확인
+        boolean isInFolder = folderCardRepository.existsByCardId(myWallet.getId());
+        if (isInFolder) {
+            continue; // 폴더에 포함된 경우 스킵
         }
-        return cardInfoList;
+
+        // BusinessCard 데이터를 명시적으로 조회
+        BusinessCard businessCard = myWalletRepository.findByUserEmailAndCardNo(
+                myWallet.getUserEmail(), myWallet.getCardNo()
+        );
+        if (businessCard != null) {
+            cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
+        }
     }
+
+    return cardInfoList;
+}
+
 
 
 }

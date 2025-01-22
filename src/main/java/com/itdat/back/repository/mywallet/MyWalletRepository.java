@@ -1,5 +1,6 @@
 package com.itdat.back.repository.mywallet;
 
+import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.entity.mywallet.CardInfo;
 import com.itdat.back.entity.nfc.MyWallet;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,4 +20,5 @@ public interface MyWalletRepository extends JpaRepository<MyWallet, Integer> {
             "SELECT 1 FROM FolderCard fc WHERE fc.cardId = m.id)")
     List<MyWallet> findCardsWithoutFolder(@Param("myEmail") String myEmail);
 
+    BusinessCard findByUserEmailAndCardNo(String userEmail, int cardNo);
 }
