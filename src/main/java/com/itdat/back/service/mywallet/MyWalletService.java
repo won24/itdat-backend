@@ -115,10 +115,10 @@ public class MyWalletService {
 //        folderCardRepository.deleteAll(folderCards);
 //    }
 //
-//    // 폴더에 속하지 않은 명함 조회
-//    public List<MyWallet> getCardsWithoutFolder(String myEmail) {
-//        return myWalletRepository.findCardsWithoutFolder(myEmail);
-//    }
+    // 폴더에 속하지 않은 명함 조회
+    public List<MyWallet> getCardsWithoutFolder(String myEmail) {
+        return myWalletRepository.findCardsWithoutFolder(myEmail);
+    }
     @Transactional
     public void removeCardFromFolder(CardMoveRequest request) {
         String myEmail = request.getMyEmail();
