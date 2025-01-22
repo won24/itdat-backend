@@ -151,7 +151,7 @@ public class MyWalletService {
                 cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
             }
         }
-
+        System.out.println("cardInfoList: " + cardInfoList);
         return cardInfoList;
     }
 
