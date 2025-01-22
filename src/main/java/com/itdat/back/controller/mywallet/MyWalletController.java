@@ -10,6 +10,14 @@ import com.itdat.back.service.mywallet.MyWalletService;
 
 import java.util.List;
 
+/**
+ * 작성자 : 김동규
+ *
+ * 작성일 : 2024-01-02
+ *
+ * 명함 지갑 및 폴더링 기능 구현
+ * */
+
 @RestController
 @RequestMapping("/api/mywallet")
 public class MyWalletController {

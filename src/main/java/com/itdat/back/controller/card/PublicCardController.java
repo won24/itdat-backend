@@ -10,6 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+
+/**
+ * 작성자 : 김동규
+ *
+ * 작성일 : 2024-01-03
+ *
+ * 명함 공개 페이지 게시 기능 로직 구현
+ * */
+
 @RestController
 @RequestMapping("/card/public")
 @CrossOrigin

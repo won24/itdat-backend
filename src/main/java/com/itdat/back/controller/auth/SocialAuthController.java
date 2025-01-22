@@ -20,6 +20,14 @@ import java.net.URLEncoder;
 import java.time.LocalDate;
 import java.util.Map;
 
+/**
+ * 작성자 : 김동규
+ *
+ * 작성일 : 2024-12-22
+ *
+ * 소셜 사용자 인증 및 회원가입 로직 처리 구현
+ * */
+
 @RestController
 @RequestMapping("/api/oauth")
 @CrossOrigin
