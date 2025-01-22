@@ -23,12 +23,12 @@ public class MyWallet {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumns({
-            @JoinColumn(name = "user_email", referencedColumnName = "user_email", insertable = false, updatable = false),
-            @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)
-    })
-    private BusinessCard businessCard;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumns({
+//            @JoinColumn(name = "user_email", referencedColumnName = "user_email", insertable = false, updatable = false),
+//            @JoinColumn(name = "card_no", referencedColumnName = "card_no", insertable = false, updatable = false)
+//    })
+//    private BusinessCard businessCard;
     public MyWallet() {}
 
     public MyWallet(String userEmail, String myEmail, int cardNo, String description) {
@@ -78,11 +78,11 @@ public class MyWallet {
         this.description = description;
     }
 
-    public BusinessCard getBusinessCard() {
-        return businessCard;
-    }
-
-    public void setBusinessCard(BusinessCard businessCard) {
-        this.businessCard = businessCard;
-    }
+//    public BusinessCard getBusinessCard() {
+//        return businessCard;
+//    }
+//
+//    public void setBusinessCard(BusinessCard businessCard) {
+//        this.businessCard = businessCard;
+//    }
 }
