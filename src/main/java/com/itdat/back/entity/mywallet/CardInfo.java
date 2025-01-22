@@ -19,6 +19,7 @@ public class CardInfo {
     private String logoUrl;
     private boolean isPublic;
 
+
     public CardInfo(BusinessCard businessCard, int cardNo) {
         this.userName = businessCard.getUserName();
         this.companyName = businessCard.getCompanyName();

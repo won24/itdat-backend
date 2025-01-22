@@ -185,9 +185,9 @@ public class MyWalletService {
     }
 
 
-    public List<CardInfo> getAllCards(String myEmail) {
+    public List<BusinessCard> getAllCards(String myEmail) {
         List<MyWallet> myWallets = myWalletRepository.findByMyEmail(myEmail);
-        List<CardInfo> cardInfoList = new ArrayList<>();
+        List<BusinessCard> cardInfoList = new ArrayList<>();
 
         for (MyWallet myWallet : myWallets) {
             boolean isInFolder = folderCardRepository.existsByCardId(myWallet.getId());
@@ -196,11 +196,11 @@ public class MyWalletService {
             }
 
             BusinessCard businessCard = myWallet.getBusinessCard();
-            if (businessCard != null) {
-                cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
-            }
+//            if (businessCard != null) {
+//                cardInfoList.add(new CardInfo(businessCard, myWallet.getCardNo()));
+//            }
         }
-
+        System.out.println("cardInfoList: " + cardInfoList);
         return cardInfoList;
     }
 
