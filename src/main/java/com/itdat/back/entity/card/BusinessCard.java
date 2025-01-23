@@ -1,5 +1,6 @@
 package com.itdat.back.entity.card;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.itdat.back.entity.mywallet.Folder;
 import jakarta.persistence.*;
@@ -65,10 +66,12 @@ public class BusinessCard {
     @Column(name = "logo_url")
     private String logoUrl;
 
+    @JsonIgnore
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @JsonIgnore
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

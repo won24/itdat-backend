@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .requiresChannel(channel -> channel
                         .anyRequest()
-                        .requiresSecure()
+                       // .requiresSecure()
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login",
