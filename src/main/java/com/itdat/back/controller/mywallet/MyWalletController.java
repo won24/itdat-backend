@@ -1,5 +1,7 @@
 package com.itdat.back.controller.mywallet;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itdat.back.entity.card.BusinessCard;
 import com.itdat.back.entity.mywallet.*;
 import com.itdat.back.entity.nfc.MyWallet;
 import com.itdat.back.repository.mywallet.FolderRepository;
@@ -161,8 +163,19 @@ public class MyWalletController {
      * @return 사용자의 모든 명함 리스트(List<CardInfo>)
      */
     @GetMapping("/allCards")
-    public ResponseEntity<List<CardInfo>> getAllCards(@RequestParam String userEmail) {
-        List<CardInfo> cards = myWalletService.getAllCards(userEmail);
-        return ResponseEntity.ok(cards);
+    public ResponseEntity<List<BusinessCard>> getAllCards(@RequestParam String userEmail) {
+        try {
+            List<BusinessCard> cards = myWalletService.getAllCards(userEmail);
+
+            // JSON 응답 로그 추가
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonResponse = objectMapper.writeValueAsString(cards);
+            System.out.println("응답 데이터: " + jsonResponse);
+
+            return ResponseEntity.ok(cards);
+        } catch (Exception e) {
+            System.out.println("e : " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
