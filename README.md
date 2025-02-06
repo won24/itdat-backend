@@ -24,6 +24,12 @@
 - ESG 경영을 실천하는 기업들에게 친환경 명함 시스템을 제공
 - AI 기술과 연계하여 스마트 네트워킹 추천 기능 추가 예정
 
+## 📋 요구사항 정의서
+- [요구사항 정의서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=252903809#gid=252903809)
+  
+## 📑 코드 컨벤션
+- [코드 컨벤션](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=2009675673#gid=2009675673)
+
 ## 🗂️ API
 - [API 명세서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1403407851#gid=1403407851)
 
@@ -57,15 +63,21 @@
 ![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)  
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
 
+## ✏ 프로젝트 일정관리(WBS)
+- [WBS](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1991800281#gid=1991800281)
+
 ## ⚙ 시스템 아키텍쳐
-![제목 없음](https://github.com/user-attachments/assets/82c7dc8f-7522-4054-aae9-79587cd45691)
+![시스템 아키텍쳐](https://github.com/user-attachments/assets/82c7dc8f-7522-4054-aae9-79587cd45691)
 
 ## 📂 데이터베이스 설계
 - [데이터 사전 정의서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1090382139#gid=1090382139)
 - ERD(데이터 사전 정의서를 기반으로 설계)
   ![image](https://github.com/user-attachments/assets/e7ae9990-93e5-421e-a1b2-04e0b17e38a9)
 
-  
+## 📂 테스트 계획서/결과보고서
+- [테스트 계획서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=770645422#gid=770645422)
+- [테스트 결과보고서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=327412576#gid=327412576)
+
 ## 💁‍♂️ 프로젝트 팀원
 <table>
   <tr>
@@ -77,17 +89,17 @@
     <td align="center">
       <strong>서현준</strong><br>
       <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
-      <a href="https://github.com/kimyounghee">GitHub</a>
+      <a href="본인 깃허브 링크">GitHub</a>
     </td>
     <td align="center">
       <strong>진원</strong><br>
       <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
-      <a href="https://github.com/leecheolsu">GitHub</a>
+      <a href="본인 깃허브 링크">GitHub</a>
     </td>
     <td align="center">
       <strong>손정원</strong><br>
       <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
-      <a href="https://github.com/leecheolsu">GitHub</a>
+      <a href="본인 깃허브 링크">GitHub</a>
     </td>
   </tr>
 </table>
