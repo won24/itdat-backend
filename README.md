@@ -78,6 +78,9 @@
 - [테스트 계획서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=770645422#gid=770645422)
 - [테스트 결과보고서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=327412576#gid=327412576)
 
+## 📆 개발 기간
+- 2024.12.09 ~ 2025.01.23
+
 ## 💁‍♂️ 프로젝트 팀원
 <table>
   <tr>
