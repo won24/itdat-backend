@@ -62,7 +62,9 @@
 
 ## 📂 데이터베이스 설계
 - [데이터 사전 정의서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1090382139#gid=1090382139)
-- [ERD](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=2050742118#gid=2050742118)
+- ERD(데이터 사전 정의서를 기반으로 설계)
+  ![image](https://github.com/user-attachments/assets/e7ae9990-93e5-421e-a1b2-04e0b17e38a9)
+
   
 ## 💁‍♂️ 프로젝트 팀원
 <table>
