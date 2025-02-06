@@ -23,3 +23,6 @@
 - 명함 관리의 디지털 전환을 통해 효율적인 네트워킹 지원
 - ESG 경영을 실천하는 기업들에게 친환경 명함 시스템을 제공
 - AI 기술과 연계하여 스마트 네트워킹 추천 기능 추가 예정
+
+## 🗂️ API
+- [API 명세서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1403407851#gid=1403407851)
