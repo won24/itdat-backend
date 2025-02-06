@@ -1,4 +1,4 @@
-# ITDAT 디지털 명함 시스템
+# ITDAT 디지털 명함 시스템(Web/Android)
 ![itdat_프로토타입](https://github.com/user-attachments/assets/93109291-0366-46ce-af67-3c9f9d448ae5)
 
 ## 📌 프로젝트 소개
