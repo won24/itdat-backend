@@ -65,27 +65,23 @@
   <tr>
     <td align="center">
       <strong>김동규</strong><br>
-      <img src="![증명사진](https://github.com/user-attachments/assets/48f2fbdf-8839-4498-a1c8-800e3185bc55)" width="100"><br>
-      <a href="https://github.com/nicdkim">GitHub</a> | 
-      <a href="https://kimdonggyu.vercel.app/">Portfolio</a>
+      <img src="![증명사진]https://github.com/user-attachments/assets/48f2fbdf-8839-4498-a1c8-800e3185bc55" width="100"><br>
+      <a href="https://github.com/nicdkim">GitHub</a>
     </td>
     <td align="center">
       <strong>서현준</strong><br>
       <img src="https://via.placeholder.com/100" width="100"><br>
-      <a href="https://github.com/kimyounghee">GitHub</a> | 
-      <a href="https://kimyounghee.dev">Blog</a>
+      <a href="https://github.com/kimyounghee">GitHub</a>
     </td>
     <td align="center">
       <strong>진원</strong><br>
       <img src="https://via.placeholder.com/100" width="100"><br>
-      <a href="https://github.com/leecheolsu">GitHub</a> | 
-      <a href="https://leecheolsu.com">Portfolio</a>
+      <a href="https://github.com/leecheolsu">GitHub</a>
     </td>
     <td align="center">
       <strong>손정원</strong><br>
       <img src="https://via.placeholder.com/100" width="100"><br>
-      <a href="https://github.com/leecheolsu">GitHub</a> | 
-      <a href="https://leecheolsu.com">Portfolio</a>
+      <a href="https://github.com/leecheolsu">GitHub</a>
     </td>
   </tr>
 </table>
