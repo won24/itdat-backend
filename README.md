@@ -65,7 +65,7 @@
   <tr>
     <td align="center">
       <strong>김동규</strong><br>
-      <img src="![증명사진]https://github.com/user-attachments/assets/48f2fbdf-8839-4498-a1c8-800e3185bc55" width="100"><br>
+      <a>![증명사진]https://github.com/user-attachments/assets/48f2fbdf-8839-4498-a1c8-800e3185bc55" width="100"></a><br>
       <a href="https://github.com/nicdkim">GitHub</a>
     </td>
     <td align="center">
