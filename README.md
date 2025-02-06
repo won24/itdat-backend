@@ -70,17 +70,17 @@
     </td>
     <td align="center">
       <strong>서현준</strong><br>
-      <img src="https://via.placeholder.com/100" width="100"><br>
+      <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
       <a href="https://github.com/kimyounghee">GitHub</a>
     </td>
     <td align="center">
       <strong>진원</strong><br>
-      <img src="https://via.placeholder.com/100" width="100"><br>
+      <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
       <a href="https://github.com/leecheolsu">GitHub</a>
     </td>
     <td align="center">
       <strong>손정원</strong><br>
-      <img src="https://via.placeholder.com/100" width="100"><br>
+      <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
       <a href="https://github.com/leecheolsu">GitHub</a>
     </td>
   </tr>
