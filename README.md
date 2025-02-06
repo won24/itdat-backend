@@ -27,6 +27,33 @@
 ## 🗂️ API
 - [API 명세서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1403407851#gid=1403407851)
 
-## ⚙ 기술 스택
-- ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+## 기술 스텍
+## 🚀 Back-End Tech Stack  
+
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)  
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)  
+![JPA](https://img.shields.io/badge/JPA-6DB33F?style=for-the-badge&logo=hibernate&logoColor=white)  
+![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)  
+![Mail Sender](https://img.shields.io/badge/Mail%20Sender-6DB33F?style=for-the-badge)  
+![OAuth](https://img.shields.io/badge/OAuth-3A3A3A?style=for-the-badge&logo=oauth&logoColor=white)  
+![Kakao API](https://img.shields.io/badge/Kakao%20API-FFCD00?style=for-the-badge&logo=kakao&logoColor=black)  
+![Naver API](https://img.shields.io/badge/Naver%20API-03C75A?style=for-the-badge&logo=naver&logoColor=white)  
+![Google API](https://img.shields.io/badge/Google%20API-4285F4?style=for-the-badge&logo=google&logoColor=white)  
+
+---
+
+## 🛠 Infra  
+
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)  
+![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white)  
+![SSL](https://img.shields.io/badge/SSL-000000?style=for-the-badge&logo=letsencrypt&logoColor=white)  
+![HTTPS 배포](https://img.shields.io/badge/HTTPS%20배포-000000?style=for-the-badge)  
+![DNS](https://img.shields.io/badge/DNS-0052CC?style=for-the-badge)  
+
+---
+
+## 🔧 Tools  
+
+![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)  
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
 
