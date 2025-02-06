@@ -26,3 +26,6 @@
 
 ## 🗂️ API
 - [API 명세서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1403407851#gid=1403407851)
+
+## ⚙ 기술 스택
+- ![Java](https://upload.wikimedia.org/wikipedia/en/3/30/Java_programming_language_logo.svg)
