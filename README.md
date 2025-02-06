@@ -60,6 +60,10 @@
 ## ⚙ 시스템 아키텍쳐
 ![제목 없음](https://github.com/user-attachments/assets/82c7dc8f-7522-4054-aae9-79587cd45691)
 
+## 📂 데이터베이스 설계
+- [데이터 사전 정의서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1090382139#gid=1090382139)
+- [ERD](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=2050742118#gid=2050742118)
+  
 ## 💁‍♂️ 프로젝트 팀원
 <table>
   <tr>
