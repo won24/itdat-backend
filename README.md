@@ -91,7 +91,7 @@
     </td>
     <td align="center">
       <strong>서현준</strong><br>
-      <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
+      <img src="https://github.com/user-attachments/assets/6b42b5db-4ca8-42a4-a7b9-2b8627de00c5" width="100"><br>
       <a href="https://github.com/kkandda">GitHub</a>
     </td>
     <td align="center">
@@ -113,6 +113,8 @@
   - 사용자 인증, 회원가입, 이메일 인증, 로그인, 소셜(구글, 카카오, 네이버) 가입 및 로그인, CI/CD 구축, SSL 인증, Security 관리, 명함 지갑 관리, 명함 공유 불러오기, 환경변수 설정, 스키마 설계
  
 ### 서현준
+- 기능
+  - 관리자 페이지, QnA 페이지, 신고 기능
 
 ### 진원
 - 기능
