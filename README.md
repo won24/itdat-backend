@@ -92,7 +92,7 @@
     <td align="center">
       <strong>서현준</strong><br>
       <img src="여기에 각자 사진 가져오면 됨" width="100"><br>
-      <a href="본인 깃허브 링크">GitHub</a>
+      <a href="https://github.com/kkandda">GitHub</a>
     </td>
     <td align="center">
       <strong>진원</strong><br>
