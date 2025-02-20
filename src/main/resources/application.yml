@@ -114,7 +114,7 @@ logging:
               BasicBinder: TRACE
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY}
+  secret-key: ${JWT_SECRET_KEY:57c3aff4146e0ef2d7e742613adfc85cef9a4d258213d749dcb1b4a5435b8a22}
   # 환경변수 등록 필요
   expiration: 86400000
   refresh-expiration: 604800000

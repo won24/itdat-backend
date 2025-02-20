@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "qna-images")
+@Table(name = "qna_images")
 public class QnaImage {
 
     @Id

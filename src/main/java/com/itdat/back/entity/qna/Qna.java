@@ -20,7 +20,7 @@ public class Qna {
     private String contents;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "userId")
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
     @Column(name = "create_date_at", nullable = false)
