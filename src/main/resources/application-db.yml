@@ -1,8 +1,8 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://172.17.0.3:3306:3306/itdat?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
-    username: root
+    url: jdbc:mysql://host.docker.internal:3306/itdat
+    username: gangnam
     password: gangnam
 
 
