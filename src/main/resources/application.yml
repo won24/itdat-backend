@@ -27,7 +27,7 @@ spring:
       static-locations: classpath:/templates/
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
   servlet:
     multipart:
       enabled: true
