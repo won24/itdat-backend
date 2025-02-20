@@ -3,6 +3,8 @@ server:
     enabled: false
 
   port: 8082
+  additional-ports:
+  - 6816
   servlet:
     encoding:
       charset: UTF-8

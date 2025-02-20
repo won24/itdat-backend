@@ -1,7 +1,5 @@
 server:
   port: 8082
-  additional-ports:
-  - 6816
   ssl:
     enabled: true
     key-store: classpath:keystore.p12
@@ -47,6 +45,7 @@ cors:
   allowed-origins:
   - https://www.itdat.store
   - http://localhost:3000
+  - https://namewallet.store:6816
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
