@@ -63,25 +63,18 @@
 ![Github](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)  
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)  
 
-## 9. 프로젝트 일정관리(WBS)
-- [WBS](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1991800281#gid=1991800281)
-
-## 10. 시스템 아키텍쳐
+## 09. 시스템 아키텍쳐
 ![시스템 아키텍쳐](https://github.com/user-attachments/assets/82c7dc8f-7522-4054-aae9-79587cd45691)
 
-## 11. 데이터베이스 설계
+## 10. 데이터베이스 설계
 - [데이터 사전 정의서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=1090382139#gid=1090382139)
 - ERD(데이터 사전 정의서를 기반으로 설계)
   ![image](https://github.com/user-attachments/assets/e7ae9990-93e5-421e-a1b2-04e0b17e38a9)
 
-## 12. 테스트 계획서/결과보고서
-- [테스트 계획서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=770645422#gid=770645422)
-- [테스트 결과보고서](https://docs.google.com/spreadsheets/d/1GfJm25oclrC1F1lVo9e7SdV8qnmDxA-MVvHAA7A2jsA/edit?gid=327412576#gid=327412576)
-
-## 13. 개발 기간
+## 11. 개발 기간
 - 2024.12.09 ~ 2025.01.23
 
-## 14. 프로젝트 팀원
+## 12. 프로젝트 팀원
 <table>
   <tr>
     <td align="center">
@@ -98,23 +91,6 @@
     </td>
   </tr>
 </table>
-
-## 15. 역할 분담
-### 김동규(PM)
-- 기능
-  - 사용자 인증, 회원가입, 이메일 인증, 로그인, 소셜(구글, 카카오, 네이버) 가입 및 로그인, CI/CD 구축, SSL 인증, Security 관리, 명함 지갑 관리, 명함 공유 불러오기, 환경변수 설정, 스키마 설계
- 
-### 서현준
-- 기능
-  - 관리자 페이지, QnA 페이지, 신고 기능
-
-### 진원
-- 기능
-  - 사용자 명함 생성/조회, 가입 정보 기반 명함 정보 불러오기, 포트폴리오 및 히스토리 CRUD, 스키마 설계
-    
-### 손정원
-- 기능
- - NFC데이터 저장 입력, QR데이터 저장, QR이미지출력, 사용자 정보 수정 삭제, 카드정보 수정 삭제
 
 
 
